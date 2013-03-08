@@ -1,0 +1,101 @@
+
+{
+  "regions": {
+    "S": {
+      "name": "South",
+      "sameSideAs": "W",
+      "teams": [
+        "Kentucky",
+        "Duke",
+        "Baylor",
+        "Indiana",
+        "Wichita St",
+        "UNLV",
+        "N Dame",
+        "Iowa St",
+        "UConn",
+        "Xavier",
+        "Colorado",
+        "VCU",
+        "New Mex St",
+        "S Dakota St",
+        "Lehigh",
+        "W Kentucky"
+      ]
+    },
+    "W": {
+      "name": "West",
+      "sameSideAs": "S",
+      "teams": [
+        "Mich St",
+        "Missouri",
+        "Marquette",
+        "Louisville",
+        "New Mexico",
+        "Murray St",
+        "Florida",
+        "Memphis",
+        "Saint Louis",
+        "Virginia",
+        "Colo St",
+        "L Beach St",
+        "Davidson",
+        "BYU",
+        "Norfolk St",
+        "LIU"
+      ]
+    },
+    "E": {
+      "name": "East",
+      "sameSideAs": "MW",
+      "teams": [
+        "Syracuse",
+        "Ohio St",
+        "Florida St",
+        "Wisconsin",
+        "Vanderbilt",
+        "Cincy",
+        "Gonzaga",
+        "Kansas St",
+        "So Miss",
+        "W Virginia",
+        "Texas",
+        "Harvard",
+        "Montana",
+        "St B'nvntre",
+        "Loyola MD",
+        "UNC-Ash"
+      ]
+    },
+    "MW": {
+      "name": "Midwest",
+      "sameSideAs": "E",
+      "teams": [
+        "UNC",
+        "Kansas",
+        "G'town",
+        "Michigan",
+        "Temple",
+        "SDSU",
+        "St Mary's",
+        "Creighton",
+        "Alabama",
+        "Purdue",
+        "NC State",
+        "USF",
+        "Ohio",
+        "Belmont",
+        "Detroit",
+        "UVM"
+      ]
+    }
+  },
+  "FF": {
+      "name": "Final Four"
+    },
+  "final": {
+    "FF": {
+      "name": "Final Four"
+    }
+  }
+}
