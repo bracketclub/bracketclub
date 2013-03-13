@@ -1,8 +1,12 @@
 {
   "name": "bracket-validator",
-  "description": "Validate a sports ball bracket.",
+  "description": "Validate a NCAA tournament bracket.",
   "version": "0.0.1",
   "private": false,
+  "author": {
+    "name": "Luke Karrys",
+    "email": "luke@lukekarrys.com"
+  },
   "dependencies": {
     "underscore": "1.4.4",
     "realurl": "~0.1.2",
