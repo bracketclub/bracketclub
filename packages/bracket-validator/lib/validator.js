@@ -1,8 +1,21 @@
 var _ = require('underscore'),
-    helpers = require('./helpers'),
-    NCAA = require('../data/ncaa-mens-basketball/2012.json');
+    helpers = {
+      array: {
+        subset: function(small, big) {
+          if (small.length === 0) return true;
+          return _.all(small, function(n) {
+            return _.include(big, n);
+          });
+        },
+        equal: function(arr1, arr2) {
+          return arr1.length === arr2.length && this.subset(arr1, arr2) && this.subset(arr2, arr1);
+        }
+      }
+    };
 
-module.exports = {
+module.exports = function(options) {
+  var NCAA = options.data;
+  return {
   errorMessages: [],
   logError: function() {
     this.errorMessages.push(_.toArray(arguments).join(" "));
@@ -309,7 +322,7 @@ if (typeof ncaaRegion === 'undefined')console.log('x', regionName, ncaaRegion)
 
   // Make sure the tournament is all validated
   // by running all the other checks
-  validateTournament: function(picks, editable, justValidate, master) {
+  validateTournament: function(picks, opts) {
 
     var uPicks = picks.toUpperCase(),
         uPicksSplit = uPicks.split(this.finalFourRegionName),
@@ -337,9 +350,9 @@ if (typeof ncaaRegion === 'undefined')console.log('x', regionName, ncaaRegion)
       if (picksArray === false) {
         error = true;
       } else if (isFinalFour) {
-        validatedPicks = this.validateFinalFour(this.validatePicks(picksArray, regionName, editable));
+        validatedPicks = this.validateFinalFour(this.validatePicks(picksArray, regionName, opts.editable));
       } else {
-        validatedPicks = this.validatePicks(picksArray, regionName, editable);
+        validatedPicks = this.validatePicks(picksArray, regionName, opts.editable);
       }
 
       if (validatedPicks !== false) {
@@ -354,11 +367,12 @@ if (typeof ncaaRegion === 'undefined')console.log('x', regionName, ncaaRegion)
     }
 
     if (!error) {
-      if (justValidate) return validatedTournament;
-      return this.addTeamContent(validatedTournament, editable, master);
+      if (opts.validateOnly) return validatedTournament;
+      return this.addTeamContent(validatedTournament, opts.editable, opts.master);
     } else {
-      if (justValidate) return false;
+      if (opts.validateOnly) return false;
       return {messages: this.errorMessages, error: true};
     }
   }
+};
 };

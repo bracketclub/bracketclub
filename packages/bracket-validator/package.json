@@ -5,12 +5,17 @@
   "private": false,
   "dependencies": {
     "underscore": "1.4.4",
-    "underscore.string": "~2.3.1"
+    "realurl": "~0.1.2",
+    "async": "~0.2.6"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "make test"
   },
   "devDependencies": {
-    
+    "underscore.string": "~2.3.1",
+    "mocha": "~1.8.2",
+    "assert": "~0.4.9",
+    "shorturl": "0.0.3"
   }
 }

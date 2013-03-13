@@ -1,15 +1,13 @@
-var _ = require('underscore'),
-    _s = require('underscore.string');
-    data = require('../data/ncaa-mens-basketball/2012'),
-    firstRoundOrder = require('../data/ncaa-mens-basketball/_ORDER').order,
-    validator = require('../lib/new-validator.js'),
-    helpers = require('../lib/helpers.js');
+var _ = require('underscore');
 
-var BracketGenerator = function(options) {
+module.exports = function(options) {
+
   var data = options.data,
+      firstRoundOrder = options.order,
       winnerCounter = 0,
       howToPickWinners = options.winners || '',
       generatedBracket = null;
+
   return {
     winners: function(arg) {
       generatedBracket = null;
@@ -132,51 +130,3 @@ var BracketGenerator = function(options) {
     }
   };
 };
-
-
-var bg = new BracketGenerator({data: data}),
-    flat,
-    expanded,
-    validated,
-    noUpsets = new BracketGenerator({data: data, winners: 'higher'}),
-    allUpsets= new BracketGenerator({data: data, winners: 'random'}),
-
-    r = /^[a-zA-Z]{1,2}[0-9]{15,30}[a-zA-Z]{1,2}[0-9]{15,30}[a-zA-Z]{1,2}[0-9]{15,30}[a-zA-Z]{1,2}[0-9]{15,30}[a-zA-Z]{5,8}/;
-
-console.log(r.test(noUpsets.flatBracket()))
-console.log(r.test(allUpsets.flatBracket()))
-
-/*
-bg.winners('random');
-expanded = bg.bracketWithTeamInfo();
-flat = bg.flatBracket();
-validated = validator.validateTournament(flat, false, true);
-
-
-var iterations = 1 || Math.pow(2, firstRoundOrder.length-1),
-    i = 0;
-
-for (i; i < iterations; i++) {
-  bg.winners('random' || _s.pad((i).toString(2), '15', '0'));
-  expanded = bg.bracketWithTeamInfo();
-  flat = bg.flatBracket();
-  validated = validator.validateTournament(flat, false, false, noUpsets.flatBracket());
-
-  console.log('BRACKET:', i, JSON.stringify(validated, null, 1));
-
-  _.each(validated.regions, function(region, regionIndex) {
-    _.each(region.rounds, function(round, roundIndex) {
-      _.each(round.games, function(game, gameIndex) {
-        var seed = expanded[regionIndex][roundIndex][gameIndex].seed,
-            fromRegion = expanded[regionIndex][roundIndex][gameIndex].fromRegion;
-
-        if (!(game === seed || fromRegion)) {
-          throw new Error('');
-        }
-      });
-    });
-  });
-
-  console.log('ALL GAMES MATCH');
-  console.log('--------------------------')
-};*/
