@@ -24,7 +24,8 @@ module.exports = function(options) {
         finder: finder,
         generator: generator,
         validator: validator,
-        quickCheck: quickCheck
+        quickCheck: quickCheck,
+        score: score
       }, options.props);
 
   return returnVal;
