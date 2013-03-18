@@ -7,6 +7,7 @@ for (var i = startYear, m = currentYear; i <= m; i++) {
   exportData[i.toString()] = order;
 }
 
-module.exports = function(year) {
-  return exportData[year || currentYear];
+module.exports = function(options) {
+  options = options || {};
+  return exportData[options.year || currentYear];
 };

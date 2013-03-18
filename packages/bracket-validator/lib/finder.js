@@ -1,58 +1,75 @@
-var validator = require('./validator'),
-    _ = require('underscore'),
-    quickCheck = require('./quickCheck')(),
+var _ = require('lodash'),
     async = require('async'),
-    realurl = require('realurl');
+    realurl = require('realurl'),
 
-module.exports = function(opts) {
+    BracketValidator = require('./validator'),
+    quickCheck = require('./quickCheck')();
 
-  var appName = opts.appName,
-      trackTwitter = opts.trackTwitter;
+function Finder(options) {
+  options = options || {};
+  this.appName = options.appName || '',
+  this.trackTwitter = options.trackTwitter || [];
 
-  return function(tweet, cb) {
-
-    var validate = function(testBracket) {
-          if (testBracket && validator.validateTournament(testBracket, {testOnly: true}) !== false) {
-            return testBracket;
-          }
-          return null;
-        },
-        expandedUrls = _.pluck(tweet.entities.urls, 'expanded_url'),
-        getAppUrls = function(url) {
-          return url.indexOf(appName) > -1;
-        },
-        urlsToHashes = function(url) {
-          return url.split('#')[1];
-        },
-        appUrls = _.filter(expandedUrls, getAppUrls),
-        appHashes = _.compact(_.map(appUrls, urlsToHashes)),
-        otherUrls = _.without(expandedUrls, appUrls),
-        hashtags = _.without(_.pluck(tweet.entities.hashtags, 'text'), trackTwitter),
-        textChunks = tweet.text.split(' '),
-        looksGood = function(item) {
-          return quickCheck.test(item);
-        },
-        bracket = null;
-
-    // Most common scenario will be a t.co shortened tweetyourbracket.com url with a hash on it
-    bracket = _.find(appHashes, looksGood);
-    if (validate(bracket)) return cb(null, bracket);
-
-    // Also test for a valid hashtag
-    bracket = _.find(hashtags, looksGood);
-    if (validate(bracket)) return cb(null, bracket);
-
-    // Also test for a chunk of text that looks good
-    bracket = _.find(textChunks, looksGood);
-    if (validate(bracket)) return cb(null, bracket);
-
-    // Last, check shortened urls to see if the are tweetyourbracket urls
-    async.concat(otherUrls, realurl.get, function(err, realUrls) {
-      if (err) return cb(err, null);
-      var realTYBUrlHash = _.find(_.compact(_.map(_.filter(realUrls, getAppUrls), urlsToHashes)), looksGood);
-      if (validate(realTYBUrlHash)) return cb(null, realTYBUrlHash);
-      cb(null, null);
-    });
+  this.getAppUrls = function(url) {
+    return url.indexOf(this.appName) > -1;
   };
 
+  this.urlsToMatches = function(url) {
+    var matches = url.match(quickCheck);
+    return matches.length > 0 ? matches[0] : matches;
+  };
+
+  this.looksGood = function(item) {
+    var regExp = new RegExp('^' + quickCheck.source + '$');
+    return regExp.test(item);
+  };
+}
+
+Finder.prototype.findFrom = function(from) {
+  return _.find(from, this.looksGood);
 };
+
+Finder.prototype.find = function(tweet, cb) {
+
+  var self = this;
+
+  tweet = _.defaults(tweet, {text: '', entities: {}});
+
+  var expandedUrls = _.pluck(tweet.entities.urls, 'expanded_url'),
+      appUrls = _.filter(expandedUrls, this.getAppUrls, this),
+      urlMatches = _.compact(_.map(appUrls, this.urlsToMatches, this)),
+      otherUrls = _.without(expandedUrls, appUrls),
+      hashtags = _.without(_.pluck(tweet.entities.hashtags, 'text'), this.trackTwitter),
+      textChunks = tweet.text.split(' ');
+
+  async.waterfall([
+    function(_cb) {
+      // Most common scenario will be a t.co shortened tweetyourbracket.com url with a hash on it
+      // Then test for a valid hashtag
+      // Also test for a chunk of text that looks good
+      _cb(null, self.findFrom(urlMatches) || self.findFrom(hashtags) || self.findFrom(textChunks));
+    },
+    function(bracket, _cb) {
+      if (bracket) return _cb(null, bracket);
+      // Last, check shortened urls to see if the are tweetyourbracket urls
+      async.concat(otherUrls, _.bind(realurl.get, realurl), function(err, realUrls) {
+        if (err) return _cb(err, null);
+        var appUrls = _.filter(realUrls, self.getAppUrls, self),
+            urlMatches = _.compact(_.map(appUrls, self.urlsToMatches, self)),
+            bracket = self.findFrom(urlMatches);
+
+        _cb(null, bracket);
+      });
+    }
+  ],function(err, res) {
+    self.validate(res, cb);
+  });
+
+};
+
+Finder.prototype.validate = function(bracket, cb) {
+  var bv = new BracketValidator({flatBracket: bracket, testOnly: true});
+  bv.validate(cb);
+};
+
+module.exports = Finder;

@@ -1,378 +1,355 @@
-var _ = require('underscore'),
-    helpers = {
-      array: {
-        subset: function(small, big) {
-          if (small.length === 0) return true;
-          return _.all(small, function(n) {
-            return _.include(big, n);
-          });
-        },
-        equal: function(arr1, arr2) {
-          return arr1.length === arr2.length && this.subset(arr1, arr2) && this.subset(arr2, arr1);
-        }
-      }
-    };
+var _ = require('lodash'),
+    async = require('async'),
 
-module.exports = function(options) {
-  var NCAA = options.data;
+    thisData = require('../data/ncaa-mens-basketball/data')(),
+    thisOrder = require('../data/ncaa-mens-basketball/order')(),
+    CONSTS = require('../data/ncaa-mens-basketball/consts'),
+
+    quickCheck = require('./quickCheck')();
+
+_.mixin({
+  subset: function(small, big) {
+    if (small.length === 0) return true;
+    return _.all(small, function(n) {
+      return _.include(big, n);
+    });
+  }
+});
+
+_.mixin({
+  equal: function(arr1, arr2) {
+    return arr1.length === arr2.length && _.subset(arr1, arr2) && _.subset(arr2, arr1);
+  }
+});
+
+function Validator(options) {
+  options = options || {};
+  this.data = options.data || thisData;
+  this.bracketChecks = {};
+  this.bracketErrors = [];
+  this.firstRoundOrder = options.order || thisOrder;
+  this.flatBracket = (options.flatBracket || '').toUpperCase();
+  this.testOnly = options.testOnly || false;
+  this.allRegions = CONSTS.REGION_IDS.concat(CONSTS.FINAL_ID);
+}
+
+Validator.prototype.wrapError = function() {
   return {
-  errorMessages: [],
-  logError: function() {
-    this.errorMessages.push(_.toArray(arguments).join(" "));
-  },
-  unpickedGame: 'X',
-  finalFourRegionName: 'FF',
-  regions: _.keys(NCAA.regions),
-  allRegions: _.keys(NCAA.regions).concat('FF'),
-  pickOrder: [0, 7, 5, 3, 2, 4, 6, 1],
-  seedOrder: [1, 16, 8, 9, 5, 12, 4, 13, 6, 11, 3, 14, 7, 10, 2, 15],
-  regionClasses: ['round1', 'round2', 'sweet-sixteen', 'elite-eight', 'region-final-four'],
-  regionNames: ['Round of 64', 'Round of 32', 'Sweet Sixteen', 'Elite Eight', 'Final Four'],
-  finalFourClasses: ['final-four', 'national-championship', 'national-champion'],
-  finalFourNames: ['Final Four', 'National Championship', 'National Champion'],
+    status: false,
+    result: new Error(_.map(_.toArray(arguments), function(arg) {
+      return (typeof arg.message === 'string') ? arg.message : arg.toString();
+    }).join(' '))
+  };
+};
 
-  // Takes a string of the picks for a region and validates them
-  // Return an array of picks if valid or false if invalid
-  picksToArray: function(picks, finalFour, regionName) {
+Validator.prototype.wrapSuccess = function(result) {
+  return {
+    status: true,
+    result: result || null
+  };
+};
 
-    var regexp,
-        replacement = '',
-        regExpStr = '',
-        seeds = (finalFour) ? this.regions : this.seedOrder,
-        seedLength = seeds.length,
-        regExpJoiner = function(arr, reverse) {
-          var newArr = (reverse) ? arr.reverse() : arr;
-          return '(' + newArr.join('|') + '|' + this.unpickedGame + ')';
-        },
-        backref = function(i) {
-          return regExpJoiner.call(this, _.map(_.range(i, i+2), function(n) { return "\\"+n; }), true);
-        };
+Validator.prototype.expandFlatBracket = function(flat) {
+  var length = quickCheck.source.split('(').length,
+      range = _.range(1, length),
+      replacer = _.map(range, function(i) {
+        var prepend = (i === 1) ? '{"$' : '',
+            append = (i % 2) ? '":"$' : ((i < length - 1) ? '","$' : '"}');
+        return prepend + i + append;
+      }).join('');
+  try  {
+    return this.wrapSuccess(JSON.parse(flat.replace(quickCheck, replacer)));
+  }
+  catch (e) {
+    return this.wrapError('Bracket does not look like a bracket:', e);
+  }
+};
 
-    // Create capture groups for the first round of the region
-    for (var i = 0; i < seedLength; i += 2) {
-      regExpStr += regExpJoiner.call(this, seeds.slice(i, i+2));
+Validator.prototype.hasNecessaryKeys = function(obj) {
+  var hasKeys = _.keys(obj),
+      hasAllKeys = !!(this.allRegions.length === hasKeys.length && _.difference(this.allRegions, hasKeys).length === 0);
+
+  if (hasAllKeys) {
+    return this.wrapSuccess();
+  }
+  return this.wrapError('Bracket does not have the corret keys. Missing:', _.difference(this.allRegions, hasKeys).join(','));
+};
+
+Validator.prototype.validate = function(callback) {
+  var self = this,
+      findErrors = function(res) {
+        return !res.status;
+      },
+      findSuccesses = function(res) {
+        return res.status;
+      };
+
+  async.waterfall([
+    // Test expansion from flat to JSON
+    function(cb) {
+      var result = self.expandFlatBracket(self.flatBracket);
+      cb(
+        result.status ? null : result.result,
+        result.status ? result.result : null
+      );
+    },
+    // Test if JSON has all the keys
+    function(bracket, cb) {
+      var result = self.hasNecessaryKeys(bracket);
+      cb(
+        result.status ? null : result.result,
+        result.status ? bracket : null
+      );
+    },
+    // Picks to arrays
+    function(bracket, cb) {
+      var result = _.map(bracket, self.picksToArray, self),
+          errors = _.filter(result, findErrors),
+          success = _.filter(result, findSuccesses);
+
+      cb(
+        errors.length ? _.pluck(errors, 'result') : null,
+        success.length && !errors.length ? _.pluck(success, 'result') : null
+      );
+    },
+    // Array to nested array
+    function(picks, cb) {
+      var result = _.map(picks, self.getRounds, self),
+          errors = _.filter(result, findErrors),
+          success = _.filter(result, findSuccesses);
+      cb(
+        errors.length ? errors : null,
+        success.length && !errors.length ? _.pluck(success, 'result') : null
+      );
+    },
+    // All regions have valid picks
+    function(rounds, cb) {
+      var result = _.map(rounds, self.validatePicks, self),
+          errors = _.filter(result, findErrors),
+          success = _.filter(result, findSuccesses);
+      cb(
+        errors.length ? errors : null,
+        success.length && !errors.length ? _.pluck(success, 'result') : null
+      );
+    },
+    // Final region has valid picks
+    function(validatedRounds, cb) {
+      var finalRegion = _.find(validatedRounds, function(item) { return item.id === CONSTS.FINAL_ID; }),
+          result = self.validateFinal(finalRegion, validatedRounds);
+      cb(
+        result.status ? null : result.result,
+        result.status ? validatedRounds : null
+      );
+    },
+    // Decorate with data
+    function(validatedRounds, cb) {
+      var result = self.decorateValidated(validatedRounds);
+      cb(
+        result.status ? null : result.result,
+        result.status ? ((self.testOnly) ? self.flatBracket : result.result) : null
+      );
     }
+  ], function(err, res) {
+    callback(_.isArray(err) ? _.flatten(err)[0] : err, res);
+  });
+};
 
-    // Create capture groups using backreferences for the capture groups above
-    for (i = 1; i < seedLength - 2; i += 2) {
-      regExpStr += backref.call(this, i);
+
+
+
+Validator.prototype.decorateValidated = function(bracket) {
+  var originalData = _.cloneDeep(this.data),
+      decorated = {};
+
+  _.each(bracket, function(region) {
+    decorated[region.id] = _.extend({}, region, originalData.regions[region.id] || originalData[CONSTS.FINAL_ID]);
+    decorated[region.id].rounds = _.map(region.rounds, function(round) {
+      var returnRound = [];
+      _.each(round, function(seed, index) {
+        if (seed === CONSTS.UNPICKED_MATCH) {
+          returnRound[index] = null;
+        } else if (region.id === CONSTS.FINAL_ID) {
+
+          var winningTeam = this.winningTeamFromRegion(bracket, seed);
+
+          if (winningTeam === CONSTS.UNPICKED_MATCH) {
+            returnRound[index] = null;
+          } else {
+            returnRound[index] = {
+              fromRegion: seed,
+              seed: winningTeam,
+              name: this.teamNameFromRegion(seed, winningTeam)
+            };
+          }
+
+        } else {
+          returnRound[index] = {
+            fromRegion: region.id,
+            seed: seed,
+            name: this.teamNameFromRegion(region.id, seed)
+          };
+        }
+      }, this);
+      return returnRound;
+    }, this);
+  }, this);
+
+  return this.wrapSuccess(decorated);
+};
+
+Validator.prototype.winningTeamFromRegion = function(bracket, regionName) {
+  return _.last(_.find(bracket, function(b) { return b.id === regionName;}).rounds)[0];
+};
+
+Validator.prototype.teamNameFromRegion = function(regionName, seed) {
+  return this.data.regions[regionName].teams[seed-1];
+};
+
+// Takes an array of picks and a regionName
+// Validates picks to make sure that all the individual picks are valid
+// including each round having the correct number of games
+// and each pick being a team that has not been eliminated yet
+Validator.prototype.validatePicks = function(options) {
+
+  options = options || {};
+
+  var rounds = options.rounds || [],
+      regionName = options.id,
+      length = rounds.length,
+      regionPicks = {},
+      errors = [];
+
+  _.each(rounds, function(round, i) {
+
+    var requiredLength = (Math.pow(2, length - 1) / Math.pow(2, i)),
+        nextRound = rounds[i + 1],
+        correctLength = (round.length === requiredLength),
+        lastItem = (i === length - 1),
+        thisRoundPickedGames = _.without(round, CONSTS.UNPICKED_MATCH),
+        nextRoundPickedGames = (nextRound) ? _.without(nextRound, CONSTS.UNPICKED_MATCH) : [],
+        nextRoundIsSubset = (!lastItem && _.subset(nextRoundPickedGames, thisRoundPickedGames)),
+        ncaaRegion = this.data.regions[regionName] || this.data[regionName];
+
+    if (correctLength && (lastItem || nextRoundIsSubset)) {
+      regionPicks.id = options.id;
+      regionPicks.rounds = rounds;
+    } else if (!correctLength) {
+      errors.push('Incorrect number of pick in:', regionName, i+1);
+    } else if (!nextRoundIsSubset) {
+      errors.push('Round is not a subset of previous:', regionName, i+2);
     }
+  }, this);
 
-    regexp = new RegExp(regExpStr);
-    replacement = _.map(_.range(1, seedLength), function(num) { return '$'+num; }).join();
+  return (!errors.length) ? this.wrapSuccess(regionPicks) : this.wrapError.apply(this, errors);
 
-    if (regexp.test(picks)) {
-      return picks.replace(regexp, replacement).split(',');
-    } else {
-      this.logError((NCAA.regions[regionName] || NCAA[regionName]).name, 'region was unable to parse the picks');
-      return false;
-    }
-
-  },
+};
 
   // Takes an array of values and removes all invalids
   // return an array or arrays where each subarray is one round
-  getRounds: function(rounds, regionName) {
+Validator.prototype.getRounds = function(options) {
 
-    var length = rounds.length + 1,
-        games = (regionName === this.finalFourRegionName) ? this.regions : this.seedOrder,
-        retRounds = [_.extend(this.getRoundInfo(0, regionName), { games: games })],
-        verify = function(arr, keep) {
-          // Compacts the array and remove all duplicates that are not "X"
-          return _.compact(_.uniq(arr, false, function(n){ return (_.indexOf(keep, n) > -1) ? n+Math.random() : n; }));
-        },
-        checkVal = function(val) {
-          var num = parseInt(val, 10);
-          if (num >= 1 && num <= 16) {
-            return num;
-          } else if (val === this.unpickedGame) {
-            return val;
-          } else if (_.include(this.regions, val)) {
-            return val;
-          } else {
-            return 0;
-          }
-        },
-        count = retRounds.length;
+  options = options || {};
 
-    while (length > 1) {
-      length = length / 2;
-      var roundGames = verify(_.map(rounds.splice(0, Math.floor(length)), checkVal, this), [this.unpickedGame]);
-      retRounds.push(_.extend(this.getRoundInfo(count, regionName), { games: roundGames }));
-      count++;
+  var rounds = options.picks || [],
+      regionName = options.id || '',
+      length = rounds.length + 1,
+      retRounds = [(regionName === CONSTS.FINAL_ID) ? CONSTS.REGION_IDS : this.firstRoundOrder],
+      verify = function(arr, keep) {
+        // Compacts the array and remove all duplicates that are not "X"
+        return _.compact(_.uniq(arr, false, function(n){ return (_.indexOf(keep, n) > -1) ? n+Math.random() : n; }));
+      },
+      checkVal = function(val) {
+        var num = parseInt(val, 10);
+        if (num >= 1 && num <= CONSTS.TEAMS_PER_REGION) {
+          return num;
+        } else if (val === CONSTS.UNPICKED_MATCH) {
+          return val;
+        } else if (_.include(CONSTS.REGION_IDS, val)) {
+          return val;
+        } else {
+          return 0;
+        }
+      },
+      count = retRounds.length;
+
+  while (length > 1) {
+    length = length / 2;
+    var roundGames = verify(_.map(rounds.splice(0, Math.floor(length)), checkVal, this), [CONSTS.UNPICKED_MATCH]);
+    retRounds.push(roundGames);
+    count++;
+  }
+
+  return retRounds.length ? this.wrapSuccess({rounds: retRounds, id: regionName}) : this.wrapError('Could not get rounds from:', regionName);
+};
+
+// Takes a string of the picks for a region and validates them
+// Return an array of picks if valid or false if invalid
+Validator.prototype.picksToArray = function(picks, regionName) {
+
+  var rTestRegionPicks = null,
+      regExpStr = '',
+      firstRoundLength = (regionName === CONSTS.FINAL_ID) ? CONSTS.REGION_COUNT : CONSTS.TEAMS_PER_REGION,
+      replacement = '$' + _.range(1, firstRoundLength).join(',$'),
+      seeds = (regionName === CONSTS.FINAL_ID) ? CONSTS.REGION_IDS : this.firstRoundOrder,
+      regExpJoiner = function(arr, reverse) {
+        var newArr = (reverse) ? arr.reverse() : arr;
+        return '(' + newArr.join('|') + '|' + CONSTS.UNPICKED_MATCH + ')';
+      },
+      backref = function(i) {
+        return regExpJoiner.call(this, _.map(_.range(i, i+2), function(n) { return "\\"+n; }), true);
+      };
+
+  if (regionName === CONSTS.FINAL_ID) {
+    // Allow order independent final picks, we'll validate against matchups later
+    regExpStr += regExpJoiner.call(this, seeds.slice(0, CONSTS.REGION_COUNT));
+    regExpStr += regExpJoiner.call(this, seeds.slice(0, CONSTS.REGION_COUNT));
+    regExpStr += backref.call(this, 1);
+  } else {
+    // Create capture groups for the first round of the region
+    for (var i = 0; i < firstRoundLength; i += 2) {
+      regExpStr += regExpJoiner.call(this, seeds.slice(i, i+2));
     }
-
-    return retRounds;
-
-a
-  },
-
-  // Get classes and titles for each round of each region
-  getRoundInfo: function(index, region) {
-    var roundClasses = (region === this.finalFourRegionName) ? this.finalFourClasses : this.regionClasses,
-        roundNames = (region === this.finalFourRegionName) ? this.finalFourNames : this.regionNames;
-
-    return {
-      "class": roundClasses[index] + ((index > 0) ? ' winners' : ''),
-      "title": roundNames[index]
-    };
-  },
-
-  // Takes an array of picks and a regionName
-  // Validates picks to make sure that all the individual picks are valid
-  // including each round having the correct number of games
-  // and each pick being a team that has not been eliminated yet
-  validatePicks: function(picks, regionName, editable) {
-
-    var rounds = this.getRounds(picks, regionName),
-      length = rounds.length,
-      trueRounds = [],
-      regionPicks = {};
-
-    _.each(rounds, function(round, i) {
-
-      var requiredLength = (Math.pow(2, length - 1) / Math.pow(2, i)),
-        nextRound = rounds[i + 1],
-        correctLength = (round.games.length === requiredLength),
-        lastItem = (i === length - 1),
-        thisRoundPickedGames = _.without(round.games, this.unpickedGame),
-        nextRoundPickedGames = (nextRound) ? _.without(nextRound.games, this.unpickedGame) : [],
-        nextRoundIsSubset = (!lastItem && helpers.array.subset(nextRoundPickedGames, thisRoundPickedGames)),
-        ncaaRegion = NCAA.regions[regionName] || NCAA[regionName];
-if (typeof ncaaRegion === 'undefined')console.log('x', regionName, ncaaRegion)
-      if (correctLength && (lastItem || nextRoundIsSubset)) {
-        regionPicks.id = regionName;
-        regionPicks.name = ncaaRegion.name;
-        regionPicks.rounds = rounds;
-        trueRounds.push(i);
-        if (_.indexOf(_.flatten(_.pluck(rounds, 'games')), this.unpickedGame) === -1 && editable) regionPicks.classes = "completed";
-      } else if (!correctLength) {
-        this.logError(regionName, 'has the incorrect number of picks in', this.getRoundInfo(i, regionName).title);
-      } else if (!nextRoundIsSubset) {
-        this.logError(regionName, 'round', this.getRoundInfo(i+1, regionName).title, 'is not a subset of the previous round');
-      }
-    }, this);
-
-    return (length === trueRounds.length) ? regionPicks : false;
-
-  },
-
-  // Takes two arrays of region names (one from the user, one from valid keys)
-  // And checks if they are the same
-  validateRegionNames: function(userRegions, bracketRegions) {
-    if (helpers.array.equal(userRegions, bracketRegions)) {
-      return userRegions;
-    } else {
-      this.logError('The region names are not correct. Must be', bracketRegions, '. Yours are', userRegions);
-      return false;
-    }
-  },
-
-  // Make sure the special rules for the final four work
-  validateFinalFour: function(finalFourPicks) {
-
-    if (finalFourPicks === false) return finalFourPicks;
-
-    var finalFourWinners = finalFourPicks.rounds[1].games;
-
-    if (finalFourWinners[0] === this.unpickedGame || finalFourWinners[1] === this.unpickedGame) {
-      return finalFourPicks;
-    } 
-
-    var playingItself = (finalFourWinners[0] === finalFourWinners[1]),
-        playingWrongSide = (NCAA.regions[finalFourWinners[0]].sameSideAs === finalFourWinners[1]);
-
-    if (!helpers.array.subset(finalFourWinners, this.regions)) {
-      this.logError('The championship games participants are invalid.');
-      return false;
-    } else if ((playingItself || playingWrongSide)) {
-      this.logError('The championship game participants are from the same side of the bracket.');
-      return false;
-    } else {
-      return finalFourPicks;
-    }
-
-  },
-
-  // Take validated tournament and add necessary content so it is ready for Handlebars
-  addTeamContent: function(validatedPicks, editable, master) {
-
-    var ncaaRegions = NCAA.regions,
-        validatedMaster;
-
-    if (master) validatedMaster = this.validateTournament(master, false, false);
-
-    _.each(validatedPicks.regions, function(region, regionIndex) {
-
-      var regionTeams = (typeof NCAA.regions[region.id] !== 'undefined') ? NCAA.regions[region.id].teams : [];
-
-      _.each(region.rounds, function(round, roundIndex) {
-
-        _.each(round.games, function(game, gameIndex) {
-
-          if (typeof round.teams === 'undefined') round.teams = [];
-
-          var team = {
-                seed: '',
-                name: ''
-              },
-              isTop = (gameIndex % 2 === 0),
-              lastRound = (roundIndex === region.rounds.length-1),
-              classes = ['top', 'bottom'],
-              resultClass, masterGame;
-
-          if (region.id !== this.finalFourRegionName) {
-
-            if (!editable && validatedMaster && roundIndex > 0 && game !== this.unpickedGame) {
-              masterGame = validatedMaster.regions[regionIndex].rounds[roundIndex].games[gameIndex];
-              if (masterGame !== this.unpickedGame) {
-                resultClass = (game === masterGame) ? ' correct' : ' incorrect';
-              }
-            }
-
-            team.seed = parseInt(game, 10);
-            team.name = regionTeams[team.seed - 1];
-            team.fromRegion = region.id;
-
-          } else {
-
-            if (!editable && validatedMaster && roundIndex > 0 && game !== this.unpickedGame) {
-              masterGame = validatedMaster.regions[regionIndex].rounds[roundIndex].games[gameIndex];
-              if (masterGame !== this.unpickedGame) {
-                var uRegionWinningTeam = _.last(_.find(validatedPicks.regions, function(r) { return r.id === game; }).rounds).games[0],
-                    mRegionWinningTeam = _.last(_.find(validatedMaster.regions, function(r) { return r.id === masterGame; }).rounds).games[0];
-
-                resultClass = (game === masterGame && uRegionWinningTeam === mRegionWinningTeam) ? ' correct' : ' incorrect';
-              }
-            }
-
-            // These are selected winners in the final four
-            var fromRegion = _.find(validatedPicks.regions, function(reg) { return reg.id === game; });
-
-            if (fromRegion) {
-              var finalFourTeam = _.first(_.last(fromRegion.rounds).teams);
-              team.seed = finalFourTeam.seed;
-              team.name = finalFourTeam.name;
-              team.fromRegion = game;
-            }
-          }
-
-          round.teams[gameIndex] = _.extend(team, {
-            editable: editable,
-            startMatchup: isTop,
-            endMatchup: !isTop,
-            classes: (lastRound) ? '' : classes[~~!isTop],
-            resultClass: resultClass
-          });
-
-        }, this);
-      }, this);
-    }, this);
-
-    return validatedPicks;
-  },
-
-  score: function(user, master, name) {
-
-    var validatedUser = this.validateTournament(user, false, false),
-        validatedMaster = this.validateTournament(master, false, false),
-        total = 0,
-        firstRoundScore = 10,
-        roundScores = [];
-
-    _.each(validatedUser.regions, function(region, region_i) {
-      _.each(region.rounds, function(round, round_i) {
-        _.each(round.games, function(game, game_i) {
-          var masterGame, gameScore, scoreIndex, correct, uWinningTeam, mWinningTeam;
-
-          if (round_i > 0) {
-            if (region.id !== this.finalFourRegionName) {
-              masterGame = validatedMaster.regions[region_i].rounds[round_i].games[game_i];
-              scoreIndex = round_i - 1;
-              correct = (game === masterGame);
-            } else {
-              masterGame = validatedMaster.regions[region_i].rounds[round_i].games[game_i];
-              scoreIndex = _.first(validatedMaster.regions).rounds.length + round_i - 2;
-              if (masterGame !== this.unpickedGame) {
-                uWinningTeam = _.last(_.find(validatedUser.regions, function(r) { return r.id === game; }).rounds).games[0];
-                mWinningTeam = _.last(_.find(validatedMaster.regions, function(r) { return r.id === masterGame; }).rounds).games[0];
-                correct = (game === masterGame && uWinningTeam === mWinningTeam);
-              } else {
-                correct = false;
-              }
-
-            }
-            if (typeof roundScores[scoreIndex] === 'undefined') roundScores[scoreIndex] = 0;
-            gameScore = Math.pow(2, scoreIndex) * firstRoundScore;
-            roundScores[scoreIndex] += (masterGame !== this.unpickedGame && correct) ? gameScore : 0;
-          }
-
-        }, this);
-      }, this);
-    }, this);
-
-    _.each(roundScores, function(score) {
-      total += score;
-    });
-    return {
-      roundScores: roundScores,
-      total: total
-    };
-  },
-
-  // Make sure the tournament is all validated
-  // by running all the other checks
-  validateTournament: function(picks, opts) {
-
-    var uPicks = picks.toUpperCase(),
-        uPicksSplit = uPicks.split(this.finalFourRegionName),
-        regionPicks = uPicksSplit[0],
-        finalFourPicks = uPicksSplit[1],
-        uRegionNames = _.compact(regionPicks.split(new RegExp('[0-9'+this.unpickedGame+']+'))),
-        uRegionPicks = _.compact(regionPicks.split(/[A-WYZ]+/)),
-        validatedTournament = {
-          regions: []
-        },
-        error = false;
-
-    this.errorMessages = [];
-
-    if (finalFourPicks && finalFourPicks.length > 0) {
-      uRegionNames = uRegionNames.concat(this.finalFourRegionName);
-    }
-
-    _.each(uRegionNames, function(regionName, i) {
-      var regionPicks = uRegionPicks[i] || finalFourPicks,
-          validatedPicks,
-          isFinalFour = (regionName === this.finalFourRegionName),
-          picksArray = this.picksToArray(regionPicks, isFinalFour, regionName);
-
-      if (picksArray === false) {
-        error = true;
-      } else if (isFinalFour) {
-        validatedPicks = this.validateFinalFour(this.validatePicks(picksArray, regionName, opts.editable));
-      } else {
-        validatedPicks = this.validatePicks(picksArray, regionName, opts.editable);
-      }
-
-      if (validatedPicks !== false) {
-        validatedTournament.regions.push(validatedPicks);
-      } else {
-        error = true;
-      }
-    }, this);
-
-    if (this.validateRegionNames(uRegionNames, this.allRegions) === false) {
-      error = true;
-    }
-
-    if (!error) {
-      if (opts.validateOnly) return validatedTournament;
-      return this.addTeamContent(validatedTournament, opts.editable, opts.master);
-    } else {
-      if (opts.validateOnly) return false;
-      return {messages: this.errorMessages, error: true};
+    // Create capture groups using backreferences for the capture groups above
+    for (i = 1; i < firstRoundLength - 2; i += 2) {
+      regExpStr += backref.call(this, i);
     }
   }
+
+  rTestRegionPicks = new RegExp(regExpStr);
+
+  if (rTestRegionPicks.test(picks)) {
+    return this.wrapSuccess({picks: picks.replace(rTestRegionPicks, replacement).split(','), id: regionName});
+  } else {
+    return this.wrapError('Unable to parse picks in region:', regionName);
+  }
+
 };
+
+Validator.prototype.validateFinal = function(finalPicks, validatedRounds) {
+
+  var semifinal = finalPicks.rounds[1];
+
+  if (_.contains(semifinal, CONSTS.UNPICKED_MATCH)) {
+    return this.wrapSuccess();
+  }
+
+  for (var i = 0, m = validatedRounds.length; i < m; i++) {
+    if (validatedRounds[i].id !== CONSTS.FINAL_ID && _.last(validatedRounds[i].rounds)[0] === CONSTS.UNPICKED_MATCH) {
+      return this.wrapError('Final teams are selected without all regions finished');
+    }
+  }
+
+  var playingItself = (semifinal[0] === semifinal[1]),
+      playingWrongSide = (this.data.regions[semifinal[0]].sameSideAs === semifinal[1]);
+
+  if (!_.subset(semifinal, CONSTS.REGION_IDS)) {
+    return this.wrapError('The championship game participants are invalid.');
+  } else if (playingItself || playingWrongSide) {
+    return this.wrapError('The championship game participants are from the same side of the bracket.');
+  } else {
+    return this.wrapSuccess();
+  }
 };
+
+
+module.exports = Validator;

@@ -1,20 +1,20 @@
 {
   "name": "bracket-validator",
   "description": "Validate a NCAA tournament bracket.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
   "author": {
     "name": "Luke Karrys",
     "email": "luke@lukekarrys.com"
   },
   "dependencies": {
-    "underscore": "1.4.4",
-    "realurl": "~0.1.2",
-    "async": "~0.2.6"
+    "realurl": "git+ssh://git@github.com:lukekarrys/node-realurl.git",
+    "async": "~0.2.6",
+    "lodash": "~1.0.1"
   },
   "scripts": {
     "start": "node app.js",
-    "test": "make test"
+    "test": "./node_modules/.bin/mocha -c -u bdd -R spec --timeout 10000 test/*.js"
   },
   "devDependencies": {
     "underscore.string": "~2.3.1",

@@ -1,11 +1,15 @@
-var _ = require('underscore');
+var _ = require('lodash'),
+
+    thisData = require('../data/ncaa-mens-basketball/data')(),
+    CONSTS = require('../data/ncaa-mens-basketball/consts');
 
 module.exports = function(options) {
-  var data = options.data,
-      regions = _.keys(data.regions).length,
-      perRegion = _.find(data.regions, function() {return true;}).teams.length,
-      regionRegEx = '[a-zA-Z]{1,2}\\d{' + (perRegion - 1) + ',' + ((perRegion - 1) * 2) +  '}',
-      finalRegEx = '[a-zA-Z]{' + regions + ',' + regions * 2 + '}';
 
-  return new RegExp('^' + new Array(regions + 1).join(regionRegEx) + finalRegEx + '$');
+  options = options || {};
+
+  var data = options.data || thisData,
+      regionRegEx = '([a-zA-Z]{1,2})([\\d' + CONSTS.UNPICKED_MATCH + ']{' + (CONSTS.TEAMS_PER_REGION - 1) + ',' + ((CONSTS.TEAMS_PER_REGION - 1) * 2) +  '})',
+      finalRegEx = '(' + CONSTS.FINAL_ID + ')([a-zA-Z]{' + (CONSTS.REGION_COUNT - 1) + ',' + ((CONSTS.REGION_COUNT - 1) * 2) + '})';
+
+  return new RegExp(new Array(CONSTS.REGION_COUNT + 1).join(regionRegEx) + finalRegEx);
 };
