@@ -6,7 +6,7 @@ var BracketGenerator = require('../lib/generator'),
     _s = require('underscore.string'),
     assert = require('assert'),
 
-    data = require('../data/ncaa-mens-basketball/data')(2012),
+    data = require('../data/ncaa-mens-basketball/data')(),
     CONSTS = require('../data/ncaa-mens-basketball/consts'),
     totalRegions = CONSTS.REGION_COUNT,
     finalGames = totalRegions - 1,
@@ -29,6 +29,7 @@ var BracketGenerator = require('../lib/generator'),
     },
 
     i = 0;
+
 /*
 describe('ALL THE BRACKETS!', function() {
   for (i; i < iterations; i++) {
@@ -68,7 +69,7 @@ describe('A few random brackets for good measure', function() {
 
 describe('Bad Brackets', function() {
   it('Champ game participants are illegal', function(done) {
-    var bracket = 'E185463721432121W185463721432121S185463721432121MW185463721432121FFSWW',
+    var bracket = 'E185463721432121W185463721432121S185463721432121MW185463721432121FFSEE',
         validator = new BracketValidator({flatBracket: bracket});
 
     validator.validate(function(err, res) {
@@ -206,7 +207,5 @@ describe('Bad Brackets', function() {
       done();
     });
   });
-
-
 
 });
