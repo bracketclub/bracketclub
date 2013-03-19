@@ -109,7 +109,7 @@ Generator.prototype.generateRegions = function() {
 
 Generator.prototype.generateBracket = function() {
   if (this.generatedBracket === null) {
-    this.generatedBracket = _.shuffle(this.generateRegions()).concat(this.generateFinal());
+    this.generatedBracket = this.generateRegions().concat(this.generateFinal());
   }
   return this.generatedBracket;
 };
