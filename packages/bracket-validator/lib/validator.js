@@ -28,9 +28,10 @@ function Validator(options) {
   this.bracketChecks = {};
   this.bracketErrors = [];
   this.firstRoundOrder = options.order || thisOrder;
-  this.flatBracket = (options.flatBracket || '').toUpperCase();
   this.testOnly = options.testOnly || false;
   this.allRegions = CONSTS.REGION_IDS.concat(CONSTS.FINAL_ID);
+  var emptyBracket = this.allRegions.join(new Array(CONSTS.TEAMS_PER_REGION).join(CONSTS.UNPICKED_MATCH)) + new Array(CONSTS.REGION_COUNT).join(CONSTS.UNPICKED_MATCH);
+  this.flatBracket = (options.flatBracket || emptyBracket).toUpperCase();
 }
 
 Validator.prototype.wrapError = function() {
