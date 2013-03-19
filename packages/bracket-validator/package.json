@@ -1,14 +1,14 @@
 {
   "name": "bracket-validator",
   "description": "Validate a NCAA tournament bracket.",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "private": false,
   "author": {
     "name": "Luke Karrys",
     "email": "luke@lukekarrys.com"
   },
   "dependencies": {
-    "realurl": "git+ssh://git@github.com:lukekarrys/node-realurl.git",
+    "realurl": "git+https://git@github.com:lukekarrys/node-realurl.git",
     "async": "~0.2.6",
     "lodash": "~1.0.1"
   },
