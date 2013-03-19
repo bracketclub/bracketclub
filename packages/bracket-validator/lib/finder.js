@@ -68,7 +68,7 @@ Finder.prototype.find = function(tweet, cb) {
 };
 
 Finder.prototype.validate = function(bracket, cb) {
-  var bv = new BracketValidator({flatBracket: bracket, testOnly: true});
+  var bv = new BracketValidator({flatBracket: bracket, testOnly: true, notEmpty: true});
   bv.validate(cb);
 };
 

@@ -165,7 +165,7 @@ describe('Bad Brackets', function() {
   });
 
   it('Bad types', function(done) {
-    var validator = new BracketValidator({flatBracket: false});
+    var validator = new BracketValidator({flatBracket: false, notEmpty: true});
 
     validator.validate(function(err, res) {
       console.log(err.message);
@@ -176,7 +176,7 @@ describe('Bad Brackets', function() {
   });
 
   it('Bad types', function(done) {
-    var validator = new BracketValidator({flatBracket: ''});
+    var validator = new BracketValidator({flatBracket: '', notEmpty: true});
 
     validator.validate(function(err, res) {
       console.log(err.message);
@@ -187,7 +187,7 @@ describe('Bad Brackets', function() {
   });
 
   it('Bad types', function(done) {
-    var validator = new BracketValidator({flatBracket: null});
+    var validator = new BracketValidator({flatBracket: null, notEmpty: true});
 
     validator.validate(function(err, res) {
       console.log(err.message);
@@ -198,7 +198,7 @@ describe('Bad Brackets', function() {
   });
 
   it('Bad types', function(done) {
-    var validator = new BracketValidator();
+    var validator = new BracketValidator({notEmpty: true});
 
     validator.validate(function(err, res) {
       console.log(err.message);
