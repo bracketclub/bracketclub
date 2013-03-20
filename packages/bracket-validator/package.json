@@ -1,7 +1,7 @@
 {
   "name": "bracket-validator",
   "description": "Validate a NCAA tournament bracket.",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "private": false,
   "author": {
     "name": "Luke Karrys",

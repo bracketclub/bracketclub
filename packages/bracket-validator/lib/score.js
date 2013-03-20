@@ -19,7 +19,40 @@ Scorer.prototype.diff = function(cb) {
     if (err) return cb(err, null);
 
     var validatedUser = results[0],
-        validatedMaster = results[1];
+        validatedMaster = results[1],
+        diff = _.cloneDeep(validatedUser),
+        eliminatedTeams = [];
+
+    _.each(validatedUser, function(region, regionId) {
+      _.each(region.rounds, function(round, round_i) {
+        if (round_i > 0 || regionId === CONSTS.FINAL_ID) {
+          _.each(round, function(game, game_i) {
+
+            var masterGame = validatedMaster[regionId].rounds[round_i][game_i];
+
+            if (masterGame === null) {
+              // Hasn't been played yet
+              if (_.contains(eliminatedTeams, game.fromRegion + game.seed)) {
+                // An unplayed game with a team that is eliminated
+                diff[regionId].rounds[round_i][game_i].eliminated = true;
+              }
+            } else {
+              // You got it wrong
+              if (!_.isEqual(game, masterGame)) {
+                diff[regionId].rounds[round_i][game_i].correct = false;
+                diff[regionId].rounds[round_i][game_i].shouldBe = masterGame;
+                eliminatedTeams.push(game.fromRegion + game.seed);
+              } else {
+                diff[regionId].rounds[round_i][game_i].correct = true;
+              }
+            }
+          }, self);
+        }
+      }, self);
+    }, self);
+
+    cb(null, diff);
+
   });
 };
 
