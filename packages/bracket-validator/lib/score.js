@@ -10,6 +10,8 @@ function Scorer(options) {
   options = options || {};
   this.validateUser = new BracketValidator({flatBracket: options.userBracket});
   this.validateMaster = new BracketValidator({flatBracket: options.masterBracket});
+  this.otherData = options.otherData || {};
+  this.roundPoints = options.roundPoints || [];
 }
 
 Scorer.prototype.diff = function(cb) {
@@ -70,6 +72,7 @@ Scorer.prototype.startDiff = function(cb) {
   ], cb);
 
 };
+
 Scorer.prototype.getScore = function(cb) {
   var self = this;
 
@@ -103,7 +106,9 @@ Scorer.prototype.getScore = function(cb) {
       }, self);
     }, self);
 
-    cb(null, rounds);
+    self.otherData.totalScore = _.reduce(rounds, function(memo, num, i){ return memo + (num * (self.roundPoints[i] || 1)); }, 0);
+    self.otherData.rounds = rounds;
+    cb(null, self.otherData);
   });
 };
 

@@ -17,8 +17,8 @@ describe('Bracket Scorer', function() {
         });
 
     s.getScore(function(err, res) {
-      assert.equal(true, _.isArray(res));
-      assert.equal(true, res.length === 6);
+      assert.equal(true, _.isArray(res.rounds));
+      assert.equal(true, res.rounds.length === 6);
       done();
     });
   });
@@ -32,9 +32,9 @@ describe('Bracket Scorer', function() {
         });
 
     s.getScore(function(err, res) {
-      assert.equal(true, _.isArray(res));
-      assert.equal(true, res.length === 6);
-      assert.equal(true, _.isEqual(res, [32, 16, 8, 4, 2, 1]));
+      assert.equal(true, _.isArray(res.rounds));
+      assert.equal(true, res.rounds.length === 6);
+      assert.equal(true, _.isEqual(res.rounds, [32, 16, 8, 4, 2, 1]));
       done();
     });
   });
@@ -48,9 +48,9 @@ describe('Bracket Scorer', function() {
         });
 
     s.getScore(function(err, res) {
-      assert.equal(true, _.isArray(res));
-      assert.equal(true, res.length === 6);
-      assert.equal(true, _.isEqual(res, [0, 0, 0, 0, 0, 0]));
+      assert.equal(true, _.isArray(res.rounds));
+      assert.equal(true, res.rounds.length === 6);
+      assert.equal(true, _.isEqual(res.rounds, [0, 0, 0, 0, 0, 0]));
       done();
     });
   });
