@@ -74,5 +74,138 @@ describe('Bracket Differ', function() {
     });
   });
 
+  it('Check games: round 1 wrong', function(done) {
+    var user = new BracketGenerator({winners: 'higher'}),
+        s = new BracketScorer({
+          userBracket: user.flatBracket(),
+          masterBracket: 'MW18546372XXXXXXXW18546372XXXXXXXS18546372XXXXXXXE18546372XXXXXXXFFXXX'
+        });
+
+    s.diff(function(err, res) {
+      assert.equal(0, _.compact(_.pluck(res.MW.rounds[1], 'correct')).length);
+      assert.equal(0, _.compact(_.pluck(res.W.rounds[1], 'correct')).length);
+      assert.equal(0, _.compact(_.pluck(res.S.rounds[1], 'correct')).length);
+      assert.equal(0, _.compact(_.pluck(res.E.rounds[1], 'correct')).length);
+
+      assert.equal(true, _.every(_.pluck(res.MW.rounds[2], 'eliminated'), function(i) { return i === true;}));
+      assert.equal(true, _.every(_.pluck(res.W.rounds[2], 'eliminated'), function(i) { return i === true;}));
+      assert.equal(true, _.every(_.pluck(res.S.rounds[2], 'eliminated'), function(i) { return i === true;}));
+      assert.equal(true, _.every(_.pluck(res.E.rounds[2], 'eliminated'), function(i) { return i === true;}));
+
+      assert.equal(true, _.every(_.pluck(res.MW.rounds[3], 'eliminated'), function(i) { return i === true;}));
+      assert.equal(true, _.every(_.pluck(res.W.rounds[3], 'eliminated'), function(i) { return i === true;}));
+      assert.equal(true, _.every(_.pluck(res.S.rounds[3], 'eliminated'), function(i) { return i === true;}));
+      assert.equal(true, _.every(_.pluck(res.E.rounds[3], 'eliminated'), function(i) { return i === true;}));
+
+      assert.equal(true, _.every(_.pluck(res.MW.rounds[4], 'eliminated'), function(i) { return i === true;}));
+      assert.equal(true, _.every(_.pluck(res.W.rounds[4], 'eliminated'), function(i) { return i === true;}));
+      assert.equal(true, _.every(_.pluck(res.S.rounds[4], 'eliminated'), function(i) { return i === true;}));
+      assert.equal(true, _.every(_.pluck(res.E.rounds[4], 'eliminated'), function(i) { return i === true;}));
+
+      assert.equal(1, res.MW.rounds[1][0].shouldBe.seed);
+      assert.equal(1, res.W.rounds[1][0].shouldBe.seed);
+      assert.equal(1, res.E.rounds[1][0].shouldBe.seed);
+      assert.equal(1, res.S.rounds[1][0].shouldBe.seed);
+
+      done();
+    });
+  });
+
+  it('Check games: round 1 right', function(done) {
+    var user = new BracketGenerator({winners: 'lower'}),
+        s = new BracketScorer({
+          userBracket: user.flatBracket(),
+          masterBracket: 'MW18546372XXXXXXXW18546372XXXXXXXS18546372XXXXXXXE18546372XXXXXXXFFXXX'
+        });
+
+    s.diff(function(err, res) {
+
+      assert.equal(8, _.compact(_.pluck(res.MW.rounds[1], 'correct')).length);
+      assert.equal(8, _.compact(_.pluck(res.W.rounds[1], 'correct')).length);
+      assert.equal(8, _.compact(_.pluck(res.S.rounds[1], 'correct')).length);
+      assert.equal(8, _.compact(_.pluck(res.E.rounds[1], 'correct')).length);
+
+      assert.equal(true, _.every(_.pluck(res.MW.rounds[2], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.W.rounds[2], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.S.rounds[2], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.E.rounds[2], 'eliminated'), function(i) { return i === undefined;}));
+
+      assert.equal(true, _.every(_.pluck(res.MW.rounds[3], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.W.rounds[3], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.S.rounds[3], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.E.rounds[3], 'eliminated'), function(i) { return i === undefined;}));
+
+      assert.equal(true, _.every(_.pluck(res.MW.rounds[4], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.W.rounds[4], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.S.rounds[4], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.E.rounds[4], 'eliminated'), function(i) { return i === undefined;}));
+
+      assert.equal(true, res.MW.rounds[1][0].correct);
+      assert.equal(true, res.W.rounds[1][0].correct);
+      assert.equal(true, res.E.rounds[1][0].correct);
+      assert.equal(true, res.S.rounds[1][0].correct);
+
+      assert.equal(undefined, res.MW.rounds[2][0].eliminated);
+      assert.equal(undefined, res.W.rounds[2][0].eliminated);
+      assert.equal(undefined, res.E.rounds[2][0].eliminated);
+      assert.equal(undefined, res.S.rounds[2][0].eliminated);
+
+      assert.equal(undefined, res.MW.rounds[1][0].shouldBe);
+      assert.equal(undefined, res.W.rounds[1][0].shouldBe);
+      assert.equal(undefined, res.E.rounds[1][0].shouldBe);
+      assert.equal(undefined, res.S.rounds[1][0].shouldBe);
+
+      done();
+    });
+  });
+
+  it('Check games: round 1 right', function(done) {
+    var user = new BracketGenerator({winners: 'lower'}),
+        s = new BracketScorer({
+          userBracket: user.flatBracket(),
+          masterBracket: 'MW18546372XXXXXXXW18546372XXXXXXXS18546372XXXXXXXE18546372XXXXXXXFFXXX'
+        });
+
+    s.diff(function(err, res) {
+
+      assert.equal(8, _.compact(_.pluck(res.MW.rounds[1], 'correct')).length);
+      assert.equal(8, _.compact(_.pluck(res.W.rounds[1], 'correct')).length);
+      assert.equal(8, _.compact(_.pluck(res.S.rounds[1], 'correct')).length);
+      assert.equal(8, _.compact(_.pluck(res.E.rounds[1], 'correct')).length);
+
+      assert.equal(true, _.every(_.pluck(res.MW.rounds[2], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.W.rounds[2], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.S.rounds[2], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.E.rounds[2], 'eliminated'), function(i) { return i === undefined;}));
+
+      assert.equal(true, _.every(_.pluck(res.MW.rounds[3], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.W.rounds[3], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.S.rounds[3], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.E.rounds[3], 'eliminated'), function(i) { return i === undefined;}));
+
+      assert.equal(true, _.every(_.pluck(res.MW.rounds[4], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.W.rounds[4], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.S.rounds[4], 'eliminated'), function(i) { return i === undefined;}));
+      assert.equal(true, _.every(_.pluck(res.E.rounds[4], 'eliminated'), function(i) { return i === undefined;}));
+
+      assert.equal(true, res.MW.rounds[1][0].correct);
+      assert.equal(true, res.W.rounds[1][0].correct);
+      assert.equal(true, res.E.rounds[1][0].correct);
+      assert.equal(true, res.S.rounds[1][0].correct);
+
+      assert.equal(undefined, res.MW.rounds[2][0].eliminated);
+      assert.equal(undefined, res.W.rounds[2][0].eliminated);
+      assert.equal(undefined, res.E.rounds[2][0].eliminated);
+      assert.equal(undefined, res.S.rounds[2][0].eliminated);
+
+      assert.equal(undefined, res.MW.rounds[1][0].shouldBe);
+      assert.equal(undefined, res.W.rounds[1][0].shouldBe);
+      assert.equal(undefined, res.E.rounds[1][0].shouldBe);
+      assert.equal(undefined, res.S.rounds[1][0].shouldBe);
+
+      done();
+    });
+  });
+
 });
 
