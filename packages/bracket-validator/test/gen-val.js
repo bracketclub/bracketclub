@@ -67,6 +67,19 @@ describe('A few random brackets for good measure', function() {
   }
 });
 
+describe('Incomplete Brackets', function() {
+  it('Splits Correctly', function(done) {
+    var bracket = 'MW1812463XXXXXXXXXW19XX614XXXXXXXXXSXX54XXXXXXXXXXXEXX12463XXXXXXXXXFFXXX',
+        validator = new BracketValidator({flatBracket: bracket});
+
+    validator.validate(function(err, res) {
+      assert.equal(false, err instanceof Error);
+      assert.equal(false, res === null);
+      done();
+    });
+  });
+});
+
 describe('Bad Brackets', function() {
   it('Champ game participants are illegal', function(done) {
     var bracket = 'E185463721432121W185463721432121S185463721432121MW185463721432121FFSEE',
