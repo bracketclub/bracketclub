@@ -3,6 +3,7 @@ var DATA_DIR = './data/ncaa-mens-basketball/',
     data = require(DATA_DIR + 'data'),
     order = require(DATA_DIR + 'order'),
     consts = require(DATA_DIR + 'consts'),
+    locks = require(DATA_DIR + 'locks'),
     finder = require(LIB_DIR + 'finder'),
     generator = require(LIB_DIR + 'generator'),
     validator = require(LIB_DIR + 'validator'),
@@ -13,7 +14,7 @@ var DATA_DIR = './data/ncaa-mens-basketball/',
 module.exports = function(options) {
   options = _.defaults(options || {}, {
     year: '',
-    props: 'data order consts finder generator validator quickCheck score'.split(' ')
+    props: 'data order consts finder generator validator quickCheck score locks'.split(' ')
   });
   var thisData = data(options.year),
       thisOrder = order(options.year),
@@ -25,7 +26,8 @@ module.exports = function(options) {
         generator: generator,
         validator: validator,
         quickCheck: quickCheck,
-        score: score
+        score: score,
+        locks: locks
       }, options.props);
 
   return returnVal;
