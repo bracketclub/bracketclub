@@ -30,7 +30,6 @@ Updater.prototype.update = function(cb) {
               otherTeam = round[(ii % 2 === 0) ? ii+1 : ii-1];
           if (roundGame !== null && roundGame.seed === self.winningSeed && otherTeam.seed === self.losingSeed) {
             region.rounds[i+1][Math.floor(ii/2)] = {seed: self.winningSeed};
-            console.log(region.rounds[i+1])
             break roundLoop;
           }
         }
