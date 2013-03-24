@@ -9,6 +9,7 @@ var DATA_DIR = './data/ncaa-mens-basketball/',
     validator = require(LIB_DIR + 'validator'),
     quickCheck = require(LIB_DIR + 'quickCheck'),
     score = require(LIB_DIR + 'score'),
+    updater = require(LIB_DIR + 'updater'),
     _ = require('lodash');
 
 module.exports = function(options) {
@@ -27,7 +28,8 @@ module.exports = function(options) {
         validator: validator,
         quickCheck: quickCheck,
         score: score,
-        locks: locks
+        locks: locks,
+        updater: updater
       }, options.props);
 
   return returnVal;
