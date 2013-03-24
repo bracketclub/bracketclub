@@ -15,7 +15,7 @@ var DATA_DIR = './data/ncaa-mens-basketball/',
 module.exports = function(options) {
   options = _.defaults(options || {}, {
     year: '',
-    props: 'data order consts finder generator validator quickCheck score locks'.split(' ')
+    props: 'data order consts finder generator validator quickCheck score locks updater'.split(' ')
   });
   var thisData = data(options.year),
       thisOrder = order(options.year),
