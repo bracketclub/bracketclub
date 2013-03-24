@@ -10,7 +10,7 @@
   "dependencies": {
     "async": "~0.2.6",
     "lodash": "~1.0.1",
-    "realurl": "~0.1.3"
+    "realurl": "git+https://github.com/lukekarrys/node-realurl.git"
   },
   "scripts": {
     "start": "node app.js",
