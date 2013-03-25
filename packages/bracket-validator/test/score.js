@@ -55,6 +55,21 @@ describe('Bracket Scorer', function() {
     });
   });
 
+  it('Gooley', function(done) {
+    var bracket = 'MW19546310159531591515W191213631015112315133S169121361471516121415161515E16812411147158411781111FFMWEMW',
+        master = 'MW18124637211232XXXW19121361410291362XXXS185411371514315XXXE1912463721432XXXFFXXX',
+        s = new BracketScorer({
+          userBracket: bracket,
+          masterBracket: master
+        });
+
+    s.gooley(function(err, res) {
+      assert.equal(true, _.isNumber(res.gooley));
+      assert.equal(true, res.gooley > 0);
+      done();
+    });
+  });
+
 });
 
 describe('Bracket Differ', function() {

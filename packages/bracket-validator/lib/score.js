@@ -3,7 +3,8 @@ var _ = require('lodash'),
 
     BracketValidator = require('./validator'),
     BracketGenerator = require('./generator'),
-    CONSTS = require('../data/ncaa-mens-basketball/consts');
+    CONSTS = require('../data/ncaa-mens-basketball/consts'),
+    scoringData = require('../data/ncaa-mens-basketball/scoring')();
 
 
 function Scorer(options) {
@@ -11,7 +12,7 @@ function Scorer(options) {
   this.validateUser = new BracketValidator({flatBracket: options.userBracket});
   this.validateMaster = new BracketValidator({flatBracket: options.masterBracket});
   this.otherData = options.otherData || {};
-  this.roundPoints = options.roundPoints || [];
+  this.roundPoints = options.roundPoints || scoringData.standard;
 }
 
 Scorer.prototype.diff = function(cb) {
@@ -71,6 +72,36 @@ Scorer.prototype.startDiff = function(cb) {
     }
   ], cb);
 
+};
+
+Scorer.prototype.gooley = function(cb) {
+  var self = this;
+
+  self.startDiff(function(err, results) {
+    if (err) return cb(err, null);
+
+    var validatedUser = results[0],
+        validatedMaster = results[1],
+        totalPoints = 0;
+
+    _.each(validatedUser, function(region, regionId) {
+      _.each(region.rounds, function(round, round_i) {
+        if (round_i > 0) {
+          _.each(round, function(game, game_i) {
+
+            var masterGame = validatedMaster[regionId].rounds[round_i][game_i];
+
+            if (masterGame !== CONSTS.UNPICKED_MATCH && _.isEqual(game, masterGame)) {
+              totalPoints += scoringData.gooley[round_i-1][game.seed-1];
+            }
+          }, self);
+        }
+      }, self);
+    }, self);
+
+    self.otherData.gooley = totalPoints;
+    cb(null, self.otherData);
+  });
 };
 
 Scorer.prototype.getScore = function(cb) {
