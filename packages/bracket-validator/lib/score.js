@@ -92,14 +92,14 @@ Scorer.prototype.gooley = function(cb) {
             var masterGame = validatedMaster[regionId].rounds[round_i][game_i];
 
             if (masterGame !== CONSTS.UNPICKED_MATCH && _.isEqual(game, masterGame)) {
-              totalPoints += scoringData.gooley[round_i-1][game.seed-1];
+              totalPoints += (scoringData.gooley[round_i-1][game.seed-1] * 10);
             }
           }, self);
         }
       }, self);
     }, self);
 
-    self.otherData.gooley = totalPoints;
+    self.otherData.gooley = totalPoints/10;
     cb(null, self.otherData);
   });
 };
