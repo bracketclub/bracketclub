@@ -1,0 +1,36 @@
+{
+  "name": "bracket-generator",
+  "description": "Generate an NCAA tournament bracket.",
+  "version": "1.0.0",
+  "keywords": [
+    "ncaa",
+    "bracket",
+    "tweetyourbracket"
+  ],
+  "bugs": {
+    "url": "http://github.com/tweetyourbracket/bracket-generator/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Luke Karrys",
+    "email": "luke@lukekarrys.com",
+    "url": "http://lukekarrys.com"
+  },
+  "main": "index.js",
+  "homepage": "http://github.com/tweetyourbracket/bracket-generator",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/tweetyourbracket/bracket-generator.git"
+  },
+  "dependencies": {
+    "lodash-node": "~2.4.1",
+    "bracket-data": "~1.0.0"
+  },
+  "scripts": {
+    "test": "BRACKET_YEAR=2013 ./node_modules/.bin/mocha -c -u bdd -R spec --timeout 10000 test/*.js"
+  },
+  "devDependencies": {
+    "mocha": "~1.17.1",
+    "assert": "~1.1.0"
+  }
+}
