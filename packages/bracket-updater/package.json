@@ -1,7 +1,7 @@
 {
   "name": "bracket-updater",
   "description": "Update an NCAA tournament bracket after the completion of a game.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "keywords": [
     "ncaa",
     "bracket",
@@ -25,13 +25,15 @@
   "dependencies": {
     "lodash-node": "~2.4.1",
     "bracket-data": "~1.0.0",
-    "bracket-validator": "~1.0.0"
+    "bracket-validator": "~1.0.0",
+    "fast-levenshtein": "~1.0.0"
   },
   "scripts": {
     "test": "BRACKET_YEAR=2013 ./node_modules/.bin/mocha -c -u bdd -R spec --timeout 10000 test/*.js"
   },
   "devDependencies": {
     "mocha": "~1.17.1",
-    "assert": "~1.1.0"
+    "assert": "~1.1.0",
+    "bracket-generator": "~1.0.0"
   }
 }

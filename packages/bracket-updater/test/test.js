@@ -1,20 +1,21 @@
 var assert = require('assert'),
     BracketUpdater = require('../index'),
-    year = process.env.BRACKET_YEAR;
+    BracketGenerator = require('bracket-generator'),
+    year = process.env.BRACKET_YEAR,
+    BracketData = require('bracket-data'),
+    bd = new BracketData({year: year}),
+    c = bd.constants;
 
 describe('Bracket Updater', function () {
 
     it('Game should be updated', function () {
         var beforeBracket = 'MW1812463721X3XXXXW191213614102XX6XXXXS1854113715X4XXXXXE191246372XXXXXXXFFXXX',
-            regionGame = 'MW',
-            winningSeed = 12,
-            losingSeed = 4,
             afterBracket =  'MW1812463721123XXXXW191213614102XX6XXXXS1854113715X4XXXXXE191246372XXXXXXXFFXXX',
             u = new BracketUpdater({
                 currentMaster: beforeBracket,
-                fromRegion: regionGame,
-                winningSeed: winningSeed,
-                losingSeed: losingSeed,
+                fromRegion: 'MW',
+                winner: 12,
+                loser: 4,
                 year: year
             });
 
@@ -23,15 +24,12 @@ describe('Bracket Updater', function () {
 
     it('Game should be updated', function () {
         var beforeBracket = 'MW18124637211232XXXW191213614102XX6XXXXS1854113715X4XXXXXE191246372XXXXXXXFFXXX',
-            regionGame = 'MW',
-            winningSeed = 3,
-            losingSeed = 2,
             afterBracket =  'MW18124637211232X3XW191213614102XX6XXXXS1854113715X4XXXXXE191246372XXXXXXXFFXXX',
             u = new BracketUpdater({
                 currentMaster: beforeBracket,
-                fromRegion: regionGame,
-                winningSeed: winningSeed,
-                losingSeed: losingSeed,
+                fromRegion: 'MW',
+                winner: '3',
+                loser: '2',
                 year: year
             });
 
@@ -40,19 +38,64 @@ describe('Bracket Updater', function () {
 
     it('Game should be updated', function () {
         var beforeBracket = 'MW18124637211232123XW191213614102XX6XXXXS1854113715X4XXXXXE191246372XXXXXXXFFXXX',
-            regionGame = 'MIDWEST',
-            winningSeed = 3,
-            losingSeed = 12,
             afterBracket =  'MW181246372112321233W191213614102XX6XXXXS1854113715X4XXXXXE191246372XXXXXXXFFXXX',
             u = new BracketUpdater({
                 currentMaster: beforeBracket,
-                fromRegion: regionGame,
-                winningSeed: winningSeed,
-                losingSeed: losingSeed,
+                fromRegion: 'MIDWEST',
+                winner: {seed: 3},
+                loser: {seed: '12'},
                 year: year
             });
 
         assert.equal(u.update(), afterBracket);
+    });
+
+    it('First round game should be updated', function () {
+        var beforeBracket = c.EMPTY,
+            afterBracket =  beforeBracket.replace('MWX', 'MW1'),
+            u = new BracketUpdater({
+                currentMaster: beforeBracket,
+                fromRegion: 'MW',
+                winner: 1,
+                loser: 16,
+                year: year
+            });
+
+        assert.equal(u.update(), afterBracket);
+    });
+
+    it('Final four and champ game should be updated even if it is 1 vs 1', function () {
+        var flat = new BracketGenerator({year: year, winners: 'lower'}).flatBracket(),
+            noFF = flat.split(c.FINAL_ID)[0] + c.FINAL_ID,
+            withoutFF = noFF + new Array(c.REGION_IDS.length).join(c.UNPICKED_MATCH);
+            
+        var mwFF = new BracketUpdater({
+            year: year,
+            currentMaster: withoutFF,
+            fromRegion: 'FF',
+            winner: 'louisville',
+            loser: {name: 'gonzaga'}
+        }).update();
+
+        var sFF = new BracketUpdater({
+            year: year,
+            currentMaster: mwFF,
+            fromRegion: 'FF',
+            winner: {name: 'KANSAS'},
+            loser: {name: 'Indiana'}
+        }).update();
+
+        var ncg = new BracketUpdater({
+            year: year,
+            currentMaster: sFF,
+            fromRegion: 'Championship',
+            winner: {name: 'Kansas'},
+            loser: {name: 'Louisville'}
+        }).update();
+
+        assert.equal(mwFF, noFF + 'MWXX');
+        assert.equal(sFF, noFF + 'MWSX');
+        assert.equal(ncg, noFF + 'MWSS');
     });
 
 });
