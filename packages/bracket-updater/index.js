@@ -1,6 +1,5 @@
 var BracketData = require('bracket-data'),
     BracketValidator = require('bracket-validator'),
-    levenshtein = require('fast-levenshtein'),
     _find = require('lodash-node/modern/collections/find'),
     _each = require('lodash-node/modern/collections/forEach'),
     _map = require('lodash-node/modern/collections/map'),
