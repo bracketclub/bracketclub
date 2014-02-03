@@ -2,37 +2,37 @@
   "name": "bracket-updater",
   "description": "Update an NCAA tournament bracket after the completion of a game.",
   "version": "1.0.3",
-  "keywords": [
-    "ncaa",
-    "bracket",
-    "tweetyourbracket"
-  ],
-  "bugs": {
-    "url": "http://github.com/tweetyourbracket/bracket-updater/issues"
-  },
-  "license": "MIT",
   "author": {
     "name": "Luke Karrys",
     "email": "luke@lukekarrys.com",
     "url": "http://lukekarrys.com"
   },
-  "main": "index.js",
+  "bugs": {
+    "url": "http://github.com/tweetyourbracket/bracket-updater/issues"
+  },
+  "dependencies": {
+    "bracket-data": "~1.0.0",
+    "bracket-validator": "~1.0.0",
+    "lodash-node": "~2.4.1"
+  },
+  "devDependencies": {
+    "assert": "~1.1.0",
+    "bracket-generator": "~1.0.0",
+    "mocha": "~1.17.1"
+  },
   "homepage": "http://github.com/tweetyourbracket/bracket-updater",
+  "keywords": [
+    "ncaa",
+    "bracket",
+    "tweetyourbracket"
+  ],
+  "license": "MIT",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/tweetyourbracket/bracket-updater.git"
   },
-  "dependencies": {
-    "lodash-node": "~2.4.1",
-    "bracket-data": "~1.0.0",
-    "bracket-validator": "~1.0.0"
-  },
   "scripts": {
     "test": "BRACKET_YEAR=2013 ./node_modules/.bin/mocha -c -u bdd -R spec --timeout 10000 test/*.js"
-  },
-  "devDependencies": {
-    "mocha": "~1.17.1",
-    "assert": "~1.1.0",
-    "bracket-generator": "~1.0.0"
   }
 }
