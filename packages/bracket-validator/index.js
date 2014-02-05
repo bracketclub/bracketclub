@@ -69,7 +69,7 @@ Validator.prototype.expandFlatBracket = function (flat) {
         return this.wrapSuccess(JSON.parse(flat.replace(this.regex, replacer)));
     }
     catch (e) {
-        return this.wrapError('Bracket does not look like a bracket:', e);
+        return this.wrapError('Bracket does not look like a bracket');
     }
 };
 
