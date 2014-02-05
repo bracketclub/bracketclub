@@ -58,6 +58,10 @@ Validator.prototype.wrapSuccess = function (result) {
 };
 
 Validator.prototype.expandFlatBracket = function (flat) {
+    if (this.notEmpty && flat.indexOf(this.constants.UNPICKED_MATCH) > -1) {
+        return this.wrapError('Bracket has unpicked matches');
+    }
+
     var length = this.regex.source.split('(').length,
         range = _range(1, length),
         replacer = _map(range, function (i) {

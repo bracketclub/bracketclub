@@ -103,6 +103,14 @@ describe('Incomplete Brackets', function () {
 
         assert.equal(false, validator instanceof Error);
     });
+
+    it('Should have an error if we dont want unfinished brackets', function () {
+        var bracket = 'MW1812463XXXXXXXXXW19XX614XXXXXXXXXSXX54XXXXXXXXXXXEXX12463XXXXXXXXXFFXXX',
+            validator = new BracketValidator({flatBracket: bracket, notEmpty: true, year: year}).validate();
+
+        assert.equal(validator.message, 'Bracket has unpicked matches');
+        assert.equal(true, validator instanceof Error);
+    });
 });
 
 describe('Bad Brackets', function () {
