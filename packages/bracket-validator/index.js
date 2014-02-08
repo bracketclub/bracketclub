@@ -32,7 +32,7 @@ function Validator(options) {
         testOnly: false,
         notEmpty: false
     });
-    this.flatBracket = (this.flatBracket || ((this.notEmpty) ? '' : this.constants.empty)).toUpperCase();
+    this.flatBracket = (this.flatBracket || ((this.notEmpty) ? '' : this.constants.EMPTY)).toUpperCase();
 }
 
 Validator.prototype = Object.create(BracketData.prototype, {
