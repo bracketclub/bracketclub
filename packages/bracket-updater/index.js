@@ -45,12 +45,16 @@ Updater.prototype.seedMatches = function (team1, team2) {
     return parseInt(team1.seed) === parseInt(team2.seed);
 };
 
-Updater.prototype.gameMatches = function (winner, loser) {
+Updater.prototype.teamMatches = function (team1, team2) {
     if (this.isFinal()) {
-        return this.teamNameMatches(winner, this.winner) && this.teamNameMatches(loser, this.loser);
+        return this.teamNameMatches(team1, team2);
     } else {
-        return this.seedMatches(winner, this.winner) && this.seedMatches(loser, this.loser);
+        return this.seedMatches(team1, team2);
     }
+};
+
+Updater.prototype.gameMatches = function (winner, loser) {
+    return this.teamMatches(winner, this.winner) && this.teamMatches(loser, this.loser);
 };
 
 Updater.prototype.getSeed = function (winner) {
@@ -80,6 +84,9 @@ Updater.prototype.update = function () {
 
     if (!region) return new Error('No region');
 
+    var regionRoundIndex = null;
+    var nextRoundGameIndex = null;
+
     roundLoop:
     for (var i = 0, m = region.rounds.length; i < m; i++) {
         var round = region.rounds[i];
@@ -87,11 +94,26 @@ Updater.prototype.update = function () {
             var roundGame = round[ii],
                 otherTeam = round[(ii % 2 === 0) ? ii + 1 : ii - 1];
 
-            if (roundGame !== null && this.gameMatches(roundGame, otherTeam)) {
-                region.rounds[i + 1][Math.floor(ii / 2)] = this.getSeed(this.winner);
-                break roundLoop;
+            if (roundGame !== null) {
+                if (otherTeam && this.gameMatches(roundGame, otherTeam)) {
+                    region.rounds[i + 1][Math.floor(ii / 2)] = this.getSeed(this.winner);
+                    break roundLoop;
+                } else {
+                    // If there is no other team, it means we are updating an incomplete bracket
+                    // So if a user is picking a bracket, a winner can be picked without and opponent
+                    // We dont break from the loop since we want to find the latest round that the team appears
+                    if (this.teamMatches(roundGame, this.winner)) {
+                        regionRoundIndex = i + 1;
+                        nextRoundGameIndex = Math.floor(ii / 2);
+                    }
+                }
             }
         }
+    }
+
+    // This means we found our winner but there is no oppnent, but still set the next round
+    if (regionRoundIndex !== null && nextRoundGameIndex !== null) {
+        region.rounds[regionRoundIndex][nextRoundGameIndex] = this.getSeed(this.winner);
     }
 
     return this.flatten(bracketData);

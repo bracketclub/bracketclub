@@ -50,6 +50,19 @@ describe('Bracket Updater', function () {
         assert.equal(u.update(), afterBracket);
     });
 
+    it('Game should be updated even if bracket is unfinished', function () {
+        var beforeBracket = 'MW185XXXXXXXXXXXXWXXXXXXXXXXXXXXXSXXXXXXXXXXXXXXXEXXXXXXXXXXXXXXXFFXXX',
+            afterBracket =  'MW185XXXXXX5XXXXXWXXXXXXXXXXXXXXXSXXXXXXXXXXXXXXXEXXXXXXXXXXXXXXXFFXXX',
+            u = new BracketUpdater({
+                currentMaster: beforeBracket,
+                fromRegion: 'MIDWEST',
+                winner: 5,
+                year: year
+            });
+
+        assert.equal(u.update(), afterBracket);
+    });
+
     it('First round game should be updated', function () {
         var beforeBracket = c.EMPTY,
             afterBracket =  beforeBracket.replace('MWX', 'MW1'),
