@@ -18,6 +18,9 @@ function Updater(options) {
     if (typeof this.winner === 'string' && isNaN(this.winner)) this.winner = {name: this.winner};
     if (typeof this.loser === 'string' && isNaN(this.loser)) this.loser = {name: this.loser};
 
+    // If we got passed in null or something, set the properties we need to not break
+    if (!this.winner) this.winner = {};
+    if (!this.loser) this.loser = {};
     if (!this.winner.name) this.winner.name = '';
     if (!this.loser.name) this.loser.name = '';
 }

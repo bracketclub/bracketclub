@@ -1,7 +1,7 @@
 {
   "name": "bracket-updater",
   "description": "Update an NCAA tournament bracket after the completion of a game.",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "author": {
     "name": "Luke Karrys",
     "email": "luke@lukekarrys.com",
