@@ -152,45 +152,6 @@ Generator.prototype.winningTeamFromRegion = function (fromRegion) {
     }).rounds)[0];
 };
 
-Generator.prototype.teamNameFromRegion = function (regionName, seed) {
-    return this.bracket.regions[regionName].teams[seed - 1];
-};
-
-Generator.prototype.teamNameFromRegion = function (regionName, seed) {
-    return this.data.regions[regionName].teams[seed - 1];
-};
-
-Generator.prototype.bracketWithTeamInfo = function () {
-    var bracket = _toArray(this.generateBracket()),
-            originalData = _cloneDeep(this.bracket.regions);
-
-    _each(bracket, function (region) {
-        if (!_has(originalData, region.id)) originalData[region.id] = _omit(region, 'rounds');
-        originalData[region.id].id = region.id;
-        originalData[region.id].rounds = _map(region.rounds, function (round) {
-            var returnRound = [];
-            _each(round, function (seed, index) {
-                if (region.id === this.constants.FINAL_ID) {
-                    returnRound[index] = {
-                        fromRegion: seed,
-                        seed: this.winningTeamFromRegion(seed),
-                        name: this.teamNameFromRegion(seed, this.winningTeamFromRegion(seed))
-                    };
-                } else {
-                    returnRound[index] = {
-                        fromRegion: region.id,
-                        seed: seed,
-                        name: this.teamNameFromRegion(region.id, seed)
-                    };
-                }
-            }, this);
-            return returnRound;
-        }, this);
-    }, this);
-
-    return originalData;
-};
-
 Generator.prototype.flatBracket = function () {
     return _map(_flatten(_toArray(this.generateBracket())), function (region) {
         return region.id + _flatten(region.rounds).join('');
