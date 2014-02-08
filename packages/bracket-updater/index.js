@@ -17,6 +17,9 @@ function Updater(options) {
     if (typeof this.loser === 'number' || !isNaN(this.loser)) this.loser = {seed: parseInt(this.loser, 10)};
     if (typeof this.winner === 'string' && isNaN(this.winner)) this.winner = {name: this.winner};
     if (typeof this.loser === 'string' && isNaN(this.loser)) this.loser = {name: this.loser};
+
+    if (!this.winner.name) this.winner.name = '';
+    if (!this.loser.name) this.loser.name = '';
 }
 
 Updater.prototype = Object.create(BracketData.prototype, {

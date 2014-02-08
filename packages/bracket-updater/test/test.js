@@ -63,6 +63,19 @@ describe('Bracket Updater', function () {
         assert.equal(u.update(), afterBracket);
     });
 
+    it('Game should be updated even if bracket is unfinished', function () {
+        var beforeBracket = 'MW185XXXXXX5XXXXXWXXXXXXXXXXXXXXXSXXXXXXXXXXXXXXXEXXXXXXXXXXXXXXXFFXXX',
+            afterBracket =  'MW185XXXXXX5XX5XXWXXXXXXXXXXXXXXXSXXXXXXXXXXXXXXXEXXXXXXXXXXXXXXXFFXXX',
+            u = new BracketUpdater({
+                currentMaster: beforeBracket,
+                fromRegion: 'MW',
+                winner: {name: '', seed: 5},
+                year: year
+            });
+
+        assert.equal(u.update(), afterBracket);
+    });
+
     it('First round game should be updated', function () {
         var beforeBracket = c.EMPTY,
             afterBracket =  beforeBracket.replace('MWX', 'MW1'),
@@ -106,9 +119,17 @@ describe('Bracket Updater', function () {
             loser: {name: 'Louisville'}
         }).update();
 
+        var ncg2 = new BracketUpdater({
+            year: year,
+            currentMaster: sFF,
+            fromRegion: 'FF',
+            winner: 'Kansas'
+        }).update();
+
         assert.equal(mwFF, noFF + 'MWXX');
         assert.equal(sFF, noFF + 'MWSX');
         assert.equal(ncg, noFF + 'MWSS');
+        assert.equal(ncg2, noFF + 'MWSS');
     });
 
 });
