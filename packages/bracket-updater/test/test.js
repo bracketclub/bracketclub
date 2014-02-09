@@ -105,6 +105,21 @@ describe('Bracket Updater', function () {
         assert.equal(afterBracket, u.update());
     });
 
+    it('Game should not be updated if we are only passing in a winner and that team has won all possible games', function () {
+        var beforeBracket = 'MW1XXXXXXX1XXX1X1WXXXXXXXXXXXXXXXSXXXXXXXXXXXXXXXEXXXXXXXXXXXXXXXFFXXX',
+            afterBracket =  'MW1XXXXXXX1XXX1X1WXXXXXXXXXXXXXXXSXXXXXXXXXXXXXXXEXXXXXXXXXXXXXXXFFXXX',
+            u = new BracketUpdater({
+                currentMaster: beforeBracket,
+                fromRegion: 'MW',
+                winner: 1,
+                year: year
+            });
+
+        assert.equal(afterBracket, u.update());
+    });
+
+    
+
     it('First round game should be updated', function () {
         var beforeBracket = c.EMPTY,
             afterBracket =  beforeBracket.replace('MWX', 'MW1'),

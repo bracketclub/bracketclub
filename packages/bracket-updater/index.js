@@ -132,17 +132,20 @@ Updater.prototype.update = function () {
     }
 
     if (regionRoundIndex !== null && nextRoundGameIndex !== null) {
-        region.rounds[regionRoundIndex][nextRoundGameIndex] = this.getSeed(this.winner);
-        for (i = regionRoundIndex, m = region.rounds.length; i < m; i++) {
-            round = region.rounds[i];
-            for (ii = 0, mm = round.length; ii < mm; ii++) {
-                roundGame = round[ii],
-                otherTeam = round[(ii % 2 === 0) ? ii + 1 : ii - 1];
-                // The losing team might have already advanced in the bracket
-                // Such as when someone is picking a bracket and changed their mind
-                // We need to remove all of the losing team from the rest of the rounds
-                if (this.hasLoser() && roundGame !== null && this.teamMatches(roundGame, this.loser)) {
-                    round[ii] = null;
+        var hasRound = !!region.rounds[regionRoundIndex];
+        if (hasRound) {
+            region.rounds[regionRoundIndex][nextRoundGameIndex] = this.getSeed(this.winner);
+            for (i = regionRoundIndex, m = region.rounds.length; i < m; i++) {
+                round = region.rounds[i];
+                for (ii = 0, mm = round.length; ii < mm; ii++) {
+                    roundGame = round[ii],
+                    otherTeam = round[(ii % 2 === 0) ? ii + 1 : ii - 1];
+                    // The losing team might have already advanced in the bracket
+                    // Such as when someone is picking a bracket and changed their mind
+                    // We need to remove all of the losing team from the rest of the rounds
+                    if (this.hasLoser() && roundGame !== null && this.teamMatches(roundGame, this.loser)) {
+                        round[ii] = null;
+                    }
                 }
             }
         }
