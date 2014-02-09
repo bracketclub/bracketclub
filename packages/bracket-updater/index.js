@@ -151,6 +151,20 @@ Updater.prototype.update = function () {
         }
     }
 
+    // Clear losing teams from final four also
+    if (this.hasLoser() && regionRoundIndex === 1) {
+        var fin = bracketData[this.constants.FINAL_ID];
+        _each(fin.rounds, function (round, i, rounds) {
+            if (i > 0) {
+                _each(round, function (game, ii, games) {
+                    if (game && this.teamNameMatches(game, this.loser)) {
+                        bracketData[this.constants.FINAL_ID].rounds[i][ii] = null;
+                    }
+                }, this);
+            }
+        }, this);
+    }
+
 
     return this.flatten(bracketData);
 

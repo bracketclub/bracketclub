@@ -118,6 +118,33 @@ describe('Bracket Updater', function () {
         assert.equal(afterBracket, u.update());
     });
 
+    it('Teams in final four should be removed when lost', function () {
+        var beforeBracket = 'MW1XXXXXXX1XXX1X1W1XXXXXXX1XXX1X1SXXXXXXX2XXX2X22EXXXXXXX2XXX2X22FFMWEE',
+            afterBracket =  'MW1XXXXXXX1XXX1X1W1XXXXXXX1XXX1X1SXXXXXXX15XXXXXXXEXXXXXXX2XXX2X22FFMWEE',
+            u = new BracketUpdater({
+                currentMaster: beforeBracket,
+                fromRegion: 'S',
+                winner: 15,
+                year: year
+            });
+
+        assert.equal(afterBracket, u.update());
+    });
+
+
+    it('Teams in final four should be removed when lost', function () {
+        var beforeBracket = 'MW1XXXXXXX1XXX1X1W1XXXXXXX1XXX1X1SXXXXXXX2XXX2X22EXXXXXXX2XXX2X22FFMWEE',
+            afterBracket =  'MW1XXXXXXX1XXX1X1W1XXXXXXX1XXX1X1SXXXXXXX2XXX2X22EXXXXXXX15XXXXXXXFFMWXX',
+            u = new BracketUpdater({
+                currentMaster: beforeBracket,
+                fromRegion: 'E',
+                winner: 15,
+                year: year
+            });
+
+        assert.equal(afterBracket, u.update());
+    });
+
     
 
     it('First round game should be updated', function () {
