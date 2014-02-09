@@ -311,7 +311,9 @@ Validator.prototype.validateFinal = function (finalPicks, validatedRounds) {
     }
 
     for (var i = 0, m = validatedRounds.length; i < m; i++) {
-        if (validatedRounds[i].id !== this.constants.FINAL_ID && _last(validatedRounds[i].rounds)[0] === this.constants.UNPICKED_MATCH) {
+        var regionId = validatedRounds[i].id;
+        var regionWinner = _last(validatedRounds[i].rounds)[0];
+        if (regionId !== this.constants.FINAL_ID && regionWinner === this.constants.UNPICKED_MATCH && _contains(semifinal, regionId)) {
             return this.wrapError('Final teams are selected without all regions finished');
         }
     }

@@ -59,27 +59,27 @@ var BracketGenerator = require('bracket-generator'),
             intToBinary(_random(0, Math.pow(2, finalGames) - 1), finalGames);
     },
 
-    i = 0,
+    i = 0;
 
-    generateValidate = function (i) {
-        var bg = new BracketGenerator({data: data, winners: i ? fullBracketBinary(i) : 'random', year: year}),
-            expanded = bg.bracketWithTeamInfo(),
-            flat = bg.flatBracket(),
-            bv = new BracketValidator({flatBracket: flat, year: year}).validate();
+// var generateValidate = function (i) {
+//         var bg = new BracketGenerator({data: data, winners: i ? fullBracketBinary(i) : 'random', year: year}),
+//             expanded = bg.bracketWithTeamInfo(),
+//             flat = bg.flatBracket(),
+//             bv = new BracketValidator({flatBracket: flat, year: year}).validate();
 
-        assert.equal(true, _isEqual(expanded, bv));
-    };
+//         assert.equal(true, _isEqual(expanded, bv));
+//     };
 
-describe('A few random brackets', function () {
-    for (i; i < 20; i++) {
-        (function () {
-            it('the created and validated brackets should be equal', function () {
-                generateValidate();
-                generateValidate(i);
-            });
-        })();
-    }
-});
+// describe('A few random brackets', function () {
+//     for (i; i < 20; i++) {
+//         (function () {
+//             it('the created and validated brackets should be equal', function () {
+//                 generateValidate();
+//                 generateValidate(i);
+//             });
+//         })();
+//     }
+// });
 
 i = 0;
 describe('A few random brackets: test only', function () {
@@ -111,6 +111,22 @@ describe('Incomplete Brackets', function () {
         assert.equal(validator.message, 'Bracket has unpicked matches');
         assert.equal(true, validator instanceof Error);
     });
+});
+
+it('Regions dont need to be set for final four to be set', function () {
+    var bracket = 'MW1XXXXXXX1XXX1X1 W16XXXXXXX16XXX16X16 SXXX13XXXXXXXXXXX EXXXX6XXXXX6XX66 FF MW E E'.replace(/\s/g, ''),
+        validator = new BracketValidator({flatBracket: bracket, year: year}).validate();
+
+    assert.equal(false, validator instanceof Error);
+});
+
+
+it('Teams cant win a game in final four without winning region', function () {
+    var bracket = 'MW1XXXXXXX1XXX1X1 W16XXXXXXX16XXX16X16 SXXX13XXXXXXXXXXX EXXXX6XXXXX6XX6X FF MW E E'.replace(/\s/g, ''),
+        validator = new BracketValidator({flatBracket: bracket, year: year}).validate();
+
+    assert.equal(true, validator instanceof Error);
+    assert.equal(validator.message, "Final teams are selected without all regions finished");
 });
 
 describe('Bad Brackets', function () {
