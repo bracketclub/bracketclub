@@ -31,6 +31,14 @@ Updater.prototype = Object.create(BracketData.prototype, {
     }
 });
 
+Updater.prototype.hasWinner = function () {
+    return !!(this.winner && (this.winner.name || this.winner.seed));
+};
+
+Updater.prototype.hasLoser = function () {
+    return !!(this.loser && (this.loser.name || this.loser.seed));
+};
+
 Updater.prototype.isFinal = function () {
     var finalName = this.constants.FINAL_NAME.toLowerCase(),
         finalId = this.constants.FINAL_ID.toLowerCase(),
@@ -44,11 +52,11 @@ Updater.prototype.isChampionship = function () {
 };
 
 Updater.prototype.teamNameMatches = function (team1, team2) {
-    return team1.name.toLowerCase() === team2.name.toLowerCase();
+    return team1 && team1.name && team2 && team2.name && team1.name.toLowerCase() === team2.name.toLowerCase();
 };
 
 Updater.prototype.seedMatches = function (team1, team2) {
-    return parseInt(team1.seed) === parseInt(team2.seed);
+    return team1 && team2 && parseInt(team1.seed) === parseInt(team2.seed);
 };
 
 Updater.prototype.teamMatches = function (team1, team2) {
@@ -89,38 +97,57 @@ Updater.prototype.update = function () {
     }, this);
 
     if (!region) return new Error('No region');
+    if (!this.hasWinner()) return new Error('Supply at least winning team');
 
     var regionRoundIndex = null;
     var nextRoundGameIndex = null;
+    var i, ii, m, mm, round, roundGame, otherTeam;
 
     roundLoop:
-    for (var i = 0, m = region.rounds.length; i < m; i++) {
-        var round = region.rounds[i];
-        for (var ii = 0, mm = round.length; ii < mm; ii++) {
-            var roundGame = round[ii],
-                otherTeam = round[(ii % 2 === 0) ? ii + 1 : ii - 1];
+    for (i = region.rounds.length; i-- > 0;) {
+        round = region.rounds[i];
+        for (ii = round.length; ii-- > 0;) {
+            roundGame = round[ii],
+            otherTeam = round[(ii % 2 === 0) ? ii + 1 : ii - 1];
 
             if (roundGame !== null) {
-                if (otherTeam && this.gameMatches(roundGame, otherTeam)) {
-                    region.rounds[i + 1][Math.floor(ii / 2)] = this.getSeed(this.winner);
+                if (this.hasWinner() && this.hasLoser() && this.gameMatches(roundGame, otherTeam)) {
+                    // If we have a winner and a loser look for the game that matches both
+                    // Place winner into the next round
+                    regionRoundIndex = i + 1;
+                    nextRoundGameIndex = Math.floor(ii / 2);
                     break roundLoop;
                 } else {
-                    // If there is no other team, it means we are updating an incomplete bracket
-                    // So if a user is picking a bracket, a winner can be picked without and opponent
-                    // We dont break from the loop since we want to find the latest round that the team appears
+                    // If there is no other team, it means we want to use the winner of the latest game they appear
+                    // So if a user is picking a bracket, a winner can be picked without an opponent
                     if (this.teamMatches(roundGame, this.winner)) {
                         regionRoundIndex = i + 1;
                         nextRoundGameIndex = Math.floor(ii / 2);
+                        otherTeam && (this.loser = otherTeam);
+                        break roundLoop;
                     }
                 }
             }
         }
     }
 
-    // This means we found our winner but there is no oppnent, but still set the next round
     if (regionRoundIndex !== null && nextRoundGameIndex !== null) {
         region.rounds[regionRoundIndex][nextRoundGameIndex] = this.getSeed(this.winner);
+        for (i = regionRoundIndex, m = region.rounds.length; i < m; i++) {
+            round = region.rounds[i];
+            for (ii = 0, mm = round.length; ii < mm; ii++) {
+                roundGame = round[ii],
+                otherTeam = round[(ii % 2 === 0) ? ii + 1 : ii - 1];
+                // The losing team might have already advanced in the bracket
+                // Such as when someone is picking a bracket and changed their mind
+                // We need to remove all of the losing team from the rest of the rounds
+                if (this.hasLoser() && roundGame !== null && this.teamMatches(roundGame, this.loser)) {
+                    round[ii] = null;
+                }
+            }
+        }
     }
+
 
     return this.flatten(bracketData);
 

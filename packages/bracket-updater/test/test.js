@@ -19,7 +19,7 @@ describe('Bracket Updater', function () {
                 year: year
             });
 
-        assert.equal(u.update(), afterBracket);
+        assert.equal(afterBracket, u.update());
     });
 
     it('Game should be updated', function () {
@@ -33,7 +33,7 @@ describe('Bracket Updater', function () {
                 year: year
             });
 
-        assert.equal(u.update(), afterBracket);
+        assert.equal(afterBracket, u.update());
     });
 
     it('Game should be updated', function () {
@@ -47,7 +47,7 @@ describe('Bracket Updater', function () {
                 year: year
             });
 
-        assert.equal(u.update(), afterBracket);
+        assert.equal(afterBracket, u.update());
     });
 
     it('Game should be updated even if bracket is unfinished', function () {
@@ -60,7 +60,7 @@ describe('Bracket Updater', function () {
                 year: year
             });
 
-        assert.equal(u.update(), afterBracket);
+        assert.equal(afterBracket, u.update());
     });
 
     it('Game should be updated even if bracket is unfinished', function () {
@@ -73,7 +73,36 @@ describe('Bracket Updater', function () {
                 year: year
             });
 
-        assert.equal(u.update(), afterBracket);
+        assert.equal(afterBracket, u.update());
+    });
+
+    it('Game should be updated even if bracket is unfinished and the previous winning team has already advanced', function () {
+        var beforeBracket = 'MW18XXXXXX1XXXXXXWXXXXXXXXXXXXXXXSXXXXXXXXXXXXXXXEXXXXXXXXXXXXXXXFFXXX',
+            afterBracket =  'MW168XXXXXXXXXXXXXWXXXXXXXXXXXXXXXSXXXXXXXXXXXXXXXEXXXXXXXXXXXXXXXFFXXX',
+            u = new BracketUpdater({
+                currentMaster: beforeBracket,
+                fromRegion: 'MW',
+                winner: {name: '', seed: 16},
+                loser: {name: '', seed: 1},
+                year: year
+            });
+
+        assert.equal(afterBracket, u.update());
+    });
+
+    it('Game should be updated even if bracket is unfinished and the previous winning team has already advanced', function () {
+        var beforeBracket = 'MW18XXXXXX1XXXXXXWXXXXXXXXXXXXXXXSXXXXXXXXXXXXXXXEXXXXXXXXXXXXXXXFFXXX',
+            afterBracket =  'MW168XXXXXXXXXXXXXWXXXXXXXXXXXXXXXSXXXXXXXXXXXXXXXEXXXXXXXXXXXXXXXFFXXX',
+            u = new BracketUpdater({
+                currentMaster: beforeBracket,
+                fromRegion: 'MW',
+                winner: {name: '', seed: 16},
+                // We don't specify a loser in this case to make sure that the updater
+                // picks the first last game that the winner appears
+                year: year
+            });
+
+        assert.equal(afterBracket, u.update());
     });
 
     it('First round game should be updated', function () {
