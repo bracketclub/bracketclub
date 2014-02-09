@@ -143,9 +143,18 @@ describe('Bracket Updater', function () {
             });
 
         assert.equal(afterBracket, u.update());
-    });
 
-    
+        var beforeBracket2 = 'MW1XXXXXXX1XXX1X1W16XXXXXXX16XXX16X16SXXX4XXXXX4XX4X4EXXXX6XXXXX6XX66FFMWEE',
+            afterBracket2 =  'MW1XXXXXXX1XXX1X1W16XXXXXXX16XXX16X16SXXX13XXXXXXXXXXXEXXXX6XXXXX6XX66FFMWEE',
+            u2 = new BracketUpdater({
+                currentMaster: beforeBracket2,
+                fromRegion: 'S',
+                winner: 13,
+                year: year
+            });
+
+        assert.equal(afterBracket2, u2.update());
+    });
 
     it('First round game should be updated', function () {
         var beforeBracket = c.EMPTY,
