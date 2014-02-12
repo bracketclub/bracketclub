@@ -21,6 +21,13 @@ Scorer.prototype = Object.create(BracketData.prototype, {
     }
 });
 
+Scorer.prototype.reset = function (master, user) {
+    return BracketData.prototype.reset.apply(this, {
+        validateUser: this.validateUser.reset(user),
+        validateMaster: this.validateMaster.reset(master)
+    });
+};
+
 Scorer.prototype.diff = function () {
     var validatedUser = this.validateUser.validate(),
         validatedMaster = this.validateMaster.validate(),
@@ -82,9 +89,9 @@ Scorer.prototype.gooley = function () {
 
 Scorer.prototype.getScore = function () {
     var validatedUser = this.validateUser.validate(),
-            validatedMaster = this.validateMaster.validate(),
-            rounds = [],
-            correctCounter = 0;
+        validatedMaster = this.validateMaster.validate(),
+        rounds = [],
+        correctCounter = 0;
 
     _each(validatedUser, function (region, regionId) {
         _each(region.rounds, function (round, round_i) {

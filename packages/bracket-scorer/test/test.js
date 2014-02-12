@@ -59,6 +59,34 @@ describe('Bracket Scorer', function () {
         assert.equal(true, _isEqual(s.rounds, [0, 0, 0, 0, 0, 0]));
     });
 
+    it('Can reset', function () {
+        var noUpsets = new BracketGenerator({winners: 'lower', year: year}),
+            allUpsets = new BracketGenerator({winners: 'higher', year: year}),
+            scorer = new BracketScorer({
+                userBracket: allUpsets.flatBracket(),
+                masterBracket: noUpsets.flatBracket(),
+                year: year
+            }),
+            s = scorer.getScore();
+
+        assert.equal(true, _isArray(s.rounds));
+        assert.equal(true, s.rounds.length === 6);
+        assert.equal(true, _isEqual(s.rounds, [0, 0, 0, 0, 0, 0]));
+
+        console.log(s.rounds[0])
+
+        var perf = new BracketGenerator({winners: 'higher', year: year}).flatBracket(),
+            perf2 = new BracketGenerator({winners: 'higher', year: year}).flatBracket();
+        scorer.reset(perf, perf2);
+        s = scorer.getScore();
+
+        console.log(s.rounds[0])
+
+        assert.equal(true, _isArray(s.rounds));
+        assert.equal(true, s.rounds.length === 6);
+        assert.equal(true, _isEqual(s.rounds, [32, 16, 8, 4, 2, 1]));
+    });
+
     it('Gooley', function () {
         var bracket = 'MW19546310159531591515W191213631015112315133S169121361471516121415161515E16812411147158411781111FFMWEMW',
             master = 'MW18124637211232XXXW19121361410291362XXXS185411371514315XXXE1912463721432XXXFFXXX',
