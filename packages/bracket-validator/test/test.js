@@ -113,20 +113,36 @@ describe('Incomplete Brackets', function () {
     });
 });
 
-it('Regions dont need to be set for final four to be set', function () {
-    var bracket = 'MW1XXXXXXX1XXX1X1 W16XXXXXXX16XXX16X16 SXXX13XXXXXXXXXXX EXXXX6XXXXX6XX66 FF MW E E'.replace(/\s/g, ''),
-        validator = new BracketValidator({flatBracket: bracket, year: year}).validate();
+describe('Final four', function () {
+    it('Regions dont need to be set for final four to be set', function () {
+        var bracket = 'MW1XXXXXXX1XXX1X1 W16XXXXXXX16XXX16X16 SXXX13XXXXXXXXXXX EXXXX6XXXXX6XX66 FF MW E E'.replace(/\s/g, ''),
+            validator = new BracketValidator({flatBracket: bracket, year: year}).validate();
 
-    assert.equal(false, validator instanceof Error);
+        assert.equal(false, validator instanceof Error);
+    });
+
+
+    it('Teams cant win a game in final four without winning region', function () {
+        var bracket = 'MW1XXXXXXX1XXX1X1 W16XXXXXXX16XXX16X16 SXXX13XXXXXXXXXXX EXXXX6XXXXX6XX6X FF MW E E'.replace(/\s/g, ''),
+            validator = new BracketValidator({flatBracket: bracket, year: year}).validate();
+
+        assert.equal(true, validator instanceof Error);
+        assert.equal(validator.message, "Final teams are selected without all regions finished");
+    });
 });
 
+describe('Can be reset', function () {
+    it('Teams cant win a game in final four without winning region', function () {
+        var bracket = 'MW1XXXXXXX1XXX1X1 W16XXXXXXX16XXX16X16 SXXX13XXXXXXXXXXX EXXXX6XXXXX6XX6X FF MW E E'.replace(/\s/g, ''),
+            validator = new BracketValidator({flatBracket: bracket, year: year});
 
-it('Teams cant win a game in final four without winning region', function () {
-    var bracket = 'MW1XXXXXXX1XXX1X1 W16XXXXXXX16XXX16X16 SXXX13XXXXXXXXXXX EXXXX6XXXXX6XX6X FF MW E E'.replace(/\s/g, ''),
-        validator = new BracketValidator({flatBracket: bracket, year: year}).validate();
+        var validated = validator.validate();
+        assert.equal(true, validated instanceof Error);
+        assert.equal(validated.message, "Final teams are selected without all regions finished");
 
-    assert.equal(true, validator instanceof Error);
-    assert.equal(validator.message, "Final teams are selected without all regions finished");
+        validator.reset('MW1XXXXXXX1XXX1X1 W16XXXXXXX16XXX16X16 SXXX13XXXXXXXXXXX EXXXX6XXXXX6XX66 FF MW E E'.replace(/\s/g, ''));
+        assert.equal(false, validator.validate() instanceof Error);
+    });
 });
 
 describe('Bad Brackets', function () {

@@ -41,6 +41,10 @@ Validator.prototype = Object.create(BracketData.prototype, {
     }
 });
 
+Validator.prototype.reset = function (flatBracket) {
+    return BracketData.prototype.reset.call(this, {flatBracket: flatBracket});
+};
+
 Validator.prototype.wrapError = function () {
     return {
         error: true,
