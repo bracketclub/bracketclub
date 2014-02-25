@@ -65,7 +65,8 @@ Validator.prototype.reset = function (flatBracket) {
     return this;
 };
 
-Validator.prototype.validate = function () {
+Validator.prototype.validate = function (flatBracket) {
+    flatBracket && this.reset(flatBracket);
     var result = this.flatBracket;
 
     // Test expansion from flat to JSON

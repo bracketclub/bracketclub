@@ -40,11 +40,11 @@ console.log(validator.validate());
 
 ### methods
 
-- `validate()`: Validate the bracket. It will return one of the following:
+- `validate(flatBracket)`: Validate the bracket. The param `flatBracket` is optional here. If you pass it in, it will call `reset` first and then validate, otherwise it will use the option it was instantiated with. It will return one of the following:
   - An `Error` with the `message` set to why the validation failed
   - The `flatBracket` if validation is successfull and `testOnly` is set to `true`
   - An expanded bracket object created from `flatBracket` if validation is successful. It will have each region containing a multidimensional array: `rounds`. This is ordered by round and picks, where if a pick is made it will contain the team `seed` and `name` and if a pick is not made it will be `null`.
-- `reset(flatBracket)`: Reset the validator to use a new `flatBracket`. Returns the validator to allow for chaining, `validator.reset(user).validate()`.
+- `reset(flatBracket)`: Reset the validator to use a new `flatBracket`.
 
 
 ## Anything else?

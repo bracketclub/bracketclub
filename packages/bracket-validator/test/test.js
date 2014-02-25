@@ -95,8 +95,10 @@ describe('Can be reset', function () {
         validator.reset('MW1XXXXXXX1XXX1X1 W16XXXXXXX16XXX16X16 SXXX13XXXXXXXXXXX EXXXX6XXXXX6XX66 FF MW E E'.replace(/\s/g, ''));
         assert.equal(false, validator.validate() instanceof Error);
 
-        validator.reset('sdfsdf'.replace(/\s/g, ''));
+        validator.reset('sdfsdf');
         assert.equal(true, validator.validate() instanceof Error);
+
+        assert.equal(false, validator.validate('MW1812463XXXXXXXXXW19XX614XXXXXXXXXSXX54XXXXXXXXXXXEXX12463XXXXXXXXXFFXXX') instanceof Error);
     });
 });
 
