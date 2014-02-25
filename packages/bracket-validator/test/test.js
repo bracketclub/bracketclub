@@ -5,8 +5,7 @@ var BracketGenerator = require('bracket-generator'),
     year = '2013',
     sport = 'ncaa-mens-basketball',
     BracketData = require('bracket-data'),
-    bracket = new BracketData({year: year, sport: sport, props: ['constants', 'order']}),
-    data = bracket.bracket;
+    data = new BracketData({year: year, sport: sport, props: ['constants', 'order']});
 
 
 describe('A few random brackets: test only', function () {
@@ -98,6 +97,9 @@ describe('Can be reset', function () {
 
         validator.reset('sdfsdf'.replace(/\s/g, ''));
         assert.equal(true, validator.validate() instanceof Error);
+
+        assert.equal(false, validator.validate(data.constants.EMPTY) instanceof Error);
+        assert.equal(validator.flatBracket, data.constants.EMPTY);
     });
 });
 
