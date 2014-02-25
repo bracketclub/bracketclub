@@ -34,7 +34,7 @@ updater.update({
 });
 
 // 'MW1812463X2XXXXXXXW19XX614XXXXXXXXXSXX54XXXXXXXXXXXEXX12463XXXXXXXXXFFXXX'
-console.log(updater.masterBracket);
+console.log(updater.currentMaster);
 ```
 
 ### options
