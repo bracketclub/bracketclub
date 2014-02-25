@@ -58,7 +58,7 @@ describe('Incomplete Brackets', function () {
 
     it('Should have an error if we dont want unfinished brackets', function () {
         var bracket = 'MW1812463XXXXXXXXXW19XX614XXXXXXXXXSXX54XXXXXXXXXXXEXX12463XXXXXXXXXFFXXX',
-            validator = new BracketValidator({flatBracket: bracket, notEmpty: true, year: year, sport: sport}).validate();
+            validator = new BracketValidator({flatBracket: bracket, allowEmpty: false, year: year, sport: sport}).validate();
 
         assert.equal(validator.message, 'Bracket has unpicked matches');
         assert.equal(true, validator instanceof Error);
@@ -97,9 +97,6 @@ describe('Can be reset', function () {
 
         validator.reset('sdfsdf'.replace(/\s/g, ''));
         assert.equal(true, validator.validate() instanceof Error);
-
-        assert.equal(false, validator.validate(data.constants.EMPTY) instanceof Error);
-        assert.equal(validator.flatBracket, data.constants.EMPTY);
     });
 });
 
@@ -161,31 +158,31 @@ describe('Bad Brackets', function () {
     });
 
     it('Bad types', function () {
-        var validator = new BracketValidator({flatBracket: false, notEmpty: true, year: year, sport: sport}).validate();
+        var validator = new BracketValidator({flatBracket: false, allowEmpty: false, year: year, sport: sport}).validate();
 
         assert.equal(true, validator instanceof Error);
     });
 
     it('Bad types', function () {
-        var validator = new BracketValidator({flatBracket: '', notEmpty: true, year: year, sport: sport}).validate();
+        var validator = new BracketValidator({flatBracket: '', allowEmpty: false, year: year, sport: sport}).validate();
 
         assert.equal(true, validator instanceof Error);
     });
 
     it('Bad types', function () {
-        var validator = new BracketValidator({flatBracket: null, notEmpty: true, year: year, sport: sport}).validate();
+        var validator = new BracketValidator({flatBracket: null, allowEmpty: false, year: year, sport: sport}).validate();
 
         assert.equal(true, validator instanceof Error);
     });
 
     it('Bad types', function () {
-        var validator = new BracketValidator({notEmpty: true, year: year, sport: sport}).validate();
+        var validator = new BracketValidator({allowEmpty: false, year: year, sport: sport}).validate();
 
         assert.equal(true, validator instanceof Error);
     });
 
     it('Bad types', function () {
-        var validator = new BracketValidator({flatBracket: 'boop', notEmpty: true, year: year, sport: sport}).validate();
+        var validator = new BracketValidator({flatBracket: 'boop', allowEmpty: false, year: year, sport: sport}).validate();
 
         assert.equal(true, validator instanceof Error);
     });

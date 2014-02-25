@@ -43,7 +43,7 @@ var bracketData;
 function Validator(options) {
     _defaults(options, {
         testOnly: false,
-        notEmpty: false,
+        allowEmpty: true,
         flatBracket: ''
     });
 
@@ -55,27 +55,21 @@ function Validator(options) {
         props: ['bracket', 'constants', 'regex', 'order']
     });
 
-    if (typeof options.flatBracket !== 'string') options.flatBracket = '';
     return this.reset(options.flatBracket);
 }
 
 
 Validator.prototype.reset = function (flatBracket) {
-    if (!flatBracket && !this.options.notEmpty) {
-        flatBracket = bracketData.constants.EMPTY;
-    }
-
+    if (typeof flatBracket !== 'string') flatBracket = '';
     this.flatBracket = flatBracket.toUpperCase();
     return this;
 };
 
-Validator.prototype.validate = function (flatBracket) {
-    this.reset(flatBracket || this.flatBracket);
-
+Validator.prototype.validate = function () {
     var result = this.flatBracket;
 
     // Test expansion from flat to JSON
-    result = findResult(expandFlatBracket(result, this.options.notEmpty));
+    result = findResult(expandFlatBracket(result, this.options.allowEmpty));
     if (hasError(result)) return getErrors(result);
 
     // Test if JSON has all the keys
@@ -124,8 +118,8 @@ var wrapSuccess = function (result) {
     };
 };
 
-var expandFlatBracket = function (flat, notEmpty) {
-    if (notEmpty && flat.indexOf(bracketData.constants.UNPICKED_MATCH) > -1) {
+var expandFlatBracket = function (flat, allowEmpty) {
+    if (!allowEmpty && flat.indexOf(bracketData.constants.UNPICKED_MATCH) > -1) {
         return wrapError('Bracket has unpicked matches');
     }
 
