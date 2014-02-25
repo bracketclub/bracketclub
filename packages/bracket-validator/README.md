@@ -36,7 +36,7 @@ console.log(validator.validate());
 - `year`: The year you are validating. See [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#api) for more info.
 - `testOnly`: (Boolean, default: false) Whether to only test the validation and not return an expanded bracket
 - `allowEmpty`: (Boolean, default: true) Whether the validation should allow unpicked matches. This is useful for validating a bracket as a user is selecting it.
-` `flatBracket`: (String, default: '') The user's bracket to validate
+- `flatBracket`: (String, default: '') The user's bracket to validate
 
 ### methods
 
