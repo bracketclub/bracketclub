@@ -10,6 +10,7 @@
     "browser": false,
     "node": false,
     "trailing": true,
+    "unused": true,
     "indent": 4,
     "eqeqeq": true,
     "predef": [

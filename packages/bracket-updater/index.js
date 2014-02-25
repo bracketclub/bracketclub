@@ -1,35 +1,76 @@
-var BracketData = require('bracket-data'),
-    BracketValidator = require('bracket-validator'),
-    _find = require('lodash-node/modern/collections/find'),
-    _each = require('lodash-node/modern/collections/forEach'),
-    _map = require('lodash-node/modern/collections/map'),
-    _isNumber = require('lodash-node/modern/objects/isNumber'),
-    _values = require('lodash-node/modern/objects/values');
+var BracketData = require('bracket-data');
+var BracketValidator = require('bracket-validator');
+var _extend = require('lodash-node/modern/objects/assign');
+var _defaults = require('lodash-node/modern/objects/defaults');
+var _pick = require('lodash-node/modern/objects/pick');
+var _find = require('lodash-node/modern/collections/find');
+var _each = require('lodash-node/modern/collections/forEach');
+var _map = require('lodash-node/modern/collections/map');
+var _isNumber = require('lodash-node/modern/objects/isNumber');
+var _values = require('lodash-node/modern/objects/values');
+var bracketData;
+var teamNameMatches = function (team1, team2) {
+    return team1 && team1.name && team2 && team2.name && team1.name.toLowerCase() === team2.name.toLowerCase();
+};
+var seedMatches = function (team1, team2) {
+    return team1 && team2 && parseInt(team1.seed) === parseInt(team2.seed);
+};
+var flatten = function (bracket) {
+    var flattenedBracket = '';
+    _each(bracket, function (bracketRegion) {
+        var regionString = _map(bracketRegion.rounds, function (round, roundIndex) {
+            if (roundIndex === 0) return '';
+            return _map(round, function (roundGame) {
+                if (roundGame === null) return bracketData.constants.UNPICKED_MATCH;
+                if (_isNumber(roundGame) || !isNaN(roundGame)) return roundGame;
+                if (bracketRegion.id === bracketData.constants.FINAL_ID) return roundGame.fromRegion;
+                return roundGame.seed;
+            }).join('');
+        }).join('')
+        .replace(new RegExp(bracketData.order.join(''), 'g'), '')
+        .replace(new RegExp(_values(bracketData.constants.REGION_IDS).join(''), 'g'), '');
+        flattenedBracket += bracketRegion.id + regionString;
+    });
+    return flattenedBracket;
+};
 
 function Updater(options) {
-    BracketData.call(this, options, {
-        currentMaster: null,
-        fromRegion: '',
-        winner: {},
-        loser: {},
+    bracketData = new BracketData({
+        sport: options.sport,
+        year: options.year,
+        props: ['constants', 'order']
     });
-    if (typeof this.winner === 'number' || !isNaN(this.winner)) this.winner = {seed: parseInt(this.winner, 10)};
-    if (typeof this.loser === 'number' || !isNaN(this.loser)) this.loser = {seed: parseInt(this.loser, 10)};
-    if (typeof this.winner === 'string' && isNaN(this.winner)) this.winner = {name: this.winner};
-    if (typeof this.loser === 'string' && isNaN(this.loser)) this.loser = {name: this.loser};
 
-    // If we got passed in null or something, set the properties we need to not break
-    if (!this.winner) this.winner = {};
-    if (!this.loser) this.loser = {};
-    if (!this.winner.name) this.winner.name = '';
-    if (!this.loser.name) this.loser.name = '';
+    this.validator = new BracketValidator({
+        sport: options.sport,
+        year: options.year
+    });
+
+    return this.reset(options);
 }
 
-Updater.prototype = Object.create(BracketData.prototype, {
-    constructor: {
-        value: Updater
-    }
-});
+Updater.prototype.reset = function (options) {
+    _defaults(options || {}, {
+        winner: {},
+        loser: {},
+        fromRegion: ''
+    });
+
+    if (typeof options.winner === 'number' || !isNaN(options.winner)) options.winner = {seed: parseInt(options.winner, 10)};
+    if (typeof options.loser === 'number' || !isNaN(options.loser)) options.loser = {seed: parseInt(options.loser, 10)};
+    if (typeof options.winner === 'string' && isNaN(options.winner)) options.winner = {name: options.winner};
+    if (typeof options.loser === 'string' && isNaN(options.loser)) options.loser = {name: options.loser};
+
+    // If we got passed in null or something, set the properties we need to not break
+    if (!options.winner) options.winner = {};
+    if (!options.loser) options.loser = {};
+    if (!options.winner.name) options.winner.name = '';
+    if (!options.loser.name) options.loser.name = '';
+
+    _extend(this, _pick(options, 'winner', 'loser', 'fromRegion', 'currentMaster'));
+
+    return this;
+};
 
 Updater.prototype.hasWinner = function () {
     return !!(this.winner && (this.winner.name || this.winner.seed));
@@ -40,8 +81,8 @@ Updater.prototype.hasLoser = function () {
 };
 
 Updater.prototype.isFinal = function () {
-    var finalName = this.constants.FINAL_NAME.toLowerCase(),
-        finalId = this.constants.FINAL_ID.toLowerCase(),
+    var finalName = bracketData.constants.FINAL_NAME.toLowerCase(),
+        finalId = bracketData.constants.FINAL_ID.toLowerCase(),
         region = this.fromRegion.toLowerCase();
 
     return region === finalName || region === finalId;
@@ -51,19 +92,11 @@ Updater.prototype.isChampionship = function () {
     return (/((National )?Championship( Game)?|NCG)/i).test(this.fromRegion);
 };
 
-Updater.prototype.teamNameMatches = function (team1, team2) {
-    return team1 && team1.name && team2 && team2.name && team1.name.toLowerCase() === team2.name.toLowerCase();
-};
-
-Updater.prototype.seedMatches = function (team1, team2) {
-    return team1 && team2 && parseInt(team1.seed) === parseInt(team2.seed);
-};
-
 Updater.prototype.teamMatches = function (team1, team2) {
     if (this.isFinal()) {
-        return this.teamNameMatches(team1, team2);
+        return teamNameMatches(team1, team2);
     } else {
-        return this.seedMatches(team1, team2);
+        return seedMatches(team1, team2);
     }
 };
 
@@ -73,9 +106,9 @@ Updater.prototype.gameMatches = function (winner, loser) {
 
 Updater.prototype.getSeed = function (winner) {
     if (this.isFinal()) {
-        var finalTeams = this.bracketData[this.constants.FINAL_ID].rounds[0];
+        var finalTeams = this.validated[bracketData.constants.FINAL_ID].rounds[0];
         var finalTeam = _find(finalTeams, function (team) {
-            return this.teamNameMatches(team, winner);
+            return teamNameMatches(team, winner);
         }, this);
         return {fromRegion: finalTeam.fromRegion};
     } else {
@@ -83,16 +116,17 @@ Updater.prototype.getSeed = function (winner) {
     }
 };
 
-Updater.prototype.update = function () {
-    var bracketData = new BracketValidator({flatBracket: this.currentMaster, year: this.year}).validate();
-    if (bracketData instanceof Error) return bracketData;
-    this.bracketData = bracketData;
+Updater.prototype.update = function (options) {
+    options && this.reset(options);
+    var validated = this.validator.validate(this.currentMaster);
+    if (validated instanceof Error) return validated;
+    this.validated = validated;
 
     if (this.isChampionship()) {
-        this.fromRegion = this.constants.FINAL_ID;
+        this.fromRegion = bracketData.constants.FINAL_ID;
     }
 
-    var region = bracketData[this.fromRegion] || _find(bracketData, function (item) {
+    var region = validated[this.fromRegion] || _find(validated, function (item) {
         return item.name.toLowerCase() === this.fromRegion.toLowerCase();
     }, this);
 
@@ -153,40 +187,20 @@ Updater.prototype.update = function () {
 
     // Clear losing teams from final four also
     if (this.hasLoser() && regionRoundIndex === 1) {
-        var fin = bracketData[this.constants.FINAL_ID];
-        _each(fin.rounds, function (round, i, rounds) {
+        var fin = validated[bracketData.constants.FINAL_ID];
+        _each(fin.rounds, function (round, i) {
             if (i > 0) {
-                _each(round, function (game, ii, games) {
-                    if (game && this.teamNameMatches(game, this.loser)) {
-                        bracketData[this.constants.FINAL_ID].rounds[i][ii] = null;
+                _each(round, function (game, ii) {
+                    if (game && teamNameMatches(game, this.loser)) {
+                        validated[bracketData.constants.FINAL_ID].rounds[i][ii] = null;
                     }
                 }, this);
             }
         }, this);
     }
 
-
-    return this.flatten(bracketData);
-
-};
-
-Updater.prototype.flatten = function (bracket) {
-    var flattenedBracket = '';
-    _each(bracket, function (bracketRegion) {
-        var regionString = _map(bracketRegion.rounds, function (round, roundIndex) {
-            if (roundIndex === 0) return '';
-            return _map(round, function (roundGame) {
-                if (roundGame === null) return this.constants.UNPICKED_MATCH;
-                if (_isNumber(roundGame) || !isNaN(roundGame)) return roundGame;
-                if (bracketRegion.id === this.constants.FINAL_ID) return roundGame.fromRegion;
-                return roundGame.seed;
-            }, this).join('');
-        }, this).join('')
-        .replace(new RegExp(this.order.join(''), 'g'), '')
-        .replace(new RegExp(_values(this.constants.REGION_IDS).join(''), 'g'), '');
-        flattenedBracket += bracketRegion.id + regionString;
-    }, this);
-    return flattenedBracket;
+    this.currentMaster = flatten(validated);
+    return this.currentMaster;
 };
 
 module.exports = Updater;

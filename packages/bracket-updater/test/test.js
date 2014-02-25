@@ -1,9 +1,10 @@
 var assert = require('assert'),
     BracketUpdater = require('../index'),
     BracketGenerator = require('bracket-generator'),
-    year = process.env.BRACKET_YEAR,
+    year = '2013',
+    sport = 'ncaa-mens-basketball',
     BracketData = require('bracket-data'),
-    bd = new BracketData({year: year}),
+    bd = new BracketData({year: year, sport: sport, props: ['constants']}),
     c = bd.constants;
 
 describe('Bracket Updater', function () {
@@ -16,7 +17,8 @@ describe('Bracket Updater', function () {
                 fromRegion: 'MW',
                 winner: 12,
                 loser: 4,
-                year: year
+                year: year,
+                sport: sport
             });
 
         assert.equal(afterBracket, u.update());
@@ -30,7 +32,8 @@ describe('Bracket Updater', function () {
                 fromRegion: 'MW',
                 winner: '3',
                 loser: '2',
-                year: year
+                year: year,
+                sport: sport
             });
 
         assert.equal(afterBracket, u.update());
@@ -44,7 +47,8 @@ describe('Bracket Updater', function () {
                 fromRegion: 'MIDWEST',
                 winner: {seed: 3},
                 loser: {seed: '12'},
-                year: year
+                year: year,
+                sport: sport
             });
 
         assert.equal(afterBracket, u.update());
@@ -57,7 +61,8 @@ describe('Bracket Updater', function () {
                 currentMaster: beforeBracket,
                 fromRegion: 'MIDWEST',
                 winner: 5,
-                year: year
+                year: year,
+                sport: sport
             });
 
         assert.equal(afterBracket, u.update());
@@ -70,7 +75,8 @@ describe('Bracket Updater', function () {
                 currentMaster: beforeBracket,
                 fromRegion: 'MW',
                 winner: {name: '', seed: 5},
-                year: year
+                year: year,
+                sport: sport
             });
 
         assert.equal(afterBracket, u.update());
@@ -84,7 +90,8 @@ describe('Bracket Updater', function () {
                 fromRegion: 'MW',
                 winner: {name: '', seed: 16},
                 loser: {name: '', seed: 1},
-                year: year
+                year: year,
+                sport: sport
             });
 
         assert.equal(afterBracket, u.update());
@@ -99,7 +106,8 @@ describe('Bracket Updater', function () {
                 winner: {name: '', seed: 16},
                 // We don't specify a loser in this case to make sure that the updater
                 // picks the first last game that the winner appears
-                year: year
+                year: year,
+                sport: sport
             });
 
         assert.equal(afterBracket, u.update());
@@ -112,7 +120,8 @@ describe('Bracket Updater', function () {
                 currentMaster: beforeBracket,
                 fromRegion: 'MW',
                 winner: 1,
-                year: year
+                year: year,
+                sport: sport
             });
 
         assert.equal(afterBracket, u.update());
@@ -125,7 +134,8 @@ describe('Bracket Updater', function () {
                 currentMaster: beforeBracket,
                 fromRegion: 'S',
                 winner: 15,
-                year: year
+                year: year,
+                sport: sport
             });
 
         assert.equal(afterBracket, u.update());
@@ -139,7 +149,8 @@ describe('Bracket Updater', function () {
                 currentMaster: beforeBracket,
                 fromRegion: 'E',
                 winner: 15,
-                year: year
+                year: year,
+                sport: sport
             });
 
         assert.equal(afterBracket, u.update());
@@ -150,7 +161,8 @@ describe('Bracket Updater', function () {
                 currentMaster: beforeBracket2,
                 fromRegion: 'S',
                 winner: 13,
-                year: year
+                year: year,
+                sport: sport
             });
 
         assert.equal(afterBracket2, u2.update());
@@ -164,7 +176,8 @@ describe('Bracket Updater', function () {
                 fromRegion: 'MW',
                 winner: 1,
                 loser: 16,
-                year: year
+                year: year,
+                sport: sport
             });
 
         assert.equal(u.update(), afterBracket);
@@ -177,6 +190,7 @@ describe('Bracket Updater', function () {
             
         var mwFF = new BracketUpdater({
             year: year,
+            sport: sport,
             currentMaster: withoutFF,
             fromRegion: 'FF',
             winner: 'louisville',
@@ -185,22 +199,27 @@ describe('Bracket Updater', function () {
 
         var sFF = new BracketUpdater({
             year: year,
+            sport: sport
+        }).update({
             currentMaster: mwFF,
             fromRegion: 'FF',
             winner: {name: 'KANSAS'},
             loser: {name: 'Indiana'}
-        }).update();
+        });
 
         var ncg = new BracketUpdater({
             year: year,
+            sport: sport
+        }).update({
             currentMaster: sFF,
             fromRegion: 'Championship',
             winner: {name: 'Kansas'},
             loser: {name: 'Louisville'}
-        }).update();
+        });
 
         var ncg2 = new BracketUpdater({
             year: year,
+            sport: sport,
             currentMaster: sFF,
             fromRegion: 'FF',
             winner: 'Kansas'
@@ -210,6 +229,42 @@ describe('Bracket Updater', function () {
         assert.equal(sFF, noFF + 'MWSX');
         assert.equal(ncg, noFF + 'MWSS');
         assert.equal(ncg2, noFF + 'MWSS');
+    });
+
+    it('Can update multiple games', function () {
+        var beforeBracket = c.EMPTY,
+            afterBracket =  beforeBracket.replace('MWXXXX', 'MW1854'),
+            u = new BracketUpdater({
+                currentMaster: beforeBracket,
+                year: year,
+                sport: sport
+            });
+
+        u.update({
+            fromRegion: 'MW',
+            winner: 1,
+            loser: 16
+        });
+
+        u.update({
+            fromRegion: 'MW',
+            winner: 8,
+            loser: 9,
+        });
+
+        u.update({
+            fromRegion: 'MW',
+            winner: 4,
+            loser: 13,
+        });
+
+        u.update({
+            fromRegion: 'MW',
+            winner: 5,
+            loser: 12
+        });
+
+        assert.equal(u.currentMaster, afterBracket);
     });
 
 });
