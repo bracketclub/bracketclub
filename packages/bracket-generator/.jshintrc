@@ -9,6 +9,7 @@
     "undef": true,
     "browser": false,
     "quotmark": "single",
+    "unused": true,
     "node": false,
     "trailing": true,
     "indent": 4,
