@@ -57,10 +57,10 @@ describe('Bracket generator', function () {
 
     it('Can be reset', function () {
         var generator = new BracketGenerator({year: year, sport: sport});
-        assert.equal(generator.generate({winners: 'higher'}), upsets);
-        assert.equal(generator.generate({winners: 'lower'}), chalk);
-        assert.notEqual(generator.generate({winners: 'random'}), chalk);
-        assert.notEqual(generator.generate({winners: 'random'}), upsets);
+        assert.equal(generator.generate('higher'), upsets);
+        assert.equal(generator.generate('lower'), chalk);
+        assert.notEqual(generator.generate('random'), chalk);
+        assert.notEqual(generator.generate('random'), upsets);
     });
 
     it('Can be validated', function () {
@@ -71,8 +71,8 @@ describe('Bracket generator', function () {
             testOnly: true,
             allowEmpty: false
         });
-        assert.equal(false, validator.validate(generator.generate({winners: 'lower'})) instanceof Error);
-        assert.equal(false, validator.validate(generator.generate({winners: 'higher'})) instanceof Error);
+        assert.equal(false, validator.validate(generator.generate('lower')) instanceof Error);
+        assert.equal(false, validator.validate(generator.generate('higher')) instanceof Error);
     });
 
     it('Random binary brackets can be validated', function () {
