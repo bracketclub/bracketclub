@@ -184,7 +184,7 @@ describe('Bracket Updater', function () {
     });
 
     it('Final four and champ game should be updated even if it is 1 vs 1', function () {
-        var flat = new BracketGenerator({year: year, winners: 'lower'}).flatBracket(),
+        var flat = new BracketGenerator({year: year, sport: sport, winners: 'lower'}).generate(),
             noFF = flat.split(c.FINAL_ID)[0] + c.FINAL_ID,
             withoutFF = noFF + new Array(c.REGION_IDS.length).join(c.UNPICKED_MATCH);
             
