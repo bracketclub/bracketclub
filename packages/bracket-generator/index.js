@@ -153,8 +153,8 @@ Generator.prototype.winningTeamFromRegion = function (fromRegion) {
     }).rounds)[0];
 };
 
-Generator.prototype.generate = function (options) {
-    options && this.reset(options);
+Generator.prototype.generate = function (winners) {
+    winners && this.reset({winners: winners});
     return _map(_flatten(_toArray(this.generateBracket())), function (region) {
         return region.id + _flatten(region.rounds).join('');
     }).join('')
