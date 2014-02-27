@@ -1,22 +1,20 @@
-var BracketGenerator = require('bracket-generator'),
-    BracketValidator = require('../index'),
-    _ = require('lodash-node/compat'),
-    assert = require('assert'),
-    year = '2013',
-    sport = 'ncaa-mens-basketball',
-    BracketData = require('bracket-data'),
-    data = new BracketData({year: year, sport: sport, props: ['constants', 'order']});
+var BracketGenerator = require('bracket-generator');
+var BracketValidator = require('../index');
+var _ = require('lodash-node/compat');
+var assert = require('assert');
+var year = '2013';
+var sport = 'ncaa-mens-basketball';
 
 
 describe('A few random brackets: test only', function () {
     for (var i = 0; i < 20; i++) {
         (function () {
             it('the created and flat brackets should be equal', function () {
-                var bg = new BracketGenerator({data: data, winners: 'random', year: year}),
-                        flat = bg.flatBracket(),
-                        bv = new BracketValidator({flatBracket: flat, year: year, sport: sport, testOnly: true}).validate();
-
+                var bg = new BracketGenerator({sport: sport, winners: 'random', year: year}),
+                    flat = bg.generate(),
+                    bv = new BracketValidator({flatBracket: flat, year: year, sport: sport, testOnly: true}).validate();
                 assert.equal(flat, bv);
+                assert.equal(false, bv instanceof Error);
             });
         })();
     }
