@@ -105,7 +105,7 @@ Scorer.prototype.score = function (methods, options) {
     if (typeof methods === 'string') {
         methods = [methods];
     } else if (!methods || !_isArray(methods)) {
-        methods = ['standard'];
+        methods = ['rounds'];
     }
 
     return this._roundLoop(methods);

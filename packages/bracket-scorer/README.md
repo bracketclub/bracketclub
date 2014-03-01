@@ -30,16 +30,43 @@ console.log(scorer.score());
 
 ### options
 
-- `sport`: The sport you are validating. See [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#api) for more info.
-- `year`: The year you are validating. See [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#api) for more info.
-- `entry`: (String, required) Whether to only test the validation and not return an expanded bracket
-- `master`: (String, required) Whether the validation should allow unpicked matches. This is useful for validating a bracket as a user is selecting it.
-- `scoring`: (Object, optional) Scoring system that can be used. By default the scoring systems from the year/sport [`bracket-data`](https://github.com/tweetyourbracket/bracket-data) will be available. Those can be overriden here. See below for possible scoring system formats.
+- `sport`: The sport you are scoring. See [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#api) for more info.
+- `year`: The year you are scoring. See [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#api) for more info.
+- `entry`: (String, required) The entry bracket to score.
+- `master`: (String, required) The master bracket to score the entry against.
+- `scoring`: (Object, optional) Scoring systems that can be used. By default the scoring systems from the year/sport [`bracket-data`](https://github.com/tweetyourbracket/bracket-data) will be available. Those can be overriden here. See [below](#scoring) for possible scoring system formats.
 
 ### methods
 
-- `score(methods, options)`: Score the bracket. The first param is an array of scoring methods or a string can be used to call only one scoring method. Each one will be returned as a property on the response object. If only one method is called, the response will just be that value. By default, only `standard` will be used. `options` will be passed to `reset` to possible reset the `entry` or `master` brackets. Any string that can used in `methods` can also be called directly, so `score('standard')` can also be called just by `standard()`.
-- `reset({entry: entry, master: master})`: Reset the internal validators used by the scorer for either the `entry`, `master` or both.
+- `score(methods, [{entry: entry, master: master}])`: Score the bracket. The first param is an array of scoring methods or a string can be used to call only one scoring method. Each one will be returned as a property on the response object. If only one method is called, the response will just be that value. By default, only `rounds` will be used. Any string that can used in `methods` can also be called directly. The second param will be passed to `reset` to optionally reset the `entry` or `master` brackets.
+
+Examples:
+```js
+// Equivalent
+s = scorer.score()
+s = scorer.score('rounds')
+s = scorer.rounds()
+console.log(s); // eg [24, 12, 3, 1, 0, 0]
+
+// Call multiple methods
+// Return object will have each property
+s = scorer.score(['rounds', 'standard'])
+console.log(s.rounds, s.standard) // eg [24, 12, 3, 1, 0, 0], 900
+
+// Change the master bracket before scoring
+s = scorer.score('rounds', {master: newMaster})
+// Can also be passed as the first param if you want to use the default 'rounds'
+s = scorer.score({master: newMaster})
+// Or just called with the `rounds` method
+s = scorer.rounds({master: newMaster})
+
+// Can diff the brackets too
+s = scorer.diff() // or s.scorer('diff')
+// Was the first pick of the first round in the MW region correct?
+console.log(s.MW.rounds[0][0].correct)
+```
+
+- `reset({entry: entry, master: master})`: Reset the internal validators used by the scorer for either the `entry`, `master` or both. You usually dont need to call this and can instead just call any of the scoring methods with this as an optional second parameter.
 
 ### default scoring methods
 

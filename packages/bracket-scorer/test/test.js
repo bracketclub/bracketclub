@@ -48,7 +48,7 @@ describe('Bracket Scorer', function () {
                 sport: sport,
                 year: year
             }),
-            s = scorer.score('rounds');
+            s = scorer.score();
 
         assert.equal(true, _.isArray(s));
         assert.equal(s.length, 6);
@@ -56,7 +56,7 @@ describe('Bracket Scorer', function () {
 
         var perf = new BracketGenerator({winners: 'lower', year: year, sport: sport}).generate(),
             perf2 = new BracketGenerator({winners: 'higher', year: year, sport: sport}).generate();
-        s = scorer.score('rounds', {entry: perf, master: perf2});
+        s = scorer.score({entry: perf, master: perf2});
 
         assert.equal(true, _.isArray(s));
         assert.equal(s.length, 6);
@@ -71,7 +71,7 @@ describe('Bracket Scorer', function () {
                 master: master.generate(),
                 sport: sport,
                 year: year
-            }).score();
+            }).score('standard');
 
         assert.equal(s, 1920);
     });
@@ -84,7 +84,7 @@ describe('Bracket Scorer', function () {
                 master: noUpsets.generate(),
                 sport: sport,
                 year: year
-            }).score();
+            }).score('standard');
 
         assert.equal(s, 0);
     });
@@ -98,7 +98,27 @@ describe('Bracket Scorer', function () {
                 sport: sport,
                 year: year
             }),
-            s = scorer.score();
+            s = scorer.score('standard');
+
+        assert.equal(s, 0);
+
+        s = scorer.standard({
+            master: new BracketGenerator({winners: 'higher', year: year, sport: sport}).generate()
+        });
+
+        assert.equal(s, 1920);
+    });
+
+    it('Can be called with the options as the first param', function () {
+        var noUpsets = new BracketGenerator({winners: 'lower', year: year, sport: sport}),
+            allUpsets = new BracketGenerator({winners: 'higher', year: year, sport: sport}),
+            scorer = new BracketScorer({
+                entry: allUpsets.generate(),
+                master: noUpsets.generate(),
+                sport: sport,
+                year: year
+            }),
+            s = scorer.score('standard');
 
         assert.equal(s, 0);
 
@@ -106,7 +126,7 @@ describe('Bracket Scorer', function () {
             master: new BracketGenerator({winners: 'higher', year: year, sport: sport}).generate()
         });
 
-        assert.equal(s, 1920);
+        assert.equal(true, _.isEqual(s, [32, 16, 8, 4, 2, 1]));
     });
 
     it('Gooley with all upsets', function () {
