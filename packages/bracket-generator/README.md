@@ -1,20 +1,21 @@
 bracket-generator
 =================
 
+Generate a tournament bracket.
+
 [![NPM](https://nodei.co/npm/bracket-generator.png)](https://nodei.co/npm/bracket-generator/)
 
 [![Build Status](https://travis-ci.org/tweetyourbracket/bracket-generator.png?branch=master)](https://travis-ci.org/tweetyourbracket/bracket-generator)
 
 ![Testling CI badge](https://ci.testling.com/tweetyourbracket/bracket-generator.png)
 
-Generate an NCAA tournament bracket.
 
 ## What is this?
 `bracket-generator`, well, it generates brackets! (Check out [`bracket-data`](https://github.com/tweetyourbracket/bracket-data) for more info about brackets and their data.)
 
 More specifically, this module generates a [string representation of a bracket](https://gist.github.com/lukekarrys/2028007#explanation). That string can then be used with a whole bunch of others modules to [validate it](https://github.com/tweetyourbracket/bracket-validator), [update it](https://github.com/tweetyourbracket/bracket-updater), or [score it](https://github.com/tweetyourbracket/bracket-scorer).
 
-This module isn't that useful for selecting brackets (unless you wanted to stage an epic robot NCAA bracket challenge, wait, that'd be awesome) but it is useful for testing other bracket modules and creating random (or not-so-random) brackets.
+This module isn't that useful for selecting brackets (unless you wanted to stage an epic robot bracket challenge, wait, that'd be awesome) but it is useful for testing other bracket modules and creating random (or not-so-random) brackets.
 
 ## API / Usage
 
