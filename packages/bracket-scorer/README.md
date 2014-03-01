@@ -25,7 +25,7 @@ var scorer = new BracketScorer({
    entry: entryBracket,
    master: masterBracket
 });
-console.log(scorer.score());
+scorer.score();
 ```
 
 ### options
@@ -38,26 +38,31 @@ console.log(scorer.score());
 
 ### methods
 
-- `score(methods, [{entry: entry, master: master}])`: Score the bracket. The first param is an array of scoring methods or a string can be used to call only one scoring method. Each one will be returned as a property on the response object. If only one method is called, the response will just be that value. By default, only `rounds` will be used. Any string that can used in `methods` can also be called directly. The second param will be passed to `reset` to optionally reset the `entry` or `master` brackets.
+- `score(methods, [{entry: entry, master: master}])`: Score the bracket.
+  - `methods (default: 'rounds')` is an array of scoring methods (`['rounds', 'standard']`) or a string can be used to call only one scoring method (`'rounds'`). Each one will be returned as a property on the response object. If only one method is called, the response will just be that value.
+  - The second param will be passed to `reset` to optionally reset the `entry` or `master` brackets.
 
 Examples:
 ```js
 // Equivalent
 s = scorer.score()
 s = scorer.score('rounds')
-s = scorer.rounds()
+s = scorer.rounds() // Convenience methods exist for each single scoring method
 console.log(s); // eg [24, 12, 3, 1, 0, 0]
 
 // Call multiple methods
 // Return object will have each property
 s = scorer.score(['rounds', 'standard'])
+// Equivalent to
+s.rounds = scorer.rounds()
+s.standard = scorer.standard()
 console.log(s.rounds, s.standard) // eg [24, 12, 3, 1, 0, 0], 900
 
 // Change the master bracket before scoring
 s = scorer.score('rounds', {master: newMaster})
 // Can also be passed as the first param if you want to use the default 'rounds'
 s = scorer.score({master: newMaster})
-// Or just called with the `rounds` method
+// Or just called with the `rounds` covenience method
 s = scorer.rounds({master: newMaster})
 
 // Can diff the brackets too
@@ -72,7 +77,7 @@ console.log(s.MW.rounds[0][0].correct)
 
 Check out [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#what-data-does-this-module-give-me) to see the specific scoring systems for each sport/year.
 
-Also by default this modules adds the following:
+Also by default this module adds the following:
 
 - `rounds`: Returns an array with a count for how many correct picks in each round.
 - `diff`: Not really a scoring system, but this will return the [validated entry bracket](https://github.com/tweetyourbracket/bracket-validator) with the following properties added to each game.
@@ -97,7 +102,9 @@ var scorer = new BracketScorer({
     }
 });
 // Will give the entry one point for every correct pick
-console.log(scorer.onePointPerGame());
+scorer.onePointPerGame();
+// Or can be called like
+scorer.score('onePointPerGame');
 ```
 
 If a scoring system is just one number (like the example above), that value will be added to the score for each correct pick. The scoring system can also be an array. If it is an array of numbers and the array length is equal to the number of rounds, each value will be used for the appropriate round. For example:
@@ -114,7 +121,9 @@ var scorer = new BracketScorer({
 });
 // Will give the entry one point for every correct pick in the first five rounds
 // And 1000 points if they get the champion correct
-console.log(scorer.massivelyWeightedChampion());
+scorer.massivelyWeightedChampion();
+// Or can be called like
+scorer.score('massivelyWeightedChampion');
 ```
 
 ## Anything else?
