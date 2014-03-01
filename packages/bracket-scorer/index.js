@@ -1,125 +1,183 @@
-var BracketValidator = require('bracket-validator'),
-    BracketData = require('bracket-data'),
-    _cloneDeep = require('lodash-node/modern/objects/cloneDeep'),
-    _each = require('lodash-node/modern/collections/forEach'),
-    _contains = require('lodash-node/modern/collections/contains'),
-    _isEqual = require('lodash-node/modern/objects/isEqual'),
-    _reduce = require('lodash-node/modern/collections/reduce');
+var BracketValidator = require('bracket-validator');
+var BracketData = require('bracket-data');
+var _bind = require('lodash-node/modern/functions/bind');
+var _each = require('lodash-node/modern/collections/forEach');
+var _contains = require('lodash-node/modern/collections/contains');
+var _isArray = require('lodash-node/modern/objects/isArray');
+var _cloneDeep = require('lodash-node/modern/objects/cloneDeep');
+var _extend = require('lodash-node/modern/objects/assign');
+var _isPlainObject = require('lodash-node/modern/objects/isPlainObject');
+var bracketData;
+
+var getResult = {
+    totalScore: function (result) {
+        if (result.status !== 'correct') return 0;
+
+        var scoringSystem = bracketData.scoring[result.type];
+
+        if (typeof scoringSystem === 'undefined') throw new Error('There is no scoring system: ' + result.type);
+
+        if (_isArray(scoringSystem) && typeof scoringSystem[0] === 'number' && scoringSystem.length === initialValues.rounds().length) {
+            // The scoring system is an array of numbers that is equal to the number of rounds
+            // So we return the value for the current round
+            return scoringSystem[result.roundIndex] * 10;
+        } else if (_isArray(scoringSystem) && _isArray(scoringSystem[0]) && scoringSystem.length === initialValues.rounds().length && scoringSystem[0].length === bracketData.constants.TEAMS_PER_REGION) {
+            // The scoring system is an array of arrays. There is one array for each round
+            // and each sub-array has one value for each seed. So we return the value for the current round+seed
+            return scoringSystem[result.roundIndex][result.seed - 1] * 10;
+        } else if (typeof scoringSystem === 'number') {
+            return scoringSystem * 10;
+        }
+
+        throw new Error('Cant do anything with scoring system: ' + result.type);
+    },
+    diff: function (options) {
+        if (options.status === 'incorrect') {
+            options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].correct = false;
+            options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].shouldBe = options.masterGame;
+            options.eliminated.push(options.regionId + options.seed);
+        } else if (options.status === 'correct') {
+            options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].correct = true;
+        } else if (options.status === 'unplayed' && _contains(options.eliminated, options.regionId + options.seed)) {
+            options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].eliminated = true;
+        }
+    },
+    rounds: function (options) {
+        options.rounds[options.roundIndex] += (options.status === 'correct' ? 1 : 0);
+    }
+};
+
+var initialValues = {
+    rounds: function () {
+        var teamCount = bracketData.constants.TEAMS_PER_REGION * bracketData.constants.REGION_COUNT;
+        var rounds = [];
+        while (teamCount > 1) {
+            rounds.push(0);
+            teamCount = teamCount / 2;
+        }
+        return rounds;
+    },
+    diff: function (entry) { return _cloneDeep(entry); },
+};
 
 
 function Scorer(options) {
-    BracketData.call(this, options, {
-        otherData: {}
+    bracketData = new BracketData({
+        sport: options.sport,
+        year: options.year,
+        props: ['constants', 'scoring', 'bracket']
     });
-    this.validateUser = new BracketValidator({flatBracket: options.userBracket, year: this.year});
-    this.validateMaster = new BracketValidator({flatBracket: options.masterBracket, year: this.year});
+
+    // Create convenience methods
+    _each(_extend(bracketData.scoring, options.scoring || {}), function (system, key) {
+        this[key] = _bind(this.score, this, [key]);
+    }, this);
+
+    this.entryValidator = new BracketValidator({year: options.year, sport: options.sport});
+    this.masterValidator = new BracketValidator({year: options.year, sport: options.sport});
+
+    return this.reset(options);
 }
 
-Scorer.prototype = Object.create(BracketData.prototype, {
-    constructor: {
-        value: Scorer
+Scorer.prototype.reset = function (options) {
+    if (options.entry) this.validatedEntry = this.entryValidator.validate(options.entry);
+    if (options.master) this.validatedMaster = this.masterValidator.validate(options.master);
+    return this;
+};
+
+// Default convenience methods
+Scorer.prototype.diff = function (options) {
+    return this.score(['diff'], options);
+};
+
+Scorer.prototype.rounds = function (options) {
+    return this.score(['rounds'], options);
+};
+
+// Generic score method
+Scorer.prototype.score = function (methods, options) {
+    if (_isPlainObject(methods) && (methods.entry || methods.master) && !options) {
+        options = methods;
     }
-});
 
-Scorer.prototype.reset = function (master, user) {
-    return BracketData.prototype.reset.apply(this, {
-        validateUser: this.validateUser.reset(user),
-        validateMaster: this.validateMaster.reset(master)
-    });
+    options && this.reset(options);
+
+    if (typeof methods === 'string') {
+        methods = [methods];
+    } else if (!methods || !_isArray(methods)) {
+        methods = ['standard'];
+    }
+
+    return this._roundLoop(methods);
 };
 
-Scorer.prototype.diff = function () {
-    var validatedUser = this.validateUser.validate(),
-        validatedMaster = this.validateMaster.validate(),
-        diff = _cloneDeep(validatedUser),
-        eliminatedTeams = [];
+Scorer.prototype._roundLoop = function (methods) {
+    var results = {};
+    var eliminatedTeams = [];
+    _each(methods, function (method) {
+        results[method] = initialValues[method] ? initialValues[method](this.validatedEntry) : 0;
+    }, this);
 
-    _each(validatedUser, function (region, regionId) {
-        _each(region.rounds, function (round, round_i) {
-            if (round_i > 0 || regionId === this.constants.FINAL_ID) {
-                _each(round, function (game, game_i) {
-                    var masterGame = validatedMaster[regionId].rounds[round_i][game_i];
+    _each(this.validatedEntry, function (region, regionId) {
+        var isFinal = regionId === bracketData.constants.FINAL_ID;
+        _each(region.rounds, function (games, roundIndex) {
+            var trueRoundIndex = (isFinal ? bracketData.constants.REGION_COUNT + roundIndex : roundIndex) - 1;
+            var getScoreResult = roundIndex > 0;
+            var getDiffResult = getScoreResult || isFinal;
+            if (getScoreResult || getDiffResult) {
+                _each(games, function (game, gameIndex) {
+                    var masterGame = this.validatedMaster[regionId].rounds[roundIndex][gameIndex];
+                    var status;
 
+                    // Set the status of the result
                     if (masterGame === null) {
-                        // Hasn't been played yet
-                        if (_contains(eliminatedTeams, game.fromRegion + game.seed)) {
-                            // An unplayed game with a team that is eliminated
-                            diff[regionId].rounds[round_i][game_i].eliminated = true;
-                        }
+                        status = 'unplayed';
+                    } else if (game.name === masterGame.name) {
+                        status = 'correct';
                     } else {
-                        // You got it wrong
-                        if (!_isEqual(game, masterGame)) {
-                            diff[regionId].rounds[round_i][game_i].correct = false;
-                            diff[regionId].rounds[round_i][game_i].shouldBe = masterGame;
-                            eliminatedTeams.push(game.fromRegion + game.seed);
-                        } else {
-                            diff[regionId].rounds[round_i][game_i].correct = true;
+                        status = 'incorrect';
+                    }
+
+                    // Process method for each result
+                    _each(methods, function (method) {
+                        if (method === 'rounds' && getScoreResult) {
+                            getResult[method]({
+                                rounds: results.rounds,
+                                roundIndex: trueRoundIndex,
+                                status: status
+                            });
+                        } else if (method === 'diff') {
+                            getResult[method]({
+                                diff: results.diff,
+                                regionId: regionId,
+                                roundIndex: roundIndex,
+                                gameIndex: gameIndex,
+                                seed: game.seed,
+                                status: status,
+                                eliminated: eliminatedTeams,
+                                masterGame: masterGame
+                            });
+                        } else if (getScoreResult) {
+                            results[method] += getResult.totalScore({
+                                roundIndex: trueRoundIndex,
+                                status: status,
+                                seed: game.seed,
+                                type: method
+                            });
                         }
-                    }
+                    }, this);
                 }, this);
             }
         }, this);
     }, this);
 
-    return diff;
-};
-
-Scorer.prototype.gooley = function () {
-    var validatedUser = this.validateUser.validate(),
-        validatedMaster = this.validateMaster.validate(),
-        totalPoints = 0;
-
-    _each(validatedUser, function (region, regionId) {
-        _each(region.rounds, function (round, round_i) {
-            if (round_i > 0) {
-                _each(round, function (game, game_i) {
-                    var masterGame = validatedMaster[regionId].rounds[round_i][game_i];
-
-                    if (masterGame !== this.constants.UNPICKED_MATCH && _isEqual(game, masterGame)) {
-                        totalPoints += (this.scoring.gooley[round_i - 1][game.seed - 1] * 10);
-                    }
-                }, this);
-            }
-        }, this);
-    }, this);
-
-    this.otherData.gooley = totalPoints / 10;
-    return this.otherData;
-};
-
-Scorer.prototype.getScore = function () {
-    var validatedUser = this.validateUser.validate(),
-        validatedMaster = this.validateMaster.validate(),
-        rounds = [],
-        correctCounter = 0;
-
-    _each(validatedUser, function (region, regionId) {
-        _each(region.rounds, function (round, round_i) {
-            if (round_i > 0) {
-                _each(round, function (game, game_i) {
-                    var masterGame = validatedMaster[regionId].rounds[round_i][game_i];
-
-                    if (masterGame !== this.constants.UNPICKED_MATCH && _isEqual(game, masterGame)) {
-                        correctCounter++;
-                    }
-                }, this);
-                var regionIndex = (regionId === this.constants.FINAL_ID) ? this.constants.REGION_COUNT + round_i - 1 : round_i - 1;
-                if (rounds[regionIndex] === undefined) {
-                    rounds[regionIndex] = correctCounter;
-                } else {
-                    rounds[regionIndex] += correctCounter;
-                }
-                correctCounter = 0;
-            }
-        }, this);
-    }, this);
-
-    this.otherData.totalScore = _reduce(rounds, function (memo, num, i) {
-        return memo + (num * (this.scoring.standard[i] || 1));
-    }, 0, this);
-    this.otherData.rounds = rounds;
-
-    return this.otherData;
+    // Any total score is a number and we multipled by 10 originally to support tenth place decimals
+    _each(results, function (val, key, list) {
+        if (typeof val === 'number') {
+            list[key] = val / 10;
+        }
+    });
+    return methods.length === 1 ? results[methods[0]] : results;
 };
 
 module.exports = Scorer;
