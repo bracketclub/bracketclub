@@ -194,12 +194,27 @@ describe('Bracket Scorer', function () {
                 scoring: {
                     one: 1,
                     standard: [1, 2, 4, 8, 16, 32],
+                    champion: [1, 1, 1, 1, 1, 1000],
+                    doesNotWork: [1, 6]
+                }
+            }),
+            oneWrong = new BracketScorer({
+                entry: entry.generate().replace('FFMWSMW', 'FFMWSS'),
+                master: master.generate(),
+                sport: sport,
+                year: year,
+                scoring: {
+                    one: 1,
+                    standard: [1, 2, 4, 8, 16, 32],
+                    champion: [1, 1, 1, 1, 1, 1000],
                     doesNotWork: [1, 6]
                 }
             });
 
         assert.equal(s.one(), 63);
         assert.equal(s.standard(), 192);
+        assert.equal(s.champion(), 1062);
+        assert.equal(oneWrong.champion(), 62);
         assert.throws(function () { s.score('notASystem'); }, /no scoring system: notASystem/);
         assert.throws(function () { s.score('doesNotWork'); }, /Cant do anything with scoring system: doesNotWork/);
     });
