@@ -154,7 +154,7 @@ Updater.prototype.update = function (options) {
                 } else {
                     // If there is no other team, it means we want to use the winner of the latest game they appear
                     // So if a user is picking a bracket, a winner can be picked without an opponent
-                    if (this.teamMatches(roundGame, this.winner)) {
+                    if (this.teamMatches(roundGame, this.winner) && !this.hasLoser()) {
                         regionRoundIndex = i + 1;
                         nextRoundGameIndex = Math.floor(ii / 2);
                         otherTeam && (this.loser = otherTeam);
@@ -186,7 +186,8 @@ Updater.prototype.update = function (options) {
     }
 
     // Clear losing teams from final four also
-    if (this.hasLoser() && regionRoundIndex === 1) {
+    var isFinalRegion = this.fromRegion === bracketData.constants.FINAL_ID;
+    if (this.hasLoser() && (!isFinalRegion || (isFinalRegion && regionRoundIndex === 1))) {
         var fin = validated[bracketData.constants.FINAL_ID];
         _each(fin.rounds, function (round, i) {
             if (i > 0) {

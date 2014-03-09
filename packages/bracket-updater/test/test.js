@@ -183,6 +183,33 @@ describe('Bracket Updater', function () {
         assert.equal(u.update(), afterBracket);
     });
 
+    it('Should not update future games if a winner and loser is passed and that specific game has been recorded', function () {
+        var before = 'MWXXXXXX10XXXX10X1010WXXXXXXXXXXXXXXXS168XXXXXX8XXX8X8EXXXXXXXXXXXXXXXFFMWSS';
+        var befor1 = 'MWXXXXXX10XXXX10X1010WXXXXXXXXXXXXXXXS168XXXXXX16XXXXXXEXXXXXXXXXXXXXXXFFMWXX';
+
+        var u = new BracketUpdater({
+            currentMaster: before,
+            fromRegion: 'S',
+            winner: 16,
+            loser: 1,
+            year: year,
+            sport: sport
+        });
+
+        assert.equal(u.update(), before);
+
+        // Without the loser this time
+        var u2 = new BracketUpdater({
+            currentMaster: before,
+            fromRegion: 'S',
+            winner: 16,
+            year: year,
+            sport: sport
+        });
+
+        assert.equal(u2.update(), befor1);
+    });
+
     it('Final four and champ game should be updated even if it is 1 vs 1', function () {
         var flat = new BracketGenerator({year: year, sport: sport, winners: 'lower'}).generate(),
             noFF = flat.split(c.FINAL_ID)[0] + c.FINAL_ID,
@@ -192,7 +219,7 @@ describe('Bracket Updater', function () {
             year: year,
             sport: sport,
             currentMaster: withoutFF,
-            fromRegion: 'FF',
+            fromRegion: 'Final Four',
             winner: 'louisville',
             loser: {name: 'gonzaga'}
         }).update();
@@ -202,7 +229,7 @@ describe('Bracket Updater', function () {
             sport: sport
         }).update({
             currentMaster: mwFF,
-            fromRegion: 'FF',
+            fromRegion: 'final four',
             winner: {name: 'KANSAS'},
             loser: {name: 'Indiana'}
         });
