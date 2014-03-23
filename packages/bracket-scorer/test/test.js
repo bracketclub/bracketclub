@@ -340,5 +340,36 @@ describe('Bracket Differ', function () {
         assert.equal(1, res.FF.rounds[0][3].shouldBe.seed);
     });
 
+    it('Check final four, ncg, champion: eliminated teams', function () {
+        var user = "S195463721437171E1812463721432424W19124637211237131MW181241131021432133FFSMWMW";
+        var master = "S191241131021X1110XXXE181246372X4X7XXXW181246372X4X2XXXMW185411147284X2XXXFFXXX";
+        var res = new BracketScorer({
+            entry: user,
+            master: master,
+            year: '2014',
+            sport: sport
+        }).score('diff');
+
+        // Duke, 3 seed to FF and NCG and champion, should show as eliminated but not shouldBe
+        var finalFour = res.FF.rounds[0][3];
+        var ncg = res.FF.rounds[1][1];
+        var champion = res.FF.rounds[2][0];
+
+        assert.equal(true, finalFour.eliminated);
+        assert.equal("undefined", typeof finalFour.shouldBe);
+        assert.equal(3, finalFour.seed);
+        assert.equal("Duke", finalFour.name);
+
+        assert.equal(true, ncg.eliminated);
+        assert.equal("undefined", typeof ncg.shouldBe);
+        assert.equal(3, ncg.seed);
+        assert.equal("Duke", ncg.name);
+
+        assert.equal(true, champion.eliminated);
+        assert.equal("undefined", typeof champion.shouldBe);
+        assert.equal(3, champion.seed);
+        assert.equal("Duke", champion.name);
+    });
+
 });
 

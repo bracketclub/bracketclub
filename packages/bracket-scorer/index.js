@@ -35,10 +35,10 @@ var getResult = {
         if (options.status === 'incorrect') {
             options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].correct = false;
             options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].shouldBe = options.masterGame;
-            options.eliminated.push(options.regionId + options.seed);
+            options.eliminated.push(options.game.fromRegion + options.game.seed);
         } else if (options.status === 'correct') {
             options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].correct = true;
-        } else if (options.status === 'unplayed' && _contains(options.eliminated, options.regionId + options.seed)) {
+        } else if (options.status === 'unplayed' && _contains(options.eliminated, options.game.fromRegion + options.game.seed)) {
             options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].eliminated = true;
         }
     },
@@ -152,7 +152,7 @@ Scorer.prototype._roundLoop = function (methods) {
                                 regionId: regionId,
                                 roundIndex: roundIndex,
                                 gameIndex: gameIndex,
-                                seed: game.seed,
+                                game: game,
                                 status: status,
                                 eliminated: eliminatedTeams,
                                 masterGame: masterGame
