@@ -2,12 +2,16 @@ var BracketValidator = require('bracket-validator');
 var BracketData = require('bracket-data');
 var _bind = require('lodash-node/modern/functions/bind');
 var _each = require('lodash-node/modern/collections/forEach');
+var _map = require('lodash-node/modern/collections/map');
+var _uniq = require('lodash-node/modern/arrays/uniq');
+var _some = require('lodash-node/modern/collections/some');
 var _contains = require('lodash-node/modern/collections/contains');
 var _isArray = require('lodash-node/modern/objects/isArray');
 var _cloneDeep = require('lodash-node/modern/objects/cloneDeep');
 var _extend = require('lodash-node/modern/objects/assign');
 var _isPlainObject = require('lodash-node/modern/objects/isPlainObject');
 var bracketData;
+
 
 var getResult = {
     totalScore: function (result) {
@@ -33,13 +37,28 @@ var getResult = {
     },
     diff: function (options) {
         if (options.status === 'incorrect') {
-            options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].correct = false;
-            options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].shouldBe = options.masterGame;
+            if (options.diff) {
+                options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].correct = false;
+                options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].shouldBe = options.masterGame;
+            }
             options.eliminated.push(options.game.fromRegion + options.game.seed);
         } else if (options.status === 'correct') {
-            options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].correct = true;
+            if (options.diff) {
+                options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].correct = true;
+            }
         } else if (options.status === 'unplayed' && _contains(options.eliminated, options.game.fromRegion + options.game.seed)) {
-            options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].eliminated = true;
+            if (options.diff) {
+                options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].eliminated = true;
+            }
+        } else if (options.status === 'unplayed' && options.pprMethods.length && options.getScoreResult) {
+            _each(options.pprMethods, function (pprMethod) {
+                options.results[pprMethod] += this.totalScore({
+                    roundIndex: options.trueRoundIndex,
+                    status: 'correct',
+                    seed: options.game.seed,
+                    type: pprMethod.replace('PPR', '')
+                });
+            }, this);
         }
     },
     rounds: function (options) {
@@ -70,6 +89,7 @@ function Scorer(options) {
 
     // Create convenience methods
     _each(_extend(bracketData.scoring, options.scoring || {}), function (system, key) {
+        this[key + 'PPR'] = _bind(this.score, this, [key + 'PPR']);
         this[key] = _bind(this.score, this, [key]);
     }, this);
 
@@ -114,7 +134,9 @@ Scorer.prototype.score = function (methods, options) {
 Scorer.prototype._roundLoop = function (methods) {
     var results = {};
     var eliminatedTeams = [];
+    var pprMethods = [];
     _each(methods, function (method) {
+        if (method.indexOf('PPR') > -1) pprMethods.push(method);
         results[method] = initialValues[method] ? initialValues[method](this.validatedEntry) : 0;
     }, this);
 
@@ -138,8 +160,18 @@ Scorer.prototype._roundLoop = function (methods) {
                         status = 'incorrect';
                     }
 
+                    // The diff methods needs to be called to get the diff result or any PPR results
+                    var callableMethods;
+                    var hasDiff = _contains(methods, 'diff');
+                    var hasPPR = _some(methods, function (m) { return m.indexOf('PPR') > -1; });
+                    // But we should only call it once
+                    if (hasDiff || hasPPR) {
+                        callableMethods = _uniq(_map(methods, function (m) {
+                            return m.indexOf('PPR') > -1 ? 'diff' : m;
+                        }));
+                    }
                     // Process method for each result
-                    _each(methods, function (method) {
+                    _each(callableMethods || methods, function (method) {
                         if (method === 'rounds' && getScoreResult) {
                             getResult[method]({
                                 rounds: results.rounds,
@@ -147,15 +179,19 @@ Scorer.prototype._roundLoop = function (methods) {
                                 status: status
                             });
                         } else if (method === 'diff') {
-                            getResult[method]({
+                            getResult.diff({
                                 diff: results.diff,
                                 regionId: regionId,
                                 roundIndex: roundIndex,
+                                trueRoundIndex: trueRoundIndex,
                                 gameIndex: gameIndex,
                                 game: game,
                                 status: status,
                                 eliminated: eliminatedTeams,
-                                masterGame: masterGame
+                                masterGame: masterGame,
+                                pprMethods: pprMethods,
+                                results: results,
+                                getScoreResult: getScoreResult
                             });
                         } else if (getScoreResult) {
                             results[method] += getResult.totalScore({

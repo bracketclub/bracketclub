@@ -169,6 +169,41 @@ describe('Bracket Scorer', function () {
         assert.equal(s.standard, 1920);
     });
 
+    it('Possible points remaining: standard', function () {
+        var s = new BracketScorer({
+                entry: 'S195463721437171E1812463721432424W19124637211237131MW181241131021432133FFSWS',
+                master: 'S19124113102141110XXXE1812463721437XXXW1812463721462XXXMW185411147284112XXXFFXXX',
+                sport: sport,
+                year: '2014'
+            }).score(['standardPPR']);
+
+        assert.equal(s, 1000);
+    });
+
+    it('Possible points remaining: gooley', function () {
+        var s = new BracketScorer({
+                entry: 'S195463721437171E1812463721432424W19124637211237131MW181241131021432133FFSWS',
+                master: 'S19124113102141110XXXE1812463721437XXXW1812463721462XXXMW185411147284112XXXFFXXX',
+                sport: sport,
+                year: '2014'
+            }).score(['gooleyPPR']);
+
+        assert.equal(s, 44);
+    });
+
+    it('Possible points remaining: both with diff', function () {
+        var s = new BracketScorer({
+                entry: 'S195463721437171E1812463721432424W19124637211237131MW181241131021432133FFSWS',
+                master: 'S19124113102141110XXXE1812463721437XXXW1812463721462XXXMW185411147284112XXXFFXXX',
+                sport: sport,
+                year: '2014'
+            }).score(['diff', 'standardPPR', 'gooleyPPR']);
+
+        assert.equal(s.standardPPR, 1000);
+        assert.equal(s.gooleyPPR, 44);
+        assert.equal(5, _.compact(_.pluck(s.diff.MW.rounds[1], 'correct')).length);
+    });
+
     it('Convenience methods', function () {
         var entry = new BracketGenerator({winners: 'lower', year: year, sport: sport}),
             master = new BracketGenerator({winners: 'lower', year: year, sport: sport}),
