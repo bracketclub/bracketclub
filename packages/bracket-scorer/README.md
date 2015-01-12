@@ -32,7 +32,7 @@ scorer.score();
 
 - `sport`: The sport you are scoring. See [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#api) for more info.
 - `year`: The year you are scoring. See [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#api) for more info.
-- `entry`: (String, required) The entry bracket to score.
+- `entry`: (String or Array, required) The entry bracket to score. Can also be an array of strings and the result will be an array of scores.
 - `master`: (String, required) The master bracket to score the entry against.
 - `scoring`: (Object, optional) Scoring systems that can be used. By default the scoring systems from the year/sport [`bracket-data`](https://github.com/tweetyourbracket/bracket-data) will be available. Those can be overriden here. See [below](#scoring) for possible scoring system formats.
 
