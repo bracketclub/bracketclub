@@ -103,7 +103,13 @@ Scorer.prototype.reset = function (options) {
     if (options.entry) {
         if (Array.isArray(options.entry)) {
             this.validatedEntry = options.entry.map(function (entry) {
-                return this.entryValidator.validate(entry);
+                if (typeof entry === 'string') {
+                    return this.entryValidator.validate(entry);
+                } else {
+                    return _extend({}, entry, {
+                        score: this.entryValidator.validate(entry.bracket),
+                    });
+                }
             }, this);
         } else {
             this.validatedEntry = this.entryValidator.validate(options.entry);
@@ -140,7 +146,13 @@ Scorer.prototype.score = function (methods, options) {
 
     if (Array.isArray(this.validatedEntry)) {
         return this.validatedEntry.map(function (entry) {
-            return this._roundLoop(entry, methods);
+            if (entry.score) {
+                return _extend({}, entry, {
+                    score: this._roundLoop(entry.score, methods)
+                });
+            } else {
+                return this._roundLoop(entry, methods);
+            }
         }, this);
     } else {
         return this._roundLoop(this.validatedEntry, methods);

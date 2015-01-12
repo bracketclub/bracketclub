@@ -54,6 +54,26 @@ describe('Batch', function () {
         assert.equal(s.length, 2);
         assert.equal(true, _.isEqual(s, [250, 270]));
     });
+
+    it('Should score multiple entries and keep data', function () {
+        var lower = new BracketGenerator({winners: 'lower', year: year, sport: sport}).generate();
+        var higher = new BracketGenerator({winners: 'higher', year: year, sport: sport}).generate();
+        var master = 'MW191213614102113610131010W185131114101515141011414S191246147159414741414E16851361472165147575FFWEE';
+        var scorer = new BracketScorer({
+            entry: [{name: 'luke', bracket: lower}, {name: 'luke2', bracket: higher}],
+            master: master,
+            sport: sport,
+            year: year
+        });
+        var s = scorer.standard();
+
+        assert.equal(true, _.isArray(s));
+        assert.equal(s.length, 2);
+        assert.equal(s[0].name, 'luke');
+        assert.equal(s[0].score, 250);
+        assert.equal(s[1].name, 'luke2');
+        assert.equal(s[1].score, '270');
+    });
 });
 
 describe('Bracket Scorer', function () {
