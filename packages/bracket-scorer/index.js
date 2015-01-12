@@ -100,8 +100,18 @@ function Scorer(options) {
 }
 
 Scorer.prototype.reset = function (options) {
-    if (options.entry) this.validatedEntry = this.entryValidator.validate(options.entry);
-    if (options.master) this.validatedMaster = this.masterValidator.validate(options.master);
+    if (options.entry) {
+        if (Array.isArray(options.entry)) {
+            this.validatedEntry = options.entry.map(function (entry) {
+                return this.entryValidator.validate(entry);
+            }, this);
+        } else {
+            this.validatedEntry = this.entryValidator.validate(options.entry);
+        }
+    }
+    if (options.master) {
+        this.validatedMaster = this.masterValidator.validate(options.master);
+    }
     return this;
 };
 
@@ -128,19 +138,25 @@ Scorer.prototype.score = function (methods, options) {
         methods = ['rounds'];
     }
 
-    return this._roundLoop(methods);
+    if (Array.isArray(this.validatedEntry)) {
+        return this.validatedEntry.map(function (entry) {
+            return this._roundLoop(entry, methods);
+        }, this);
+    } else {
+        return this._roundLoop(this.validatedEntry, methods);
+    }
 };
 
-Scorer.prototype._roundLoop = function (methods) {
+Scorer.prototype._roundLoop = function (entry, methods) {
     var results = {};
     var eliminatedTeams = [];
     var pprMethods = [];
     _each(methods, function (method) {
         if (method.indexOf('PPR') > -1) pprMethods.push(method);
-        results[method] = initialValues[method] ? initialValues[method](this.validatedEntry) : 0;
+        results[method] = initialValues[method] ? initialValues[method](entry) : 0;
     }, this);
 
-    _each(this.validatedEntry, function (region, regionId) {
+    _each(entry, function (region, regionId) {
         var isFinal = regionId === bracketData.constants.FINAL_ID;
         _each(region.rounds, function (games, roundIndex) {
             var trueRoundIndex = (isFinal ? bracketData.constants.REGION_COUNT + roundIndex : roundIndex) - 1;
@@ -213,6 +229,7 @@ Scorer.prototype._roundLoop = function (methods) {
             list[key] = val / 10;
         }
     });
+
     return methods.length === 1 ? results[methods[0]] : results;
 };
 

@@ -37,6 +37,25 @@ var getGooley = function (method) {
     return perfect / 10;
 };
 
+describe('Batch', function () {
+    it('Should score multiple entries', function () {
+        var lower = new BracketGenerator({winners: 'lower', year: year, sport: sport}).generate();
+        var higher = new BracketGenerator({winners: 'higher', year: year, sport: sport}).generate();
+        var master = 'MW191213614102113610131010W185131114101515141011414S191246147159414741414E16851361472165147575FFWEE';
+        var scorer = new BracketScorer({
+            entry: [lower, higher],
+            master: master,
+            sport: sport,
+            year: year
+        });
+        var s = scorer.standard();
+
+        assert.equal(true, _.isArray(s));
+        assert.equal(s.length, 2);
+        assert.equal(true, _.isEqual(s, [250, 270]));
+    });
+});
+
 describe('Bracket Scorer', function () {
 
     it('Should return rounds', function () {
