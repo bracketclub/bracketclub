@@ -7,8 +7,6 @@ Update a tournament bracket after the completion of a game.
 
 [![Build Status](https://travis-ci.org/tweetyourbracket/bracket-updater.png?branch=master)](https://travis-ci.org/tweetyourbracket/bracket-updater)
 
-![Testling CI badge](https://ci.testling.com/tweetyourbracket/bracket-updater.png)
-
 
 ## API / Usage
 

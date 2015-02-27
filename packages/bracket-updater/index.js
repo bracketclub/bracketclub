@@ -1,13 +1,13 @@
 var BracketData = require('bracket-data');
 var BracketValidator = require('bracket-validator');
-var _extend = require('lodash-node/modern/objects/assign');
-var _defaults = require('lodash-node/modern/objects/defaults');
-var _pick = require('lodash-node/modern/objects/pick');
-var _find = require('lodash-node/modern/collections/find');
-var _each = require('lodash-node/modern/collections/forEach');
-var _map = require('lodash-node/modern/collections/map');
-var _isNumber = require('lodash-node/modern/objects/isNumber');
-var _values = require('lodash-node/modern/objects/values');
+var _extend = require('lodash/object/assign');
+var _defaults = require('lodash/object/defaults');
+var _pick = require('lodash/object/pick');
+var _find = require('lodash/collection/find');
+var _each = require('lodash/collection/forEach');
+var _map = require('lodash/collection/map');
+var _isNumber = require('lodash/lang/isNumber');
+var _values = require('lodash/object/values');
 var bracketData;
 var teamNameMatches = function (team1, team2) {
     return team1 && team1.name && team2 && team2.name && team1.name.toLowerCase() === team2.name.toLowerCase();

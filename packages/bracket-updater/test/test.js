@@ -1,11 +1,11 @@
-var assert = require('assert'),
-    BracketUpdater = require('../index'),
-    BracketGenerator = require('bracket-generator'),
-    year = '2013',
-    sport = 'ncaa-mens-basketball',
-    BracketData = require('bracket-data'),
-    bd = new BracketData({year: year, sport: sport, props: ['constants']}),
-    c = bd.constants;
+var assert = require('assert');
+var BracketUpdater = require('../index');
+var BracketGenerator = require('bracket-generator');
+var year = '2013';
+var sport = 'ncaa-mens-basketball';
+var BracketData = require('bracket-data');
+var bd = new BracketData({year: year, sport: sport, props: ['constants']});
+var c = bd.constants;
 
 describe('Bracket Updater', function () {
 
