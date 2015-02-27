@@ -1,6 +1,6 @@
 var BracketGenerator = require('bracket-generator');
 var BracketValidator = require('../index');
-var _ = require('lodash-node/compat');
+var _ = require('lodash');
 var assert = require('assert');
 var year = '2013';
 var sport = 'ncaa-mens-basketball';

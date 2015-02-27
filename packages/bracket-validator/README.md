@@ -7,8 +7,6 @@ Validate a tournament bracket.
 
 [![Build Status](https://travis-ci.org/tweetyourbracket/bracket-validator.png?branch=master)](https://travis-ci.org/tweetyourbracket/bracket-validator)
 
-![Testling CI badge](https://ci.testling.com/tweetyourbracket/bracket-validator.png)
-
 *To see the data this repo is built on, check out [bracket-data](https://github.com/tweetyourbracket/bracket-data).*
 
 ## What is this?
