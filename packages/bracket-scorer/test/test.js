@@ -1,5 +1,5 @@
 var assert = require('assert');
-var _ = require('lodash-node');
+var _ = require('lodash');
 var year = '2013';
 var sport = 'ncaa-mens-basketball';
 var BracketScorer = require('../index');
@@ -8,6 +8,9 @@ var BracketData = require('bracket-data');
 var bracketData = new BracketData({year: year, sport: sport, props: ['constants', 'scoring']});
 var CONSTS = bracketData.constants;
 var masterScoring = bracketData.scoring;
+var _last = function (arr, count) {
+    return arr.slice(Math.max(arr.length - count, 1));
+};
 
 var getGooley = function (method) {
     var perfect = 0;
@@ -23,7 +26,12 @@ var getGooley = function (method) {
         if (index === 4) lastCount = 1;
         if (index === 5) lastCount = 1;
 
-        last = _[method](gooleyRound, lastCount);
+        if (method === 'first') {
+            last = gooleyRound.slice(0, lastCount);
+        } else {
+            last = _last(gooleyRound, lastCount);
+        }
+
         roundScore = _.reduce(last, function (memo, num) { return memo + (num * 10); }, 0);
 
         if (index <= 3) {
@@ -401,12 +409,12 @@ describe('Bracket Differ', function () {
             sport: sport
         }).score('diff');
 
-        assert.equal(_.last(res.MW.rounds, 2)[0][0].seed, 16);
-        assert.equal(_.last(res.MW.rounds, 2)[0][0].shouldBe.seed, 1);
-        assert.equal(_.last(res.MW.rounds, 2)[0][1].seed, 15);
-        assert.equal(_.last(res.MW.rounds, 2)[0][1].shouldBe.seed, 2);
-        assert.equal(_.last(res.MW.rounds, 2)[1][0].seed, 16);
-        assert.equal(_.last(res.MW.rounds, 2)[1][0].shouldBe.seed, 1);
+        assert.equal(_last(res.MW.rounds, 2)[0][0].seed, 16);
+        assert.equal(_last(res.MW.rounds, 2)[0][0].shouldBe.seed, 1);
+        assert.equal(_last(res.MW.rounds, 2)[0][1].seed, 15);
+        assert.equal(_last(res.MW.rounds, 2)[0][1].shouldBe.seed, 2);
+        assert.equal(_last(res.MW.rounds, 2)[1][0].seed, 16);
+        assert.equal(_last(res.MW.rounds, 2)[1][0].shouldBe.seed, 1);
 
         assert.equal(1, res.FF.rounds[0][0].shouldBe.seed);
         assert.equal(1, res.FF.rounds[0][1].shouldBe.seed);

@@ -1,15 +1,15 @@
 var BracketValidator = require('bracket-validator');
 var BracketData = require('bracket-data');
-var _bind = require('lodash-node/modern/functions/bind');
-var _each = require('lodash-node/modern/collections/forEach');
-var _map = require('lodash-node/modern/collections/map');
-var _uniq = require('lodash-node/modern/arrays/uniq');
-var _some = require('lodash-node/modern/collections/some');
-var _contains = require('lodash-node/modern/collections/contains');
-var _isArray = require('lodash-node/modern/objects/isArray');
-var _cloneDeep = require('lodash-node/modern/objects/cloneDeep');
-var _extend = require('lodash-node/modern/objects/assign');
-var _isPlainObject = require('lodash-node/modern/objects/isPlainObject');
+var _bind = require('lodash/function/bind');
+var _each = require('lodash/collection/forEach');
+var _map = require('lodash/collection/map');
+var _uniq = require('lodash/array/uniq');
+var _some = require('lodash/collection/some');
+var _contains = require('lodash/collection/contains');
+var _isArray = require('lodash/lang/isArray');
+var _cloneDeep = require('lodash/lang/cloneDeep');
+var _extend = require('lodash/object/assign');
+var _isPlainObject = require('lodash/lang/isPlainObject');
 var bracketData;
 
 

@@ -7,8 +7,6 @@ Find the score of a tournament bracket.
 
 [![Build Status](https://travis-ci.org/tweetyourbracket/bracket-scorer.png?branch=master)](https://travis-ci.org/tweetyourbracket/bracket-scorer)
 
-![Testling CI badge](https://ci.testling.com/tweetyourbracket/bracket-scorer.png)
-
 ## What is this?
 
 `bracket-scorer` is a module that will score or diff two brackets against each other. Usually one is the entry and one is the master. The brackets it takes are [string representation of brackets](https://gist.github.com/lukekarrys/2028007#explanation).
