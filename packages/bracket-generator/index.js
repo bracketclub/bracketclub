@@ -1,18 +1,18 @@
 var BracketData = require('bracket-data');
-var _isString = require('lodash-node/modern/objects/isString');
-var _map = require('lodash-node/modern/collections/map');
-var _random = require('lodash-node/modern/utilities/random');
-var _uniq = require('lodash-node/modern/arrays/uniq');
-var _toArray = require('lodash-node/modern/collections/toArray');
-var _difference = require('lodash-node/modern/arrays/difference');
-var _flatten = require('lodash-node/modern/arrays/flatten');
-var _last = require('lodash-node/modern/arrays/last');
-var _find = require('lodash-node/modern/collections/find');
-var _defaults = require('lodash-node/modern/objects/defaults');
-var _extend = require('lodash-node/modern/objects/assign');
-var _filter = require('lodash-node/modern/collections/filter');
-var _omit = require('lodash-node/modern/objects/omit');
-var _pick = require('lodash-node/modern/objects/pick');
+var _isString = require('lodash/lang/isString');
+var _map = require('lodash/collection/map');
+var _random = require('lodash/number/random');
+var _uniq = require('lodash/array/uniq');
+var _toArray = require('lodash/lang/toArray');
+var _difference = require('lodash/array/difference');
+var _flatten = require('lodash/array/flatten');
+var _last = require('lodash/array/last');
+var _find = require('lodash/collection/find');
+var _defaults = require('lodash/object/defaults');
+var _extend = require('lodash/object/assign');
+var _filter = require('lodash/collection/filter');
+var _omit = require('lodash/object/omit');
+var _pick = require('lodash/object/pick');
 var bracketData;
 
 function Generator(options) {

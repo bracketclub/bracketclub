@@ -9,12 +9,11 @@ var BracketData = require('bracket-data');
 var bracketData = new BracketData({year: year, sport: sport, props: ['constants', 'order']});
 var finalGames = bracketData.constants.REGION_COUNT - 1;
 var firstRoundGames = bracketData.order.length - 1;
-var _ = require('lodash-node');
-var _s = require('underscore.string');
+var _ = require('lodash');
 
 var intToBinary = function (i, length) {
     typeof i === 'undefined' && (i = _.random(0, Math.pow(2, length)));
-    return _s.pad((i).toString(2), length, '0');
+    return _.padLeft((i).toString(2), length, '0');
 };
 
 var intToRegionBinary = _.partialRight(intToBinary, firstRoundGames);

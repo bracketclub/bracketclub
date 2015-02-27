@@ -7,8 +7,6 @@ Generate a tournament bracket.
 
 [![Build Status](https://travis-ci.org/tweetyourbracket/bracket-generator.png?branch=master)](https://travis-ci.org/tweetyourbracket/bracket-generator)
 
-![Testling CI badge](https://ci.testling.com/tweetyourbracket/bracket-generator.png)
-
 
 ## What is this?
 `bracket-generator`, well, it generates brackets! (Check out [`bracket-data`](https://github.com/tweetyourbracket/bracket-data) for more info about brackets and their data.)
