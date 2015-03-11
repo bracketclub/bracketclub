@@ -8,34 +8,17 @@ var _each = require('lodash/collection/forEach');
 var _map = require('lodash/collection/map');
 var _isNumber = require('lodash/lang/isNumber');
 var _values = require('lodash/object/values');
-var bracketData;
+
 var teamNameMatches = function (team1, team2) {
     return team1 && team1.name && team2 && team2.name && team1.name.toLowerCase() === team2.name.toLowerCase();
 };
 var seedMatches = function (team1, team2) {
     return team1 && team2 && parseInt(team1.seed) === parseInt(team2.seed);
 };
-var flatten = function (bracket) {
-    var flattenedBracket = '';
-    _each(bracket, function (bracketRegion) {
-        var regionString = _map(bracketRegion.rounds, function (round, roundIndex) {
-            if (roundIndex === 0) return '';
-            return _map(round, function (roundGame) {
-                if (roundGame === null) return bracketData.constants.UNPICKED_MATCH;
-                if (_isNumber(roundGame) || !isNaN(roundGame)) return roundGame;
-                if (bracketRegion.id === bracketData.constants.FINAL_ID) return roundGame.fromRegion;
-                return roundGame.seed;
-            }).join('');
-        }).join('')
-        .replace(new RegExp(bracketData.order.join(''), 'g'), '')
-        .replace(new RegExp(_values(bracketData.constants.REGION_IDS).join(''), 'g'), '');
-        flattenedBracket += bracketRegion.id + regionString;
-    });
-    return flattenedBracket;
-};
+
 
 function Updater(options) {
-    bracketData = new BracketData({
+    this.bracketData = new BracketData({
         sport: options.sport,
         year: options.year,
         props: ['constants', 'order']
@@ -81,8 +64,8 @@ Updater.prototype.hasLoser = function () {
 };
 
 Updater.prototype.isFinal = function () {
-    var finalName = bracketData.constants.FINAL_NAME.toLowerCase(),
-        finalId = bracketData.constants.FINAL_ID.toLowerCase(),
+    var finalName = this.bracketData.constants.FINAL_NAME.toLowerCase(),
+        finalId = this.bracketData.constants.FINAL_ID.toLowerCase(),
         region = this.fromRegion.toLowerCase();
 
     return region === finalName || region === finalId;
@@ -106,7 +89,7 @@ Updater.prototype.gameMatches = function (winner, loser) {
 
 Updater.prototype.getSeed = function (winner) {
     if (this.isFinal()) {
-        var finalTeams = this.validated[bracketData.constants.FINAL_ID].rounds[0];
+        var finalTeams = this.validated[this.bracketData.constants.FINAL_ID].rounds[0];
         var finalTeam = _find(finalTeams, function (team) {
             return teamNameMatches(team, winner);
         }, this);
@@ -116,6 +99,26 @@ Updater.prototype.getSeed = function (winner) {
     }
 };
 
+Updater.prototype.flatten = function (bracket) {
+    var self = this;
+    var flattenedBracket = '';
+    _each(bracket, function (bracketRegion) {
+        var regionString = _map(bracketRegion.rounds, function (round, roundIndex) {
+            if (roundIndex === 0) return '';
+            return _map(round, function (roundGame) {
+                if (roundGame === null) return self.bracketData.constants.UNPICKED_MATCH;
+                if (_isNumber(roundGame) || !isNaN(roundGame)) return roundGame;
+                if (bracketRegion.id === self.bracketData.constants.FINAL_ID) return roundGame.fromRegion;
+                return roundGame.seed;
+            }).join('');
+        }).join('')
+        .replace(new RegExp(self.bracketData.order.join(''), 'g'), '')
+        .replace(new RegExp(_values(self.bracketData.constants.REGION_IDS).join(''), 'g'), '');
+        flattenedBracket += bracketRegion.id + regionString;
+    });
+    return flattenedBracket;
+};
+
 Updater.prototype.update = function (options) {
     options && this.reset(options);
     var validated = this.validator.validate(this.currentMaster);
@@ -123,7 +126,7 @@ Updater.prototype.update = function (options) {
     this.validated = validated;
 
     if (this.isChampionship()) {
-        this.fromRegion = bracketData.constants.FINAL_ID;
+        this.fromRegion = this.bracketData.constants.FINAL_ID;
     }
 
     var region = validated[this.fromRegion] || _find(validated, function (item) {
@@ -186,21 +189,21 @@ Updater.prototype.update = function (options) {
     }
 
     // Clear losing teams from final four also
-    var isFinalRegion = this.fromRegion === bracketData.constants.FINAL_ID;
+    var isFinalRegion = this.fromRegion === this.bracketData.constants.FINAL_ID;
     if (this.hasLoser() && (!isFinalRegion || (isFinalRegion && regionRoundIndex === 1))) {
-        var fin = validated[bracketData.constants.FINAL_ID];
+        var fin = validated[this.bracketData.constants.FINAL_ID];
         _each(fin.rounds, function (round, i) {
             if (i > 0) {
                 _each(round, function (game, ii) {
                     if (game && teamNameMatches(game, this.loser)) {
-                        validated[bracketData.constants.FINAL_ID].rounds[i][ii] = null;
+                        validated[this.bracketData.constants.FINAL_ID].rounds[i][ii] = null;
                     }
                 }, this);
             }
         }, this);
     }
 
-    this.currentMaster = flatten(validated);
+    this.currentMaster = this.flatten(validated);
     return this.currentMaster;
 };
 
