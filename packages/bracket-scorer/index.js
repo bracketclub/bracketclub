@@ -10,22 +10,21 @@ var _isArray = require('lodash/lang/isArray');
 var _cloneDeep = require('lodash/lang/cloneDeep');
 var _extend = require('lodash/object/assign');
 var _isPlainObject = require('lodash/lang/isPlainObject');
-var bracketData;
 
 
 var getResult = {
-    totalScore: function (result) {
+    totalScore: function (bd, result) {
         if (result.status !== 'correct') return 0;
 
-        var scoringSystem = bracketData.scoring[result.type];
+        var scoringSystem = bd.scoring[result.type];
 
         if (typeof scoringSystem === 'undefined') throw new Error('There is no scoring system: ' + result.type);
 
-        if (_isArray(scoringSystem) && typeof scoringSystem[0] === 'number' && scoringSystem.length === initialValues.rounds().length) {
+        if (_isArray(scoringSystem) && typeof scoringSystem[0] === 'number' && scoringSystem.length === initialValues.rounds(bd).length) {
             // The scoring system is an array of numbers that is equal to the number of rounds
             // So we return the value for the current round
             return scoringSystem[result.roundIndex] * 10;
-        } else if (_isArray(scoringSystem) && _isArray(scoringSystem[0]) && scoringSystem.length === initialValues.rounds().length && scoringSystem[0].length === bracketData.constants.TEAMS_PER_REGION) {
+        } else if (_isArray(scoringSystem) && _isArray(scoringSystem[0]) && scoringSystem.length === initialValues.rounds(bd).length && scoringSystem[0].length === bd.constants.TEAMS_PER_REGION) {
             // The scoring system is an array of arrays. There is one array for each round
             // and each sub-array has one value for each seed. So we return the value for the current round+seed
             return scoringSystem[result.roundIndex][result.seed - 1] * 10;
@@ -35,7 +34,7 @@ var getResult = {
 
         throw new Error('Cant do anything with scoring system: ' + result.type);
     },
-    diff: function (options) {
+    diff: function (bd, options) {
         if (options.status === 'incorrect') {
             if (options.diff) {
                 options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].correct = false;
@@ -52,7 +51,7 @@ var getResult = {
             }
         } else if (options.status === 'unplayed' && options.pprMethods.length && options.getScoreResult) {
             _each(options.pprMethods, function (pprMethod) {
-                options.results[pprMethod] += this.totalScore({
+                options.results[pprMethod] += this.totalScore(bd, {
                     roundIndex: options.trueRoundIndex,
                     status: 'correct',
                     seed: options.game.seed,
@@ -67,8 +66,8 @@ var getResult = {
 };
 
 var initialValues = {
-    rounds: function () {
-        var teamCount = bracketData.constants.TEAMS_PER_REGION * bracketData.constants.REGION_COUNT;
+    rounds: function (bd) {
+        var teamCount = bd.constants.TEAMS_PER_REGION * bd.constants.REGION_COUNT;
         var rounds = [];
         while (teamCount > 1) {
             rounds.push(0);
@@ -81,14 +80,14 @@ var initialValues = {
 
 
 function Scorer(options) {
-    bracketData = new BracketData({
+    this.bracketData = new BracketData({
         sport: options.sport,
         year: options.year,
         props: ['constants', 'scoring', 'bracket']
     });
 
     // Create convenience methods
-    _each(_extend(bracketData.scoring, options.scoring || {}), function (system, key) {
+    _each(_extend(this.bracketData.scoring, options.scoring || {}), function (system, key) {
         this[key + 'PPR'] = _bind(this.score, this, [key + 'PPR']);
         this[key] = _bind(this.score, this, [key]);
     }, this);
@@ -161,17 +160,22 @@ Scorer.prototype.score = function (methods, options) {
 
 Scorer.prototype._roundLoop = function (entry, methods) {
     var results = {};
+    var self = this;
     var eliminatedTeams = [];
     var pprMethods = [];
     _each(methods, function (method) {
         if (method.indexOf('PPR') > -1) pprMethods.push(method);
-        results[method] = initialValues[method] ? initialValues[method](entry) : 0;
+        if (method === 'rounds') {
+            results[method] = initialValues.rounds(self.bracketData);
+        } else {
+            results[method] = initialValues[method] ? initialValues[method](entry) : 0;
+        }
     }, this);
 
     _each(entry, function (region, regionId) {
-        var isFinal = regionId === bracketData.constants.FINAL_ID;
+        var isFinal = regionId === self.bracketData.constants.FINAL_ID;
         _each(region.rounds, function (games, roundIndex) {
-            var trueRoundIndex = (isFinal ? bracketData.constants.REGION_COUNT + roundIndex : roundIndex) - 1;
+            var trueRoundIndex = (isFinal ? self.bracketData.constants.REGION_COUNT + roundIndex : roundIndex) - 1;
             var getScoreResult = roundIndex > 0;
             var getDiffResult = getScoreResult || isFinal;
             if (getScoreResult || getDiffResult) {
@@ -207,7 +211,7 @@ Scorer.prototype._roundLoop = function (entry, methods) {
                                 status: status
                             });
                         } else if (method === 'diff') {
-                            getResult.diff({
+                            getResult.diff(self.bracketData, {
                                 diff: results.diff,
                                 regionId: regionId,
                                 roundIndex: roundIndex,
@@ -222,7 +226,7 @@ Scorer.prototype._roundLoop = function (entry, methods) {
                                 getScoreResult: getScoreResult
                             });
                         } else if (getScoreResult) {
-                            results[method] += getResult.totalScore({
+                            results[method] += getResult.totalScore(self.bracketData, {
                                 roundIndex: trueRoundIndex,
                                 status: status,
                                 seed: game.seed,
