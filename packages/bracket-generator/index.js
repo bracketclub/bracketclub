@@ -13,10 +13,9 @@ var _extend = require('lodash/object/assign');
 var _filter = require('lodash/collection/filter');
 var _omit = require('lodash/object/omit');
 var _pick = require('lodash/object/pick');
-var bracketData;
 
 function Generator(options) {
-    bracketData = new BracketData({
+    this.bracketData = new BracketData({
         year: options.year,
         sport: options.sport,
         props: ['order', 'bracket', 'constants']
@@ -60,8 +59,8 @@ Generator.prototype.generateWinner = function (matchup) {
                 return matchup.indexOf(Math.min.apply(Math, matchup));
             }
         },
-        pickIndex = this.options.winners.length >= bracketData.order.length ?
-            this.regionCounter * (bracketData.order.length - 1) + (this.winnerCounter + 1) - 1 :
+        pickIndex = this.options.winners.length >= this.bracketData.order.length ?
+            this.regionCounter * (this.bracketData.order.length - 1) + (this.winnerCounter + 1) - 1 :
             this.winnerCounter,
         pick = this.options.winners.charAt(pickIndex),
         winner;
@@ -115,12 +114,12 @@ Generator.prototype.generateRounds = function (opts) {
 
 Generator.prototype.generateRegion = function (region) {
     this.winnerCounter = 0;
-    return {id: region.id, rounds: this.generateRounds({round: bracketData.order.slice()})};
+    return {id: region.id, rounds: this.generateRounds({round: this.bracketData.order.slice()})};
 };
 
 Generator.prototype.generateRegions = function () {
     this.regionCounter = 0;
-    var regions = _map(_filter(bracketData.bracket.regions, function (r) { return !!r.teams; }), this.generateRegion, this);
+    var regions = _map(_filter(this.bracketData.bracket.regions, function (r) { return !!r.teams; }), this.generateRegion, this);
     this.finishedRegions = regions;
     return regions;
 };
@@ -133,16 +132,16 @@ Generator.prototype.generateBracket = function () {
 };
 
 Generator.prototype.generateFinalFour = function () {
-    var regions = bracketData.constants.REGION_IDS,
+    var regions = this.bracketData.constants.REGION_IDS,
         firstTeam = regions[0],
-        matchup1 = [firstTeam, bracketData.bracket.regions[firstTeam].sameSideAs],
+        matchup1 = [firstTeam, this.bracketData.bracket.regions[firstTeam].sameSideAs],
         matchup2 = _difference(regions, matchup1);
     return _flatten([matchup1, matchup2]);
 };
 
 Generator.prototype.generateFinal = function () {
     this.winnerCounter = 0;
-    return {id: bracketData.constants.FINAL_ID, name: bracketData.constants.FINAL_NAME, rounds: this.generateRounds({round: this.generateFinalFour()})};
+    return {id: this.bracketData.constants.FINAL_ID, name: this.bracketData.constants.FINAL_NAME, rounds: this.generateRounds({round: this.generateFinalFour()})};
 };
 
 Generator.prototype.winningTeamFromRegion = function (fromRegion) {
@@ -158,7 +157,7 @@ Generator.prototype.generate = function (winners) {
     return _map(_flatten(_toArray(this.generateBracket())), function (region) {
         return region.id + _flatten(region.rounds).join('');
     }).join('')
-    .replace(new RegExp(bracketData.order.join(''), 'g'), '')
+    .replace(new RegExp(this.bracketData.order.join(''), 'g'), '')
     .replace(new RegExp(this.generateFinalFour().join(''), 'g'), '');
 };
 
