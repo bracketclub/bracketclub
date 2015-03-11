@@ -26,22 +26,40 @@ describe('New validator has correct properties', function () {
             validator = new BracketValidator({flatBracket: bracket, year: year, sport: sport});
 
         var hasOwnProperties = [];
-        var other = [];
+        var protoProperties = [];
 
         for (var x in validator) {
             if (validator.hasOwnProperty(x)) {
                 hasOwnProperties.push(x);
             } else {
-                other.push(x);
+                protoProperties.push(x);
             }
         }
 
-        assert.equal(other.length, 2);
-        assert.equal(hasOwnProperties.length, 2);
-        assert.equal(_.contains(other, 'reset'), true);
-        assert.equal(_.contains(other, 'validate'), true);
-        assert.equal(_.contains(hasOwnProperties, 'options'), true);
-        assert.equal(_.contains(hasOwnProperties, 'flatBracket'), true);
+        var expectedProto = [
+            'reset',
+            'validate',
+            'expandFlatBracket',
+            'hasNecessaryKeys',
+            'decorateValidated',
+            'teamNameFromRegion',
+            'validatePicks',
+            'getRounds',
+            'picksToArray',
+            'validateFinal'
+        ];
+
+        var expectedOwn = [
+            'options',
+            'bracketData',
+            'flatBracket'
+        ];
+
+        assert.equal(protoProperties.length, expectedProto.length);
+        assert.equal(hasOwnProperties.length, expectedOwn.length);
+
+        assert.equal(_.isEqual(protoProperties, expectedProto), true);
+        assert.equal(_.isEqual(hasOwnProperties, expectedOwn), true);
     });
 });
 

@@ -21,24 +21,41 @@ var _compact = require('lodash/array/compact');
 var _uniq = require('lodash/array/uniq');
 var _indexOf = require('lodash/array/indexOf');
 var _contains = require('lodash/collection/contains');
+
+
 var _subset = function (small, big) {
     if (small.length === 0) return true;
     return _all(small, function (n) {
         return _include(big, n);
     });
 };
-
 var hasError = function (result) {
     return _isArray(result) ? _some(result, function (r) { return r instanceof Error; }) : result instanceof Error;
-},
-getErrors = function (result) {
+};
+var getErrors = function (result) {
     return _isArray(result) ? _filter(result, function (r) { return r instanceof Error; })[0] : result;
-},
-findResult = function (result) {
+};
+var findResult = function (result) {
     return _isArray(result) ? _pluck(result, 'result') : result.result;
 };
+var wrapError = function () {
+    return {
+        error: true,
+        result: new Error(_map(_toArray(arguments), function (arg) {
+            return (typeof arg.message === 'string') ? arg.message : arg.toString();
+        }).join(', '))
+    };
+};
+var wrapSuccess = function (result) {
+    return {
+        error: null,
+        result: result
+    };
+};
+var winningTeamFromRegion = function (bracket, regionName) {
+    return _last(_find(bracket, function (b) { return b.id === regionName; }).rounds)[0];
+};
 
-var bracketData;
 
 function Validator(options) {
     _defaults(options, {
@@ -49,7 +66,7 @@ function Validator(options) {
 
     this.options = _omit(options, 'flatBracket');
 
-    bracketData = new BracketData({
+    this.bracketData = new BracketData({
         year: options.year,
         sport: options.sport,
         props: ['bracket', 'constants', 'regex', 'order']
@@ -68,63 +85,49 @@ Validator.prototype.reset = function (flatBracket) {
 Validator.prototype.validate = function (flatBracket) {
     flatBracket && this.reset(flatBracket);
     var result = this.flatBracket;
+    var self = this;
 
     // Test expansion from flat to JSON
-    result = findResult(expandFlatBracket(result, this.options.allowEmpty));
+    result = findResult(this.expandFlatBracket(result, this.options.allowEmpty));
     if (hasError(result)) return getErrors(result);
 
     // Test if JSON has all the keys
-    result = findResult(hasNecessaryKeys(result));
+    result = findResult(this.hasNecessaryKeys(result));
     if (hasError(result)) return getErrors(result);
 
     // Picks to arrays
-    result = findResult(_map(result, picksToArray));
+    result = findResult(_map(result, this.picksToArray, this));
     if (hasError(result)) return getErrors(result);
 
     // Array to nested array
-    result = findResult(_map(result, getRounds));
+    result = findResult(_map(result, this.getRounds, this));
     if (hasError(result)) return getErrors(result);
 
     // All regions have valid picks
-    result = findResult(_map(result, validatePicks));
+    result = findResult(_map(result, this.validatePicks, this));
     if (hasError(result)) return getErrors(result);
 
     // Final region has valid picks
-    result = findResult(validateFinal(_find(result, function (item) { return item.id === bracketData.constants.FINAL_ID; }), result));
+    result = findResult(this.validateFinal(_find(result, function (item) { return item.id === self.bracketData.constants.FINAL_ID; }), result));
     if (hasError(result)) return getErrors(result);
 
     // Testing only return flat bracktet
     if (this.options.testOnly) return this.flatBracket;
 
     // Decorate with data
-    result = findResult(decorateValidated(result));
+    result = findResult(this.decorateValidated(result));
     if (hasError(result)) return getErrors(result);
 
     return result;
 };
 
-var wrapError = function () {
-    return {
-        error: true,
-        result: new Error(_map(_toArray(arguments), function (arg) {
-            return (typeof arg.message === 'string') ? arg.message : arg.toString();
-        }).join(', '))
-    };
-};
 
-var wrapSuccess = function (result) {
-    return {
-        error: null,
-        result: result
-    };
-};
-
-var expandFlatBracket = function (flat, allowEmpty) {
-    if (!allowEmpty && flat.indexOf(bracketData.constants.UNPICKED_MATCH) > -1) {
+Validator.prototype.expandFlatBracket = function (flat, allowEmpty) {
+    if (!allowEmpty && flat.indexOf(this.bracketData.constants.UNPICKED_MATCH) > -1) {
         return wrapError('Bracket has unpicked matches');
     }
 
-    var length = bracketData.regex.source.split('(').length,
+    var length = this.bracketData.regex.source.split('(').length,
         range = _range(1, length),
         replacer = _map(range, function (i) {
             var prepend = (i === 1) ? '{"$' : '',
@@ -132,44 +135,45 @@ var expandFlatBracket = function (flat, allowEmpty) {
             return prepend + i + append;
         }).join('');
     try  {
-        return wrapSuccess(JSON.parse(flat.replace(bracketData.regex, replacer)));
+        return wrapSuccess(JSON.parse(flat.replace(this.bracketData.regex, replacer)));
     }
     catch (e) {
         return wrapError('Bracket does not look like a bracket');
     }
 };
 
-var hasNecessaryKeys = function (obj) {
+Validator.prototype.hasNecessaryKeys = function (obj) {
     var hasKeys = _keys(obj),
-        hasAllKeys = !!(bracketData.constants.ALL_IDS.length === hasKeys.length && _difference(bracketData.constants.ALL_IDS, hasKeys).length === 0);
+        hasAllKeys = !!(this.bracketData.constants.ALL_IDS.length === hasKeys.length && _difference(this.bracketData.constants.ALL_IDS, hasKeys).length === 0);
 
     if (hasAllKeys) {
         return wrapSuccess(obj);
     }
-    return wrapError('Bracket does not have the corret keys. Missing:', _difference(bracketData.constants.ALL_IDS, hasKeys).join(','));
+    return wrapError('Bracket does not have the corret keys. Missing:', _difference(this.bracketData.constants.ALL_IDS, hasKeys).join(','));
 };
 
-var decorateValidated = function (bracket) {
+Validator.prototype.decorateValidated = function (bracket) {
     var decorated = {};
+    var self = this;
 
     _each(bracket, function (region) {
-        decorated[region.id] = _extend({}, region, bracketData.bracket.regions[region.id] || bracketData.bracket[bracketData.constants.FINAL_ID]);
+        decorated[region.id] = _extend({}, region, self.bracketData.bracket.regions[region.id] || self.bracketData.bracket[self.bracketData.constants.FINAL_ID]);
         decorated[region.id].rounds = _map(region.rounds, function (round) {
             var returnRound = [];
             _each(round, function (seed, index) {
-                if (seed === bracketData.constants.UNPICKED_MATCH) {
+                if (seed === self.bracketData.constants.UNPICKED_MATCH) {
                     returnRound[index] = null;
-                } else if (region.id === bracketData.constants.FINAL_ID) {
+                } else if (region.id === self.bracketData.constants.FINAL_ID) {
 
                     var winningTeam = winningTeamFromRegion(bracket, seed);
 
-                    if (winningTeam === bracketData.constants.UNPICKED_MATCH) {
+                    if (winningTeam === self.bracketData.constants.UNPICKED_MATCH) {
                         returnRound[index] = null;
                     } else {
                         returnRound[index] = {
                             fromRegion: seed,
                             seed: winningTeam,
-                            name: teamNameFromRegion(seed, winningTeam)
+                            name: self.teamNameFromRegion(seed, winningTeam)
                         };
                     }
 
@@ -177,7 +181,7 @@ var decorateValidated = function (bracket) {
                     returnRound[index] = {
                         fromRegion: region.id,
                         seed: seed,
-                        name: teamNameFromRegion(region.id, seed)
+                        name: self.teamNameFromRegion(region.id, seed)
                     };
                 }
             });
@@ -188,19 +192,15 @@ var decorateValidated = function (bracket) {
     return wrapSuccess(decorated);
 };
 
-var winningTeamFromRegion = function (bracket, regionName) {
-    return _last(_find(bracket, function (b) { return b.id === regionName; }).rounds)[0];
-};
-
-var teamNameFromRegion = function (regionName, seed) {
-    return bracketData.bracket.regions[regionName].teams[seed - 1];
+Validator.prototype.teamNameFromRegion = function (regionName, seed) {
+    return this.bracketData.bracket.regions[regionName].teams[seed - 1];
 };
 
 // Takes an array of picks and a regionName
 // Validates picks to make sure that all the individual picks are valid
 // including each round having the correct number of games
 // and each pick being a team that has not been eliminated yet
-var validatePicks = function (options) {
+Validator.prototype.validatePicks = function (options) {
 
     options = options || {};
 
@@ -216,8 +216,8 @@ var validatePicks = function (options) {
             nextRound = rounds[i + 1],
             correctLength = (round.length === requiredLength),
             lastItem = (i === length - 1),
-            thisRoundPickedGames = _without(round, bracketData.constants.UNPICKED_MATCH),
-            nextRoundPickedGames = (nextRound) ? _without(nextRound, bracketData.constants.UNPICKED_MATCH) : [],
+            thisRoundPickedGames = _without(round, this.bracketData.constants.UNPICKED_MATCH),
+            nextRoundPickedGames = (nextRound) ? _without(nextRound, this.bracketData.constants.UNPICKED_MATCH) : [],
             nextRoundIsSubset = (!lastItem && _subset(nextRoundPickedGames, thisRoundPickedGames));
 
         if (correctLength && (lastItem || nextRoundIsSubset)) {
@@ -228,7 +228,7 @@ var validatePicks = function (options) {
         } else if (!nextRoundIsSubset) {
             errors.push('Round is not a subset of previous:', regionName, i + 2);
         }
-    });
+    }, this);
 
     return (!errors.length) ? wrapSuccess(regionPicks) : wrapError(errors);
 
@@ -236,25 +236,26 @@ var validatePicks = function (options) {
 
     // Takes an array of values and removes all invalids
     // return an array or arrays where each subarray is one round
-var getRounds = function (options) {
+Validator.prototype.getRounds = function (options) {
+    var self = this;
 
     options = options || {};
 
     var rounds = options.picks || [],
         regionName = options.id || '',
         length = rounds.length + 1,
-        retRounds = [(regionName === bracketData.constants.FINAL_ID) ? bracketData.constants.REGION_IDS : bracketData.order],
+        retRounds = [(regionName === this.bracketData.constants.FINAL_ID) ? this.bracketData.constants.REGION_IDS : this.bracketData.order],
         verify = function (arr, keep) {
             // Compacts the array and remove all duplicates that are not "X"
             return _compact(_uniq(arr, false, function (n) { return (_indexOf(keep, n) > -1) ? n + Math.random() : n; }));
         },
         checkVal = function (val) {
             var num = parseInt(val, 10);
-            if (num >= 1 && num <= bracketData.constants.TEAMS_PER_REGION) {
+            if (num >= 1 && num <= self.bracketData.constants.TEAMS_PER_REGION) {
                 return num;
-            } else if (val === bracketData.constants.UNPICKED_MATCH) {
+            } else if (val === self.bracketData.constants.UNPICKED_MATCH) {
                 return val;
-            } else if (_include(bracketData.constants.REGION_IDS, val)) {
+            } else if (_include(self.bracketData.constants.REGION_IDS, val)) {
                 return val;
             } else {
                 return 0;
@@ -264,7 +265,7 @@ var getRounds = function (options) {
 
     while (length > 1) {
         length = length / 2;
-        var roundGames = verify(_map(rounds.splice(0, Math.floor(length)), checkVal), [bracketData.constants.UNPICKED_MATCH]);
+        var roundGames = verify(_map(rounds.splice(0, Math.floor(length)), checkVal), [this.bracketData.constants.UNPICKED_MATCH]);
         retRounds.push(roundGames);
         count++;
     }
@@ -274,25 +275,25 @@ var getRounds = function (options) {
 
 // Takes a string of the picks for a region and validates them
 // Return an array of picks if valid or false if invalid
-var picksToArray = function (picks, regionName) {
-
+Validator.prototype.picksToArray = function (picks, regionName) {
+    var self = this;
     var rTestRegionPicks = null,
         regExpStr = '',
-        firstRoundLength = (regionName === bracketData.constants.FINAL_ID) ? bracketData.constants.REGION_COUNT : bracketData.constants.TEAMS_PER_REGION,
+        firstRoundLength = (regionName === this.bracketData.constants.FINAL_ID) ? this.bracketData.constants.REGION_COUNT : this.bracketData.constants.TEAMS_PER_REGION,
         replacement = '$' + _range(1, firstRoundLength).join(',$'),
-        seeds = (regionName === bracketData.constants.FINAL_ID) ? bracketData.constants.REGION_IDS : bracketData.order,
+        seeds = (regionName === this.bracketData.constants.FINAL_ID) ? this.bracketData.constants.REGION_IDS : this.bracketData.order,
         regExpJoiner = function (arr, reverse) {
             var newArr = (reverse) ? arr.reverse() : arr;
-            return '(' + newArr.join('|') + '|' + bracketData.constants.UNPICKED_MATCH + ')';
+            return '(' + newArr.join('|') + '|' + self.bracketData.constants.UNPICKED_MATCH + ')';
         },
         backref = function (i) {
             return regExpJoiner(_map(_range(i, i + 2), function (n) { return '\\' + n; }), true);
         };
 
-    if (regionName === bracketData.constants.FINAL_ID) {
+    if (regionName === this.bracketData.constants.FINAL_ID) {
         // Allow order independent final picks, we'll validate against matchups later
-        regExpStr += regExpJoiner(seeds.slice(0, bracketData.constants.REGION_COUNT));
-        regExpStr += regExpJoiner(seeds.slice(0, bracketData.constants.REGION_COUNT));
+        regExpStr += regExpJoiner(seeds.slice(0, this.bracketData.constants.REGION_COUNT));
+        regExpStr += regExpJoiner(seeds.slice(0, this.bracketData.constants.REGION_COUNT));
         regExpStr += backref(1);
     } else {
         // Create capture groups for the first round of the region
@@ -315,26 +316,26 @@ var picksToArray = function (picks, regionName) {
 
 };
 
-var validateFinal = function (finalPicks, validatedRounds) {
+Validator.prototype.validateFinal = function (finalPicks, validatedRounds) {
 
     var semifinal = finalPicks.rounds[1];
 
-    if (_contains(semifinal, bracketData.constants.UNPICKED_MATCH)) {
+    if (_contains(semifinal, this.bracketData.constants.UNPICKED_MATCH)) {
         return wrapSuccess(validatedRounds);
     }
 
     for (var i = 0, m = validatedRounds.length; i < m; i++) {
         var regionId = validatedRounds[i].id;
         var regionWinner = _last(validatedRounds[i].rounds)[0];
-        if (regionId !== bracketData.constants.FINAL_ID && regionWinner === bracketData.constants.UNPICKED_MATCH && _contains(semifinal, regionId)) {
+        if (regionId !== this.bracketData.constants.FINAL_ID && regionWinner === this.bracketData.constants.UNPICKED_MATCH && _contains(semifinal, regionId)) {
             return wrapError('Final teams are selected without all regions finished');
         }
     }
 
     var playingItself = (semifinal[0] === semifinal[1]),
-        playingWrongSide = (bracketData.bracket.regions[semifinal[0]].sameSideAs === semifinal[1]);
+        playingWrongSide = (this.bracketData.bracket.regions[semifinal[0]].sameSideAs === semifinal[1]);
 
-    if (!_subset(semifinal, bracketData.constants.REGION_IDS)) {
+    if (!_subset(semifinal, this.bracketData.constants.REGION_IDS)) {
         return wrapError('The championship game participants are invalid.');
     } else if (playingItself || playingWrongSide) {
         return wrapError('The championship game participants are from the same side of the bracket.');
