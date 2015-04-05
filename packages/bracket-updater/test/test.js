@@ -317,7 +317,21 @@ describe('Bracket Updater', function () {
 
         assert.equal(u1.update(), afterBracket1);
         assert.equal(u2.update(), afterBracket2);
+    });
 
+    it('Should match array of team names', function () {
+        var beforeBracket = 'MW185463721537131W18546141021462121E1854113728437477S185411147215112121FFXXX',
+            afterBracket1 =  'MW185463721537131W18546141021462121E1854113728437477S185411147215112121FFXSX',
+            u1 = new BracketUpdater({
+                currentMaster: beforeBracket,
+                fromRegion: 'FINAL FOUR',
+                winner: {name: 'Duke', seed: 1},
+                loser: {name: ['Michigan St', 'MICHIGAN STATE'], seed: 7},
+                year: '2015',
+                sport: sport
+            });
+
+        assert.equal(u1.update(), afterBracket1);
     });
 
 });

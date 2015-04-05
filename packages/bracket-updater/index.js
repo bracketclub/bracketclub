@@ -7,10 +7,37 @@ var _find = require('lodash/collection/find');
 var _each = require('lodash/collection/forEach');
 var _map = require('lodash/collection/map');
 var _isNumber = require('lodash/lang/isNumber');
+var _isArray = require('lodash/lang/isArray');
 var _values = require('lodash/object/values');
+var _compact = require('lodash/array/compact');
+var _intersection = require('lodash/array/intersection');
+
 
 var teamNameMatches = function (team1, team2) {
-    return team1 && team1.name && team2 && team2.name && team1.name.toLowerCase() === team2.name.toLowerCase();
+    var team1Name = team1 && team1.name;
+    var team2Name = team2 && team2.name;
+
+    if (!_isArray(team1Name)) {
+        team1Name = [team1Name];
+    }
+
+    team1Name = _compact(team1Name.map(function (name) {
+        return typeof name === 'string' ? name.toLowerCase() : null;
+    }));
+
+    if (!_isArray(team2Name)) {
+        team2Name = [team2Name];
+    }
+
+    team2Name = _compact(team2Name.map(function (name) {
+        return typeof name === 'string' ? name.toLowerCase() : null;
+    }));
+
+    if (team1Name.length && team2Name.length) {
+        return _intersection(team1Name, team2Name).length > 0;
+    }
+
+    return false;
 };
 var seedMatches = function (team1, team2) {
     return team1 && team2 && parseInt(team1.seed) === parseInt(team2.seed);
