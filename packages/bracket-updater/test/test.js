@@ -294,4 +294,30 @@ describe('Bracket Updater', function () {
         assert.equal(u.currentMaster, afterBracket);
     });
 
+    it('Should update 1st FF game in 2015', function () {
+        var beforeBracket = 'MW185463721537131W18546141021462121E1854113728437477S185411147215112121FFXXX',
+            afterBracket1 =  'MW185463721537131W18546141021462121E1854113728437477S185411147215112121FFXSX',
+            afterBracket2 = 'MW185463721537131W18546141021462121E1854113728437477S185411147215112121FFMWSX',
+            u1 = new BracketUpdater({
+                currentMaster: beforeBracket,
+                fromRegion: 'FINAL FOUR',
+                winner: {name: 'Duke', seed: 1},
+                loser: {name: 'Michigan State', seed: 7},
+                year: '2015',
+                sport: sport
+            }),
+            u2 = new BracketUpdater({
+                currentMaster: u1.update(),
+                fromRegion: 'FINAL FOUR',
+                winner: {name: 'Kentucky', seed: 1},
+                loser: {name: 'Wisconsin', seed: 1},
+                year: '2015',
+                sport: sport
+            });
+
+        assert.equal(u1.update(), afterBracket1);
+        assert.equal(u2.update(), afterBracket2);
+
+    });
+
 });

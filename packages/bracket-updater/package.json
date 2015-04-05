@@ -11,15 +11,15 @@
     "url": "http://github.com/tweetyourbracket/bracket-updater/issues"
   },
   "dependencies": {
-    "bracket-data": "^2.1.0",
-    "bracket-validator": "^2.0.2",
-    "lodash": "^3.3.1"
+    "bracket-data": "^2.2.9",
+    "bracket-validator": "^2.0.4",
+    "lodash": "^3.6.0"
   },
   "devDependencies": {
-    "bracket-generator": "^2.0.3",
-    "jshint": "^2.6.0",
-    "mocha": "^2.1.0",
-    "precommit-hook": "^1.0.7"
+    "bracket-generator": "^2.0.4",
+    "jshint": "^2.6.3",
+    "mocha": "^2.2.1",
+    "precommit-hook": "^2.0.1"
   },
   "homepage": "http://github.com/tweetyourbracket/bracket-updater",
   "keywords": [
@@ -29,11 +29,16 @@
   ],
   "license": "MIT",
   "main": "index.js",
+  "pre-commit": [
+    "lint",
+    "test"
+  ],
   "repository": {
     "type": "git",
     "url": "http://github.com/tweetyourbracket/bracket-updater.git"
   },
   "scripts": {
+    "lint": "jshint .",
     "test": "./node_modules/.bin/mocha -c -u bdd -R spec --timeout 10000 test/*.js"
   }
 }
