@@ -1,5 +1,5 @@
 var BracketValidator = require('bracket-validator');
-var BracketData = require('bracket-data');
+var bracketData = require('bracket-data');
 var _bind = require('lodash/function/bind');
 var _each = require('lodash/collection/forEach');
 var _map = require('lodash/collection/map');
@@ -80,10 +80,9 @@ var initialValues = {
 
 
 function Scorer(options) {
-    this.bracketData = new BracketData({
+    this.bracketData = bracketData({
         sport: options.sport,
-        year: options.year,
-        props: ['constants', 'scoring', 'bracket']
+        year: options.year
     });
 
     // Create convenience methods
