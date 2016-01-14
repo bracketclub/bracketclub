@@ -11,11 +11,12 @@
     "url": "http://github.com/tweetyourbracket/bracket-generator/issues"
   },
   "dependencies": {
-    "bracket-data": "^2.1.0",
+    "bracket-data": "^3.0.1",
     "lodash": "^3.3.1"
   },
   "devDependencies": {
     "bracket-validator": "^2.0.2",
+    "jshint": "^2.8.0",
     "mocha": "^2.1.0",
     "precommit-hook": "^1.0.7"
   },

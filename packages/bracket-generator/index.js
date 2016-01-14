@@ -1,4 +1,4 @@
-var BracketData = require('bracket-data');
+var bracketData = require('bracket-data');
 var _isString = require('lodash/lang/isString');
 var _map = require('lodash/collection/map');
 var _random = require('lodash/number/random');
@@ -15,10 +15,9 @@ var _omit = require('lodash/object/omit');
 var _pick = require('lodash/object/pick');
 
 function Generator(options) {
-    this.bracketData = new BracketData({
+    this.bracketData = bracketData({
         year: options.year,
-        sport: options.sport,
-        props: ['order', 'bracket', 'constants']
+        sport: options.sport
     });
 
     return this.reset(_omit(options, 'sport', 'year'));
