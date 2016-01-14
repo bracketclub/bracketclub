@@ -3,8 +3,8 @@ var BracketUpdater = require('../index');
 var BracketGenerator = require('bracket-generator');
 var year = '2013';
 var sport = 'ncaa-mens-basketball';
-var BracketData = require('bracket-data');
-var bd = new BracketData({year: year, sport: sport, props: ['constants']});
+var bracketData = require('bracket-data');
+var bd = bracketData({year: year, sport: sport});
 var c = bd.constants;
 
 describe('Bracket Updater', function () {

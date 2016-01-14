@@ -11,7 +11,7 @@
     "url": "http://github.com/tweetyourbracket/bracket-updater/issues"
   },
   "dependencies": {
-    "bracket-data": "^2.2.9",
+    "bracket-data": "^3.0.1",
     "bracket-validator": "^2.0.4",
     "lodash": "^3.6.0"
   },

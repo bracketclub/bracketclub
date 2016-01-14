@@ -1,4 +1,4 @@
-var BracketData = require('bracket-data');
+var bracketData = require('bracket-data');
 var BracketValidator = require('bracket-validator');
 var _extend = require('lodash/object/assign');
 var _defaults = require('lodash/object/defaults');
@@ -45,10 +45,9 @@ var seedMatches = function (team1, team2) {
 
 
 function Updater(options) {
-    this.bracketData = new BracketData({
+    this.bracketData = bracketData({
         sport: options.sport,
-        year: options.year,
-        props: ['constants', 'order']
+        year: options.year
     });
 
     this.validator = new BracketValidator({
