@@ -1,4 +1,4 @@
-var BracketData = require('bracket-data');
+var bracketData = require('bracket-data');
 var _all = require('lodash/collection/every');
 var _include = require('lodash/collection/contains');
 var _map = require('lodash/collection/map');
@@ -66,10 +66,9 @@ function Validator(options) {
 
     this.options = _omit(options, 'flatBracket');
 
-    this.bracketData = new BracketData({
+    this.bracketData = bracketData({
         year: options.year,
-        sport: options.sport,
-        props: ['bracket', 'constants', 'regex', 'order']
+        sport: options.sport
     });
 
     return this.reset(options.flatBracket);
