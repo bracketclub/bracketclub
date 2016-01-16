@@ -3,14 +3,15 @@ var BracketValidator = require('../index');
 var _ = require('lodash');
 var assert = require('assert');
 var year = '2013';
-var sport = 'ncaa-mens-basketball';
+var sport = 'ncaam';
+var oldSport = 'ncaa-mens-basketball';
 
 
 describe('A few random brackets: test only', function () {
     for (var i = 0; i < 20; i++) {
         (function () {
             it('the created and flat brackets should be equal', function () {
-                var bg = new BracketGenerator({sport: sport, winners: 'random', year: year}),
+                var bg = new BracketGenerator({sport: oldSport, winners: 'random', year: year}),
                     flat = bg.generate(),
                     bv = new BracketValidator({flatBracket: flat, year: year, sport: sport, testOnly: true}).validate();
                 assert.equal(flat, bv);

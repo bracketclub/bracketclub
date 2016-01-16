@@ -11,7 +11,7 @@
     "url": "http://github.com/tweetyourbracket/bracket-validator/issues"
   },
   "dependencies": {
-    "bracket-data": "^3.0.1",
+    "bracket-data": "^4.0.0",
     "lodash": "^3.3.1"
   },
   "devDependencies": {

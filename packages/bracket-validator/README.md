@@ -23,7 +23,7 @@ Make a new `bracket-validator` object with an options object (the year and sport
 var BracketValidator = require('bracket-validator');
 var validator = new BracketValidator({
    year: '2013',
-   sport: 'ncaa-mens-basketball',
+   sport: 'ncaam',
    /* User bracket string */
    flatBracket: 'MW1812463XXXXXXXXXW19XX614XXXXXXXXXSXX54XXXXXXXXXXXEXX12463XXXXXXXXXFFXXX'
 });
