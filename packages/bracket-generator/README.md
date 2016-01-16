@@ -23,7 +23,7 @@ Make a new `bracket-generator` object with an options object (the year and sport
 var BracketGenerator = require('bracket-generator');
 var generator = new BracketGenerator({
    year: '2013',
-   sport: 'ncaa-mens-basketball',
+   sport: 'ncaam',
    winners: 'random'
 });
 console.log(generator.generate());
