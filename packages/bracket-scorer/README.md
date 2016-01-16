@@ -19,7 +19,7 @@ Make a new `bracket-scorer` object with an options object (the year and sport op
 var BracketScorer = require('bracket-scorer');
 var scorer = new BracketScorer({
    year: '2013',
-   sport: 'ncaa-mens-basketball',
+   sport: 'ncaam',
    entry: entryBracket,
    master: masterBracket
 });
@@ -92,7 +92,7 @@ Scoring systems in the `scoring` option can have a few different forms. Any key 
 ```js
 var scorer = new BracketScorer({
     year: '2013',
-    sport: 'ncaa-mens-basketball',
+    sport: 'ncaam',
     entry: entryBracket,
     master: masterBracket,
     scoring: {
@@ -110,7 +110,7 @@ If a scoring system is just one number (like the example above), that value will
 ```js
 var scorer = new BracketScorer({
     year: '2013',
-    sport: 'ncaa-mens-basketball',
+    sport: 'ncaam',
     entry: entryBracket,
     master: masterBracket,
     scoring: {
