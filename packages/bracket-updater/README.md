@@ -16,7 +16,7 @@ Make a new `bracket-updater` object with an options object (the year and sport o
 var BracketUpdater = require('bracket-updater');
 var updater = new BracketUpdater({
    year: '2013',
-   sport: 'ncaa-mens-basketball',
+   sport: 'ncaam',
    currentMaster: 'MWX812463XXXXXXXXXW19XX614XXXXXXXXXSXX54XXXXXXXXXXXEXX12463XXXXXXXXXFFXXX'
 });
 

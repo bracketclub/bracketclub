@@ -11,12 +11,12 @@
     "url": "http://github.com/tweetyourbracket/bracket-updater/issues"
   },
   "dependencies": {
-    "bracket-data": "^3.0.1",
-    "bracket-validator": "^2.0.4",
+    "bracket-data": "^4.0.0",
+    "bracket-validator": "^3.0.1",
     "lodash": "^3.6.0"
   },
   "devDependencies": {
-    "bracket-generator": "^2.0.4",
+    "bracket-generator": "^3.0.0",
     "jshint": "^2.6.3",
     "mocha": "^2.2.1",
     "precommit-hook": "^2.0.1"
