@@ -15,10 +15,16 @@ var _intersection = require('lodash/array/intersection');
 
 var teamNameMatches = function (team1, team2) {
     var team1Name = team1 && team1.name;
+    var team1Names = team1 && team1.names;
     var team2Name = team2 && team2.name;
+    var team2Names = team2 && team2.names;
 
     if (!_isArray(team1Name)) {
         team1Name = [team1Name];
+    }
+
+    if (team1Names) {
+        team1Name = team1Name.concat(team1Names);
     }
 
     team1Name = _compact(team1Name.map(function (name) {
@@ -27,6 +33,10 @@ var teamNameMatches = function (team1, team2) {
 
     if (!_isArray(team2Name)) {
         team2Name = [team2Name];
+    }
+
+    if (team2Names) {
+        team2Name = team1Name.concat(team2Names);
     }
 
     team2Name = _compact(team2Name.map(function (name) {
