@@ -11,6 +11,16 @@ var _isArray = require('lodash/lang/isArray');
 var _values = require('lodash/object/values');
 var _compact = require('lodash/array/compact');
 var _intersection = require('lodash/array/intersection');
+var _shuffle = require('lodash/collection/shuffle');
+
+var allIndices = function (arr, val) {
+  var indices = [];
+  var i = -1;
+  while ((i = arr.indexOf(val, i + 1)) !== -1) {
+    indices.push(i);
+  }
+  return indices;
+};
 
 
 var teamNameMatches = function (team1, team2) {
@@ -153,6 +163,52 @@ Updater.prototype.flatten = function (bracket) {
         flattenedBracket += bracketRegion.id + regionString;
     });
     return flattenedBracket;
+};
+
+Updater.prototype.next = function (options, random) {
+    options && this.reset(options);
+    var bd = this.bracketData;
+    var validated = this.validator.validate(this.currentMaster);
+    var nextGame;
+    var maybeShuffle = random ? _shuffle : function (arr) { return arr; };
+
+    var regionKeys = maybeShuffle(bd.constants.REGION_IDS).concat(bd.constants.FINAL_ID);
+
+    _each(regionKeys, function (regionKey) {
+        var region = validated[regionKey];
+        var rounds = region.rounds;
+
+        _each(rounds, function (round, roundIndex) {
+            var indices = allIndices(round, null);
+            var game = indices.length ? maybeShuffle(indices)[0] : null;
+            if (game !== null) {
+                nextGame = {
+                    region: regionKey,
+                    regionId: region.id,
+                    round: roundIndex,
+                    game: game
+                };
+                return false;
+            }
+            return true;
+        });
+
+        return !nextGame;
+    });
+
+    if (nextGame) {
+        var prevRound = validated[nextGame.region].rounds[nextGame.round - 1];
+        return maybeShuffle([
+            _extend({}, prevRound[nextGame.game * 2], {fromRegion: nextGame.regionId}),
+            _extend({}, prevRound[nextGame.game * 2 + 1], {fromRegion: nextGame.regionId}),
+        ]);
+    }
+
+    return null;
+};
+
+Updater.prototype.nextRandom = function (options) {
+    return this.next(options, true);
 };
 
 Updater.prototype.update = function (options) {

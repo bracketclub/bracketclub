@@ -349,4 +349,63 @@ describe('Bracket Updater', function () {
         assert.equal(u1.update(), afterBracket1);
     });
 
+    it('Should pick next games in random order', function () {
+        var bracket = c.EMPTY,
+            u1 = new BracketUpdater({
+                year: '2015',
+                sport: sport
+            });
+
+        for (var i = 0; i < 63; i++) {
+            var next = u1.nextRandom({currentMaster: bracket});
+            bracket = u1.update({
+                currentMaster: bracket,
+                fromRegion: next[0].fromRegion,
+                winner: {seed: next[0].seed, name: next[0].name},
+                loser: {seed: next[1].seed, name: next[1].name}
+            });
+        }
+
+        assert.equal(bracket.indexOf(bd.constants.UNPICKED_MATCH), -1);
+    });
+
+    it('Should get pick next games in order', function () {
+        var bracket = c.EMPTY,
+            u1 = new BracketUpdater({
+                year: '2015',
+                sport: sport
+            });
+
+        for (var i = 0; i < 63; i++) {
+            var next = u1.next({currentMaster: bracket});
+            bracket = u1.update({
+                currentMaster: bracket,
+                fromRegion: next[0].fromRegion,
+                winner: {seed: next[0].seed, name: next[0].name},
+                loser: {seed: next[1].seed, name: next[1].name}
+            });
+        }
+
+        assert.equal(bracket.indexOf(bd.constants.UNPICKED_MATCH), -1);
+    });
+
+    it('Should get pick next games in order', function () {
+        var bracket = c.EMPTY,
+            u1 = new BracketUpdater({
+                year: '2015',
+                sport: sport
+            });
+
+        for (var i = 0; i < 5; i++) {
+            var next = u1.next({currentMaster: bracket});
+            bracket = u1.update({
+                currentMaster: bracket,
+                fromRegion: next[0].fromRegion,
+                winner: {seed: next[0].seed, name: next[0].name},
+                loser: {seed: next[1].seed, name: next[1].name}
+            });
+        }
+
+        assert.equal(bracket, c.EMPTY.replace('MWXXXXX', 'MW18546'));
+    });
 });
