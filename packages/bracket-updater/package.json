@@ -1,7 +1,7 @@
 {
   "name": "bracket-updater",
   "description": "Update a tournament bracket after the completion of a game.",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "author": {
     "name": "Luke Karrys",
     "email": "luke@lukekarrys.com",
