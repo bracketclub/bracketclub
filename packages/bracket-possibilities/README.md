@@ -43,7 +43,6 @@ p.bestScrore({ entry, master })
 p.possibilities({ entry, master })
 // [ ... ] (128 different brackets)
 
-
 // This will return the first possible winning outcome for the entry matched by `findEntry`
 // Unfortunately, for me this will return null in this case because I was eliminated by the Sweet 16
 const findEntry = ({ user }) => user.username === 'lukekarrys'
@@ -55,7 +54,7 @@ p.canWin({ entries, master, findEntry })
 // will finish in 1st place (tied or not)
 p.winners({ entries, master, findEntry })
 // [{ rank: 1, behind: 0, bracket: 'OUTCOME1' }, { rank: 1, behind: 0, bracket: 'OUTCOME2' }, ...]
-
+```
 
 ### LICENSE
 
