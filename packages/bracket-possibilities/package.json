@@ -1,7 +1,7 @@
 {
   "name": "bracket-possibilities",
   "description": "Get the best possible outcomes for a bracket based on a partially complete master bracket.",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": "Luke Karrys <luke@lukekarrys.com>",
   "bugs": {
     "url": "https://github.com/tweetyourbracket/bracket-possibilities/issues"
