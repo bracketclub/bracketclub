@@ -25,7 +25,8 @@ const p = new P({ sport: 'ncaam', year: '2016' })
 
 // Hey its my entry from 2016 and the actual completed games through the Sweet 16
 const entries = require('./all-entries.json')
-const entry = 'S195411372141121111W19541131021532522E195463721437131MW19546141021562522FFSMWS'
+const findEntry = ({ user }) => user.username === 'lukekarrys'
+const entry = entries.find(findEntry).bracket
 const master = 'S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX'
 
 // This will return the best possible future bracket for 'entry' with any unwinnable
@@ -45,15 +46,23 @@ p.possibilities({ entry, master })
 
 // This will return the first possible winning outcome for the entry matched by `findEntry`
 // Unfortunately, for me this will return null in this case because I was eliminated by the Sweet 16
-const findEntry = ({ user }) => user.username === 'lukekarrys'
-
 p.canWin({ entries, master, findEntry })
-// null or something like { rank: 1, behind: 0, bracket: 'SOME WINNING BRACKET' }
+// null or something like { rank: 1, bracket: 'SOME WINNING BRACKET' }
 
 // This will return all the `possibilities` where the entry matched by `findEntry`
 // will finish in 1st place (tied or not)
 p.winners({ entries, master, findEntry })
-// [{ rank: 1, behind: 0, bracket: 'OUTCOME1' }, { rank: 1, behind: 0, bracket: 'OUTCOME2' }, ...]
+// [{ rank: 1,  bracket: 'OUTCOME1' }, { rank: 1, bracket: 'OUTCOME2' }, ...]
+
+// Find all top 5 finishes for the entry matched by `findEntry`
+p.finishes({ entries, master, findEntry, rank: 5 })
+// [{ rank: 3, behind: 100,  bracket: 'OUTCOME1' }, { rank: 4, behind: 120, bracket: 'OUTCOME2' }, ...]
+// behind is how many points the entry would be behind the eventual winner
+
+// Pass `scoreType` to any method involving scoring to use a different scoring
+// system for the end result. Eg, find the best possible score using the gooley
+// scoring system
+p.bestScore({ entry, master, scoreType: 'gooley' })
 ```
 
 ### LICENSE
