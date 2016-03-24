@@ -1,0 +1,60 @@
+{
+  "name": "bracket-possibilities",
+  "description": "Get the best possible outcomes for a bracket based on a partially complete master bracket.",
+  "version": "0.0.0",
+  "author": "Luke Karrys <luke@lukekarrys.com>",
+  "bugs": {
+    "url": "https://github.com/tweetyourbracket/bracket-possibilities/issues"
+  },
+  "dependencies": {
+    "bracket-data": "^4.0.20",
+    "bracket-scorer": "^3.0.0",
+    "bracket-updater": "^3.1.0",
+    "bracket-validator": "^3.0.1",
+    "lodash": "^4.6.1"
+  },
+  "devDependencies": {
+    "babel": "^6.5.1",
+    "babel-cli": "^6.5.1",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "babel-tape-runner": "^2.0.0",
+    "git-validate": "^2.1.4",
+    "standard": "^6.0.4",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.4.0"
+  },
+  "files": [
+    "lib/index.js",
+    "src/index.js"
+  ],
+  "homepage": "https://github.com/tweetyourbracket/bracket-possibilities#readme",
+  "keywords": [
+    "ncaa",
+    "bracket",
+    "tweetyourbracket"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "pre-commit": [
+    "lint",
+    "validate",
+    "test"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/tweetyourbracket/bracket-possibilities.git"
+  },
+  "scripts": {
+    "compile": "babel src --out-dir lib",
+    "lint": "standard",
+    "prepublish": "npm run compile",
+    "test": "babel-tape-runner test/*.js | tap-spec",
+    "validate": "npm ls"
+  },
+  "standard": {
+    "ignore": [
+      "lib/*"
+    ]
+  }
+}
