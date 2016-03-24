@@ -3,8 +3,11 @@ import _ from 'lodash'
 import Scorer from 'bracket-scorer'
 import Possibilities from '../src/index'
 
+const CI = process.env.CI
 const sport = 'ncaam'
 const year = '2016'
+
+const testCI = CI ? test : test.skip
 
 test('compare', (t) => {
   const entry = 'S195411372141121111W19541131021532522E195463721437131MW19546141021562522FFSMWS'
@@ -28,7 +31,7 @@ test('compare', (t) => {
   t.end()
 })
 
-test('can any user win', (t) => {
+testCI('can any user win', (t) => {
   const entries = require('./fixtures/entries-ncaam-2016')
   const usernames = _.map(entries, ({ user }) => user.username)
   const master = 'S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX'
@@ -55,7 +58,7 @@ test('can any user win', (t) => {
   t.end()
 })
 
-test('can user win', (t) => {
+testCI('can user win', (t) => {
   const entries = require('./fixtures/entries-ncaam-2016')
   const master = 'S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX'
   const p = new Possibilities({ sport, year })
