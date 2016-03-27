@@ -91,7 +91,7 @@ test('can user win gooley', (t) => {
   t.end()
 })
 
-test.skip('can user get top 5', (t) => {
+test('can user get top 5', (t) => {
   const entries = require('./fixtures/entries-ncaam-2016')
   const master = 'S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX'
   const p = new Possibilities({ sport, year })
@@ -104,6 +104,17 @@ test.skip('can user get top 5', (t) => {
   })
 
   t.equal(finishes.length, 84)
+
+  t.end()
+})
+
+test('possibilities can take a string', (t) => {
+  const master = 'S19513113721532122W181241131021432122E195461472156716XMW191241131015141110110XFFXXX'
+  const p = new Possibilities({ sport, year })
+
+  const possibilities = p.possibilities(master)
+
+  t.equal(possibilities.length, 32)
 
   t.end()
 })

@@ -36,9 +36,9 @@ export default class Possibilities {
     return this._scorer.score(scoreType, { entry, master: best })
   }
 
-  possibilities ({ entry, master }) {
-    const best = this.best({ entry, master })
-    const unpicked = best.match(this._unpicked) || []
+  possibilities (options) {
+    const bracket = typeof options === 'string' ? options : this.best(options)
+    const unpicked = bracket.match(this._unpicked) || []
 
     return binaryCombinations(unpicked.length).map((combo) => {
       return combo.reduce((memo, c) => {
@@ -56,7 +56,7 @@ export default class Possibilities {
             }
           )
         })
-      }, best)
+      }, bracket)
     })
   }
 
