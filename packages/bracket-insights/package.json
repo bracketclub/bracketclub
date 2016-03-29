@@ -1,0 +1,49 @@
+{
+  "name": "bracket-insights",
+  "description": "Write scripts to get insights about bracket entries or masters.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Luke Karrys",
+    "email": "luke@lukekarrys.com",
+    "url": "http://lukekarrys.com"
+  },
+  "bugs": {
+    "url": "http://github.com/tweetyourbracket/bracket-insights/issues"
+  },
+  "dependencies": {
+    "bracket-data": "^4.0.20",
+    "bracket-generator": "^3.0.0",
+    "bracket-possibilities": "^1.1.0",
+    "bracket-scorer": "^3.0.0",
+    "bracket-updater": "^3.2.0",
+    "bracket-validator": "^3.0.1",
+    "lodash": "^4.6.1",
+    "yargs": "^4.3.2"
+  },
+  "devDependencies": {
+    "git-validate": "^2.1.4",
+    "standard": "^6.0.8"
+  },
+  "homepage": "http://github.com/tweetyourbracket/bracket-insights",
+  "keywords": [
+    "bracket",
+    "ncaa",
+    "tweetyourbracket"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "private": true,
+  "pre-commit": [
+    "lint",
+    "validate"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tweetyourbracket/bracket-insights.git"
+  },
+  "scripts": {
+    "data": "./lib/data.sh",
+    "lint": "standard",
+    "validate": "npm ls"
+  }
+}
