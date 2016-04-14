@@ -1,26 +1,24 @@
 var bracketData = require('bracket-data');
-var _all = require('lodash/collection/every');
-var _include = require('lodash/collection/contains');
-var _map = require('lodash/collection/map');
-var _toArray = require('lodash/lang/toArray');
-var _range = require('lodash/utility/range');
-var _keys = require('lodash/object/keys');
-var _defaults = require('lodash/object/defaults');
-var _omit = require('lodash/object/omit');
-var _difference = require('lodash/array/difference');
-var _isArray = require('lodash/lang/isArray');
-var _some = require('lodash/collection/some');
-var _filter = require('lodash/collection/filter');
-var _pluck = require('lodash/collection/pluck');
-var _find = require('lodash/collection/find');
-var _each = require('lodash/collection/forEach');
-var _extend = require('lodash/object/assign');
-var _last = require('lodash/array/last');
-var _without = require('lodash/array/without');
-var _compact = require('lodash/array/compact');
-var _uniq = require('lodash/array/uniq');
-var _indexOf = require('lodash/array/indexOf');
-var _contains = require('lodash/collection/contains');
+var _all = require('lodash/every');
+var _include = require('lodash/includes');
+var _map = require('lodash/map');
+var _toArray = require('lodash/toArray');
+var _range = require('lodash/range');
+var _keys = require('lodash/keys');
+var _defaults = require('lodash/defaults');
+var _omit = require('lodash/omit');
+var _difference = require('lodash/difference');
+var _isArray = require('lodash/isArray');
+var _some = require('lodash/some');
+var _filter = require('lodash/filter');
+var _find = require('lodash/find');
+var _each = require('lodash/forEach');
+var _extend = require('lodash/assign');
+var _last = require('lodash/last');
+var _without = require('lodash/without');
+var _compact = require('lodash/compact');
+var _uniqBy = require('lodash/uniqBy');
+var _indexOf = require('lodash/indexOf');
 
 
 var _subset = function (small, big) {
@@ -36,7 +34,7 @@ var getErrors = function (result) {
     return _isArray(result) ? _filter(result, function (r) { return r instanceof Error; })[0] : result;
 };
 var findResult = function (result) {
-    return _isArray(result) ? _pluck(result, 'result') : result.result;
+    return _isArray(result) ? _map(result, 'result') : result.result;
 };
 var wrapError = function () {
     return {
@@ -95,15 +93,15 @@ Validator.prototype.validate = function (flatBracket) {
     if (hasError(result)) return getErrors(result);
 
     // Picks to arrays
-    result = findResult(_map(result, this.picksToArray, this));
+    result = findResult(_map(result, this.picksToArray.bind(this)));
     if (hasError(result)) return getErrors(result);
 
     // Array to nested array
-    result = findResult(_map(result, this.getRounds, this));
+    result = findResult(_map(result, this.getRounds.bind(this)));
     if (hasError(result)) return getErrors(result);
 
     // All regions have valid picks
-    result = findResult(_map(result, this.validatePicks, this));
+    result = findResult(_map(result, this.validatePicks.bind(this)));
     if (hasError(result)) return getErrors(result);
 
     // Final region has valid picks
@@ -133,6 +131,7 @@ Validator.prototype.expandFlatBracket = function (flat, allowEmpty) {
                 append = (i % 2) ? '":"$' : ((i < length - 1) ? '","$' : '"}');
             return prepend + i + append;
         }).join('');
+
     try  {
         return wrapSuccess(JSON.parse(flat.replace(this.bracketData.regex, replacer)));
     }
@@ -203,6 +202,8 @@ Validator.prototype.validatePicks = function (options) {
 
     options = options || {};
 
+    var self = this;
+
     var rounds = options.rounds || [],
         regionName = options.id,
         length = rounds.length,
@@ -210,13 +211,12 @@ Validator.prototype.validatePicks = function (options) {
         errors = [];
 
     _each(rounds, function (round, i) {
-
         var requiredLength = (Math.pow(2, length - 1) / Math.pow(2, i)),
             nextRound = rounds[i + 1],
             correctLength = (round.length === requiredLength),
             lastItem = (i === length - 1),
-            thisRoundPickedGames = _without(round, this.bracketData.constants.UNPICKED_MATCH),
-            nextRoundPickedGames = (nextRound) ? _without(nextRound, this.bracketData.constants.UNPICKED_MATCH) : [],
+            thisRoundPickedGames = _without(round, self.bracketData.constants.UNPICKED_MATCH),
+            nextRoundPickedGames = (nextRound) ? _without(nextRound, self.bracketData.constants.UNPICKED_MATCH) : [],
             nextRoundIsSubset = (!lastItem && _subset(nextRoundPickedGames, thisRoundPickedGames));
 
         if (correctLength && (lastItem || nextRoundIsSubset)) {
@@ -227,7 +227,7 @@ Validator.prototype.validatePicks = function (options) {
         } else if (!nextRoundIsSubset) {
             errors.push('Round is not a subset of previous:', regionName, i + 2);
         }
-    }, this);
+    });
 
     return (!errors.length) ? wrapSuccess(regionPicks) : wrapError(errors);
 
@@ -246,7 +246,7 @@ Validator.prototype.getRounds = function (options) {
         retRounds = [(regionName === this.bracketData.constants.FINAL_ID) ? this.bracketData.constants.REGION_IDS : this.bracketData.order],
         verify = function (arr, keep) {
             // Compacts the array and remove all duplicates that are not "X"
-            return _compact(_uniq(arr, false, function (n) { return (_indexOf(keep, n) > -1) ? n + Math.random() : n; }));
+            return _compact(_uniqBy(arr, function (n) { return (_indexOf(keep, n) > -1) ? n + Math.random() : n; }));
         },
         checkVal = function (val) {
             var num = parseInt(val, 10);
@@ -289,14 +289,19 @@ Validator.prototype.picksToArray = function (picks, regionName) {
             return regExpJoiner(_map(_range(i, i + 2), function (n) { return '\\' + n; }), true);
         };
 
+    var i;
+
     if (regionName === this.bracketData.constants.FINAL_ID) {
         // Allow order independent final picks, we'll validate against matchups later
-        regExpStr += regExpJoiner(seeds.slice(0, this.bracketData.constants.REGION_COUNT));
-        regExpStr += regExpJoiner(seeds.slice(0, this.bracketData.constants.REGION_COUNT));
-        regExpStr += backref(1);
+        for (i = 0; i < this.bracketData.constants.REGION_COUNT - 1; i++) {
+            regExpStr += regExpJoiner(seeds.slice(0, this.bracketData.constants.REGION_COUNT));
+            if (i > 0 && i === this.bracketData.constants.REGION_COUNT - 1) {
+                regExpStr += backref(1);
+            }
+        }
     } else {
         // Create capture groups for the first round of the region
-        for (var i = 0; i < firstRoundLength; i += 2) {
+        for (i = 0; i < firstRoundLength; i += 2) {
             regExpStr += regExpJoiner(seeds.slice(i, i + 2));
         }
         // Create capture groups using backreferences for the capture groups above
@@ -319,14 +324,14 @@ Validator.prototype.validateFinal = function (finalPicks, validatedRounds) {
 
     var semifinal = finalPicks.rounds[1];
 
-    if (_contains(semifinal, this.bracketData.constants.UNPICKED_MATCH)) {
+    if (_include(semifinal, this.bracketData.constants.UNPICKED_MATCH)) {
         return wrapSuccess(validatedRounds);
     }
 
     for (var i = 0, m = validatedRounds.length; i < m; i++) {
         var regionId = validatedRounds[i].id;
         var regionWinner = _last(validatedRounds[i].rounds)[0];
-        if (regionId !== this.bracketData.constants.FINAL_ID && regionWinner === this.bracketData.constants.UNPICKED_MATCH && _contains(semifinal, regionId)) {
+        if (regionId !== this.bracketData.constants.FINAL_ID && regionWinner === this.bracketData.constants.UNPICKED_MATCH && _include(semifinal, regionId)) {
             return wrapError('Final teams are selected without all regions finished');
         }
     }

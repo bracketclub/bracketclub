@@ -205,3 +205,11 @@ describe('Bad Brackets', function () {
         assert.equal(true, validator instanceof Error);
     });
 });
+
+describe('NBA', function () {
+    it('works with only two regions', function () {
+        var validator = new BracketValidator({flatBracket: 'W1423121E1423121FW', year: '2016', sport: 'nba'}).validate();
+
+        assert.equal(false, validator instanceof Error);
+    });
+});

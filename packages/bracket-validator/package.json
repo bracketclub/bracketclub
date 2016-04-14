@@ -11,14 +11,14 @@
     "url": "http://github.com/tweetyourbracket/bracket-validator/issues"
   },
   "dependencies": {
-    "bracket-data": "^4.0.0",
-    "lodash": "^3.3.1"
+    "bracket-data": "^4.2.0",
+    "lodash": "^4.11.1"
   },
   "devDependencies": {
     "bracket-generator": "^3.0.0",
-    "jshint": "^2.6.0",
-    "mocha": "^2.1.0",
-    "precommit-hook": "^1.0.7"
+    "jshint": "^2.9.1",
+    "mocha": "^2.4.5",
+    "precommit-hook": "^3.0.0"
   },
   "homepage": "http://github.com/tweetyourbracket/bracket-validator",
   "keywords": [
@@ -28,11 +28,18 @@
   ],
   "license": "MIT",
   "main": "index.js",
+  "pre-commit": [
+    "lint",
+    "validate",
+    "test"
+  ],
   "repository": {
     "type": "git",
     "url": "http://github.com/tweetyourbracket/bracket-validator.git"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha -c -u bdd -R spec --timeout 10000 test/*.js"
+    "lint": "jshint .",
+    "test": "./node_modules/.bin/mocha -c -u bdd -R spec --timeout 10000 test/*.js",
+    "validate": "npm ls"
   }
 }
