@@ -248,7 +248,7 @@ describe('Bracket Scorer', function () {
 
         assert.equal(s.standardPPR, 1000);
         assert.equal(s.gooleyPPR, 44);
-        assert.equal(5, _.compact(_.pluck(s.diff.MW.rounds[1], 'correct')).length);
+        assert.equal(5, _.compact(_.map(s.diff.MW.rounds[1], 'correct')).length);
     });
 
     it('Convenience methods', function () {
@@ -328,25 +328,25 @@ describe('Bracket Differ', function () {
                 sport: sport
             }).score('diff');
 
-        assert.equal(0, _.compact(_.pluck(res.MW.rounds[1], 'correct')).length);
-        assert.equal(0, _.compact(_.pluck(res.W.rounds[1], 'correct')).length);
-        assert.equal(0, _.compact(_.pluck(res.S.rounds[1], 'correct')).length);
-        assert.equal(0, _.compact(_.pluck(res.E.rounds[1], 'correct')).length);
+        assert.equal(0, _.compact(_.map(res.MW.rounds[1], 'correct')).length);
+        assert.equal(0, _.compact(_.map(res.W.rounds[1], 'correct')).length);
+        assert.equal(0, _.compact(_.map(res.S.rounds[1], 'correct')).length);
+        assert.equal(0, _.compact(_.map(res.E.rounds[1], 'correct')).length);
 
-        assert.equal(true, _.every(_.pluck(res.MW.rounds[2], 'eliminated'), function (i) { return i === true; }));
-        assert.equal(true, _.every(_.pluck(res.W.rounds[2], 'eliminated'), function (i) { return i === true; }));
-        assert.equal(true, _.every(_.pluck(res.S.rounds[2], 'eliminated'), function (i) { return i === true; }));
-        assert.equal(true, _.every(_.pluck(res.E.rounds[2], 'eliminated'), function (i) { return i === true; }));
+        assert.equal(true, _.every(_.map(res.MW.rounds[2], 'eliminated'), function (i) { return i === true; }));
+        assert.equal(true, _.every(_.map(res.W.rounds[2], 'eliminated'), function (i) { return i === true; }));
+        assert.equal(true, _.every(_.map(res.S.rounds[2], 'eliminated'), function (i) { return i === true; }));
+        assert.equal(true, _.every(_.map(res.E.rounds[2], 'eliminated'), function (i) { return i === true; }));
 
-        assert.equal(true, _.every(_.pluck(res.MW.rounds[3], 'eliminated'), function (i) { return i === true; }));
-        assert.equal(true, _.every(_.pluck(res.W.rounds[3], 'eliminated'), function (i) { return i === true; }));
-        assert.equal(true, _.every(_.pluck(res.S.rounds[3], 'eliminated'), function (i) { return i === true; }));
-        assert.equal(true, _.every(_.pluck(res.E.rounds[3], 'eliminated'), function (i) { return i === true; }));
+        assert.equal(true, _.every(_.map(res.MW.rounds[3], 'eliminated'), function (i) { return i === true; }));
+        assert.equal(true, _.every(_.map(res.W.rounds[3], 'eliminated'), function (i) { return i === true; }));
+        assert.equal(true, _.every(_.map(res.S.rounds[3], 'eliminated'), function (i) { return i === true; }));
+        assert.equal(true, _.every(_.map(res.E.rounds[3], 'eliminated'), function (i) { return i === true; }));
 
-        assert.equal(true, _.every(_.pluck(res.MW.rounds[4], 'eliminated'), function (i) { return i === true; }));
-        assert.equal(true, _.every(_.pluck(res.W.rounds[4], 'eliminated'), function (i) { return i === true; }));
-        assert.equal(true, _.every(_.pluck(res.S.rounds[4], 'eliminated'), function (i) { return i === true; }));
-        assert.equal(true, _.every(_.pluck(res.E.rounds[4], 'eliminated'), function (i) { return i === true; }));
+        assert.equal(true, _.every(_.map(res.MW.rounds[4], 'eliminated'), function (i) { return i === true; }));
+        assert.equal(true, _.every(_.map(res.W.rounds[4], 'eliminated'), function (i) { return i === true; }));
+        assert.equal(true, _.every(_.map(res.S.rounds[4], 'eliminated'), function (i) { return i === true; }));
+        assert.equal(true, _.every(_.map(res.E.rounds[4], 'eliminated'), function (i) { return i === true; }));
 
         assert.equal(1, res.MW.rounds[1][0].shouldBe.seed);
         assert.equal(1, res.W.rounds[1][0].shouldBe.seed);
@@ -363,25 +363,25 @@ describe('Bracket Differ', function () {
                 sport: sport
             }).score('diff');
 
-        assert.equal(8, _.compact(_.pluck(res.MW.rounds[1], 'correct')).length);
-        assert.equal(8, _.compact(_.pluck(res.W.rounds[1], 'correct')).length);
-        assert.equal(8, _.compact(_.pluck(res.S.rounds[1], 'correct')).length);
-        assert.equal(8, _.compact(_.pluck(res.E.rounds[1], 'correct')).length);
+        assert.equal(8, _.compact(_.map(res.MW.rounds[1], 'correct')).length);
+        assert.equal(8, _.compact(_.map(res.W.rounds[1], 'correct')).length);
+        assert.equal(8, _.compact(_.map(res.S.rounds[1], 'correct')).length);
+        assert.equal(8, _.compact(_.map(res.E.rounds[1], 'correct')).length);
 
-        assert.equal(true, _.every(_.pluck(res.MW.rounds[2], 'eliminated'), function (i) { return i === undefined; }));
-        assert.equal(true, _.every(_.pluck(res.W.rounds[2], 'eliminated'), function (i) { return i === undefined; }));
-        assert.equal(true, _.every(_.pluck(res.S.rounds[2], 'eliminated'), function (i) { return i === undefined; }));
-        assert.equal(true, _.every(_.pluck(res.E.rounds[2], 'eliminated'), function (i) { return i === undefined; }));
+        assert.equal(true, _.every(_.map(res.MW.rounds[2], 'eliminated'), function (i) { return i === undefined; }));
+        assert.equal(true, _.every(_.map(res.W.rounds[2], 'eliminated'), function (i) { return i === undefined; }));
+        assert.equal(true, _.every(_.map(res.S.rounds[2], 'eliminated'), function (i) { return i === undefined; }));
+        assert.equal(true, _.every(_.map(res.E.rounds[2], 'eliminated'), function (i) { return i === undefined; }));
 
-        assert.equal(true, _.every(_.pluck(res.MW.rounds[3], 'eliminated'), function (i) { return i === undefined; }));
-        assert.equal(true, _.every(_.pluck(res.W.rounds[3], 'eliminated'), function (i) { return i === undefined; }));
-        assert.equal(true, _.every(_.pluck(res.S.rounds[3], 'eliminated'), function (i) { return i === undefined; }));
-        assert.equal(true, _.every(_.pluck(res.E.rounds[3], 'eliminated'), function (i) { return i === undefined; }));
+        assert.equal(true, _.every(_.map(res.MW.rounds[3], 'eliminated'), function (i) { return i === undefined; }));
+        assert.equal(true, _.every(_.map(res.W.rounds[3], 'eliminated'), function (i) { return i === undefined; }));
+        assert.equal(true, _.every(_.map(res.S.rounds[3], 'eliminated'), function (i) { return i === undefined; }));
+        assert.equal(true, _.every(_.map(res.E.rounds[3], 'eliminated'), function (i) { return i === undefined; }));
 
-        assert.equal(true, _.every(_.pluck(res.MW.rounds[4], 'eliminated'), function (i) { return i === undefined; }));
-        assert.equal(true, _.every(_.pluck(res.W.rounds[4], 'eliminated'), function (i) { return i === undefined; }));
-        assert.equal(true, _.every(_.pluck(res.S.rounds[4], 'eliminated'), function (i) { return i === undefined; }));
-        assert.equal(true, _.every(_.pluck(res.E.rounds[4], 'eliminated'), function (i) { return i === undefined; }));
+        assert.equal(true, _.every(_.map(res.MW.rounds[4], 'eliminated'), function (i) { return i === undefined; }));
+        assert.equal(true, _.every(_.map(res.W.rounds[4], 'eliminated'), function (i) { return i === undefined; }));
+        assert.equal(true, _.every(_.map(res.S.rounds[4], 'eliminated'), function (i) { return i === undefined; }));
+        assert.equal(true, _.every(_.map(res.E.rounds[4], 'eliminated'), function (i) { return i === undefined; }));
 
         assert.equal(true, res.MW.rounds[1][0].correct);
         assert.equal(true, res.W.rounds[1][0].correct);

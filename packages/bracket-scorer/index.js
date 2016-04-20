@@ -1,15 +1,15 @@
 var BracketValidator = require('bracket-validator');
 var bracketData = require('bracket-data');
-var _bind = require('lodash/function/bind');
-var _each = require('lodash/collection/forEach');
-var _map = require('lodash/collection/map');
-var _uniq = require('lodash/array/uniq');
-var _some = require('lodash/collection/some');
-var _contains = require('lodash/collection/contains');
-var _isArray = require('lodash/lang/isArray');
-var _cloneDeep = require('lodash/lang/cloneDeep');
-var _extend = require('lodash/object/assign');
-var _isPlainObject = require('lodash/lang/isPlainObject');
+var _bind = require('lodash/bind');
+var _each = require('lodash/forEach');
+var _map = require('lodash/map');
+var _uniq = require('lodash/uniq');
+var _some = require('lodash/some');
+var _contains = require('lodash/includes');
+var _isArray = require('lodash/isArray');
+var _cloneDeep = require('lodash/cloneDeep');
+var _extend = require('lodash/assign');
+var _isPlainObject = require('lodash/isPlainObject');
 
 
 var getResult = {
@@ -35,6 +35,7 @@ var getResult = {
         throw new Error('Cant do anything with scoring system: ' + result.type);
     },
     diff: function (bd, options) {
+        var self = this;
         if (options.status === 'incorrect') {
             if (options.diff) {
                 options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].correct = false;
@@ -51,13 +52,13 @@ var getResult = {
             }
         } else if (options.status === 'unplayed' && options.pprMethods.length && options.getScoreResult) {
             _each(options.pprMethods, function (pprMethod) {
-                options.results[pprMethod] += this.totalScore(bd, {
+                options.results[pprMethod] += self.totalScore(bd, {
                     roundIndex: options.trueRoundIndex,
                     status: 'correct',
                     seed: options.game.seed,
                     type: pprMethod.replace('PPR', '')
                 });
-            }, this);
+            });
         }
     },
     rounds: function (options) {
@@ -65,13 +66,21 @@ var getResult = {
     }
 };
 
+var roundCount = function (teams) {
+    var count = 0;
+    while (teams > 1) {
+        count++;
+        teams = teams / 2;
+    }
+    return count;
+};
+
 var initialValues = {
     rounds: function (bd) {
-        var teamCount = bd.constants.TEAMS_PER_REGION * bd.constants.REGION_COUNT;
+        var count = roundCount(bd.constants.TEAMS_PER_REGION * bd.constants.REGION_COUNT);
         var rounds = [];
-        while (teamCount > 1) {
+        for (var i = 0, m = count; i < m; i++) {
             rounds.push(0);
-            teamCount = teamCount / 2;
         }
         return rounds;
     },
@@ -80,6 +89,8 @@ var initialValues = {
 
 
 function Scorer(options) {
+    var self = this;
+
     this.bracketData = bracketData({
         sport: options.sport,
         year: options.year
@@ -87,9 +98,9 @@ function Scorer(options) {
 
     // Create convenience methods
     _each(_extend(this.bracketData.scoring, options.scoring || {}), function (system, key) {
-        this[key + 'PPR'] = _bind(this.score, this, [key + 'PPR']);
-        this[key] = _bind(this.score, this, [key]);
-    }, this);
+        self[key + 'PPR'] = _bind(self.score, self, [key + 'PPR']);
+        self[key] = _bind(self.score, self, [key]);
+    });
 
     this.entryValidator = new BracketValidator({year: options.year, sport: options.sport});
     this.masterValidator = new BracketValidator({year: options.year, sport: options.sport});
@@ -98,17 +109,19 @@ function Scorer(options) {
 }
 
 Scorer.prototype.reset = function (options) {
+    var self = this;
+
     if (options.entry) {
         if (Array.isArray(options.entry)) {
             this.validatedEntry = options.entry.map(function (entry) {
                 if (typeof entry === 'string') {
-                    return this.entryValidator.validate(entry);
+                    return self.entryValidator.validate(entry);
                 } else {
                     return _extend({}, entry, {
-                        score: this.entryValidator.validate(entry.bracket),
+                        score: self.entryValidator.validate(entry.bracket),
                     });
                 }
-            }, this);
+            });
         } else {
             this.validatedEntry = this.entryValidator.validate(options.entry);
         }
@@ -130,6 +143,8 @@ Scorer.prototype.rounds = function (options) {
 
 // Generic score method
 Scorer.prototype.score = function (methods, options) {
+    var self = this;
+
     if (_isPlainObject(methods) && (methods.entry || methods.master) && !options) {
         options = methods;
     }
@@ -146,12 +161,12 @@ Scorer.prototype.score = function (methods, options) {
         return this.validatedEntry.map(function (entry) {
             if (entry.score) {
                 return _extend({}, entry, {
-                    score: this._roundLoop(entry.score, methods)
+                    score: self._roundLoop(entry.score, methods)
                 });
             } else {
-                return this._roundLoop(entry, methods);
+                return self._roundLoop(entry, methods);
             }
-        }, this);
+        });
     } else {
         return this._roundLoop(this.validatedEntry, methods);
     }
@@ -160,8 +175,12 @@ Scorer.prototype.score = function (methods, options) {
 Scorer.prototype._roundLoop = function (entry, methods) {
     var results = {};
     var self = this;
+    var bd = self.bracketData;
+    var c = bd.constants;
     var eliminatedTeams = [];
     var pprMethods = [];
+    var regionRounds = roundCount(c.TEAMS_PER_REGION);
+
     _each(methods, function (method) {
         if (method.indexOf('PPR') > -1) pprMethods.push(method);
         if (method === 'rounds') {
@@ -169,17 +188,17 @@ Scorer.prototype._roundLoop = function (entry, methods) {
         } else {
             results[method] = initialValues[method] ? initialValues[method](entry) : 0;
         }
-    }, this);
+    });
 
     _each(entry, function (region, regionId) {
         var isFinal = regionId === self.bracketData.constants.FINAL_ID;
         _each(region.rounds, function (games, roundIndex) {
-            var trueRoundIndex = (isFinal ? self.bracketData.constants.REGION_COUNT + roundIndex : roundIndex) - 1;
+            var trueRoundIndex = (isFinal ? regionRounds + roundIndex : roundIndex) - 1;
             var getScoreResult = roundIndex > 0;
             var getDiffResult = getScoreResult || isFinal;
             if (getScoreResult || getDiffResult) {
                 _each(games, function (game, gameIndex) {
-                    var masterGame = this.validatedMaster[regionId].rounds[roundIndex][gameIndex];
+                    var masterGame = self.validatedMaster[regionId].rounds[roundIndex][gameIndex];
                     var status;
 
                     // Set the status of the result
@@ -232,11 +251,11 @@ Scorer.prototype._roundLoop = function (entry, methods) {
                                 type: method
                             });
                         }
-                    }, this);
-                }, this);
+                    });
+                });
             }
-        }, this);
-    }, this);
+        });
+    });
 
     // Any total score is a number and we multipled by 10 originally to support tenth place decimals
     _each(results, function (val, key, list) {
