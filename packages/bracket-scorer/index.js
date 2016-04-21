@@ -24,6 +24,10 @@ var getResult = {
             // The scoring system is an array of numbers that is equal to the number of rounds
             // So we return the value for the current round
             return scoringSystem[result.roundIndex] * 10;
+        } else if (_isArray(scoringSystem) && scoringSystem.length === initialValues.rounds(bd).length && _isArray(scoringSystem[0]) && scoringSystem[0].length === 2) {
+            // The scoring system is an array of arrays that is equal to the number of rounds
+            // Each array has a number of points per correct pick and a number of points for the correct number of games
+            return (scoringSystem[result.roundIndex][0] * 10) + (result.bonus ? scoringSystem[result.roundIndex][1] * 10 : 0);
         } else if (_isArray(scoringSystem) && _isArray(scoringSystem[0]) && scoringSystem.length === initialValues.rounds(bd).length && scoringSystem[0].length === bd.constants.TEAMS_PER_REGION) {
             // The scoring system is an array of arrays. There is one array for each round
             // and each sub-array has one value for each seed. So we return the value for the current round+seed
@@ -56,6 +60,8 @@ var getResult = {
                     roundIndex: options.trueRoundIndex,
                     status: 'correct',
                     seed: options.game.seed,
+                    // TODO: add up bonus based on both teams being not eliminated
+                    bonus: false,
                     type: pprMethod.replace('PPR', '')
                 });
             });
@@ -200,12 +206,15 @@ Scorer.prototype._roundLoop = function (entry, methods) {
                 _each(games, function (game, gameIndex) {
                     var masterGame = self.validatedMaster[regionId].rounds[roundIndex][gameIndex];
                     var status;
+                    var bonus;
 
                     // Set the status of the result
                     if (masterGame === null) {
                         status = 'unplayed';
                     } else if (game.name === masterGame.name) {
                         status = 'correct';
+                        // TODO: opponent also needs to be right
+                        bonus = typeof game.games !== 'undefined' && game.games === masterGame.games;
                     } else {
                         status = 'incorrect';
                     }
@@ -248,6 +257,7 @@ Scorer.prototype._roundLoop = function (entry, methods) {
                                 roundIndex: trueRoundIndex,
                                 status: status,
                                 seed: game.seed,
+                                bonus: bonus,
                                 type: method
                             });
                         }

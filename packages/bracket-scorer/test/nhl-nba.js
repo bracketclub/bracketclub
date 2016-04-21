@@ -23,7 +23,7 @@ describe('NBA', function () {
         assert.equal(true, _.isArray(s.rounds));
         assert.equal(s.rounds.length, 4);
         assert.ok(_.every(s.rounds, function (s) { return s === 0; }));
-        assert.equal(s.standardPPR, 320);
+        assert.equal(s.standardPPR, 380);
     });
 });
 
@@ -47,6 +47,6 @@ describe('NHL', function () {
         assert.equal(true, _.isArray(s.rounds));
         assert.equal(s.rounds.length, 4);
         assert.ok(_.every(s.rounds, function (s) { return s === 0; }));
-        assert.equal(s.standardPPR, 320);
+        assert.equal(s.standardPPR, 380);
     });
 });
