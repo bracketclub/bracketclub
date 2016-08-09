@@ -12,12 +12,12 @@
   },
   "dependencies": {
     "bracket-data": "^4.2.3",
-    "lodash": "^4.11.1"
+    "lodash": "^4.14.2"
   },
   "devDependencies": {
     "bracket-generator": "^3.0.0",
     "git-validate": "^2.1.4",
-    "mocha": "^2.4.5",
+    "mocha": "^3.0.2",
     "standard": "^8.0.0-beta.3"
   },
   "homepage": "http://github.com/tweetyourbracket/bracket-validator",
