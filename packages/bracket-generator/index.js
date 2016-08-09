@@ -1,18 +1,18 @@
 var bracketData = require('bracket-data');
-var _isString = require('lodash/lang/isString');
-var _map = require('lodash/collection/map');
-var _random = require('lodash/number/random');
-var _uniq = require('lodash/array/uniq');
-var _toArray = require('lodash/lang/toArray');
-var _difference = require('lodash/array/difference');
-var _flatten = require('lodash/array/flatten');
-var _last = require('lodash/array/last');
-var _find = require('lodash/collection/find');
-var _defaults = require('lodash/object/defaults');
-var _extend = require('lodash/object/assign');
-var _filter = require('lodash/collection/filter');
-var _omit = require('lodash/object/omit');
-var _pick = require('lodash/object/pick');
+var _isString = require('lodash/isString');
+var _map = require('lodash/map');
+var _random = require('lodash/random');
+var _uniq = require('lodash/uniq');
+var _toArray = require('lodash/toArray');
+var _difference = require('lodash/difference');
+var _flatten = require('lodash/flatten');
+var _last = require('lodash/last');
+var _find = require('lodash/find');
+var _defaults = require('lodash/defaults');
+var _extend = require('lodash/assign');
+var _filter = require('lodash/filter');
+var _omit = require('lodash/omit');
+var _pick = require('lodash/pick');
 
 function Generator(options) {
     this.bracketData = bracketData({

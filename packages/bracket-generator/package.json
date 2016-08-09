@@ -11,19 +11,19 @@
     "url": "http://github.com/tweetyourbracket/bracket-generator/issues"
   },
   "dependencies": {
-    "bracket-data": "^4.0.0",
-    "lodash": "^3.3.1"
+    "bracket-data": "^4.2.3",
+    "lodash": "^4.14.2"
   },
   "devDependencies": {
-    "bracket-validator": "^3.0.0",
-    "jshint": "^2.8.0",
-    "mocha": "^2.1.0",
-    "precommit-hook": "^1.0.7"
+    "bracket-validator": "^3.0.3",
+    "git-validate": "^2.1.4",
+    "mocha": "^3.0.2",
+    "standard": "^8.0.0-beta.3"
   },
   "homepage": "http://github.com/tweetyourbracket/bracket-generator",
   "keywords": [
-    "ncaa",
     "bracket",
+    "ncaa",
     "tweetyourbracket"
   ],
   "license": "MIT",
@@ -33,6 +33,8 @@
     "url": "http://github.com/tweetyourbracket/bracket-generator.git"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha -c -u bdd -R spec --timeout 10000 test/*.js"
+    "lint": "standard",
+    "test": "mocha -c -u bdd -R spec --timeout 10000 test/*.js",
+    "validate": "npm ls"
   }
 }
