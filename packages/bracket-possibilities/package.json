@@ -7,26 +7,25 @@
     "url": "https://github.com/tweetyourbracket/bracket-possibilities/issues"
   },
   "dependencies": {
-    "bracket-data": "^4.0.20",
-    "bracket-scorer": "^3.0.0",
-    "bracket-updater": "^3.1.0",
-    "bracket-validator": "^3.0.1",
-    "lodash": "^4.6.1"
+    "bracket-data": "^4.2.3",
+    "bracket-scorer": "^3.0.3",
+    "bracket-updater": "^3.2.1",
+    "bracket-validator": "^3.0.3",
+    "lodash": "^4.14.2"
   },
   "devDependencies": {
-    "babel": "^6.5.1",
-    "babel-cli": "^6.5.1",
-    "babel-preset-es2015": "^6.5.0",
+    "babel": "^6.5.2",
+    "babel-cli": "^6.11.4",
+    "babel-preset-es2015": "^6.13.2",
     "babel-preset-stage-0": "^6.5.0",
-    "babel-tape-runner": "^2.0.0",
+    "babel-tape-runner": "^2.0.1",
     "git-validate": "^2.1.4",
-    "standard": "^6.0.4",
+    "standard": "^8.0.0-beta.3",
     "tap-spec": "^4.1.1",
-    "tape": "^4.4.0"
+    "tape": "^4.6.0"
   },
   "files": [
-    "lib/*.js",
-    "src/*.js"
+    "lib/*.js"
   ],
   "homepage": "https://github.com/tweetyourbracket/bracket-possibilities#readme",
   "keywords": [
