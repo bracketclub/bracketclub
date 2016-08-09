@@ -11,15 +11,15 @@
     "url": "http://github.com/tweetyourbracket/bracket-updater/issues"
   },
   "dependencies": {
-    "bracket-data": "^4.0.0",
-    "bracket-validator": "^3.0.1",
-    "lodash": "^3.6.0"
+    "bracket-data": "^4.2.3",
+    "bracket-validator": "^3.0.3",
+    "lodash": "^4.14.2"
   },
   "devDependencies": {
     "bracket-generator": "^3.0.0",
-    "jshint": "^2.6.3",
-    "mocha": "^2.2.1",
-    "precommit-hook": "^2.0.1"
+    "git-validate": "^2.1.4",
+    "mocha": "^3.0.2",
+    "standard": "^8.0.0-beta.3"
   },
   "homepage": "http://github.com/tweetyourbracket/bracket-updater",
   "keywords": [
@@ -31,6 +31,7 @@
   "main": "index.js",
   "pre-commit": [
     "lint",
+    "validate",
     "test"
   ],
   "repository": {
@@ -38,7 +39,8 @@
     "url": "http://github.com/tweetyourbracket/bracket-updater.git"
   },
   "scripts": {
-    "lint": "jshint .",
-    "test": "./node_modules/.bin/mocha -c -u bdd -R spec --timeout 10000 test/*.js"
+    "lint": "standard",
+    "test": "mocha -c -u bdd -R spec --timeout 10000 test/*.js",
+    "validate": "npm ls"
   }
 }
