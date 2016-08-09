@@ -39,10 +39,12 @@ Generator.prototype.reset = function (options) {
 };
 
 Generator.prototype.generateWinner = function (matchup) {
+  var self = this
+
     if (_isString(matchup[0]) && _isString(matchup[1])) {
         matchup = _map(matchup, function (region) {
-            return this.winningTeamFromRegion(region);
-        }, this);
+            return self.winningTeamFromRegion(region);
+        });
     }
 
     var possible = {
@@ -118,7 +120,7 @@ Generator.prototype.generateRegion = function (region) {
 
 Generator.prototype.generateRegions = function () {
     this.regionCounter = 0;
-    var regions = _map(_filter(this.bracketData.bracket.regions, function (r) { return !!r.teams; }), this.generateRegion, this);
+    var regions = _map(_filter(this.bracketData.bracket.regions, function (r) { return !!r.teams; }), this.generateRegion.bind(this));
     this.finishedRegions = regions;
     return regions;
 };

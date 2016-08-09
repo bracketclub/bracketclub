@@ -13,7 +13,7 @@ var _ = require('lodash');
 
 var intToBinary = function (i, length) {
     typeof i === 'undefined' && (i = _.random(0, Math.pow(2, length)));
-    return _.padLeft((i).toString(2), length, '0');
+    return _.padStart((i).toString(2), length, '0');
 };
 
 var intToRegionBinary = _.partialRight(intToBinary, firstRoundGames);
