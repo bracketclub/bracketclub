@@ -213,3 +213,23 @@ describe('NBA', function () {
         assert.equal(false, validator instanceof Error);
     });
 });
+
+describe('NHL', function () {
+    it('works', function () {
+        var validator = new BracketValidator({flatBracket: 'C133P122M122A122FPMM', year: '2016', sport: 'nhl'}).validate();
+
+        assert.equal(false, validator instanceof Error);
+    });
+
+    it('works with number of games picks', function () {
+        var validator = new BracketValidator({flatBracket: 'C143737P152627M142576A172627FP7M6M6', year: '2016', sport: 'nhl'}).validate();
+
+        assert.equal(false, validator instanceof Error);
+    });
+
+    it('works with only first round number of picks', function () {
+        var validator = new BracketValidator({flatBracket: 'C14373P15262M14252A17262FPMM', year: '2016', sport: 'nhl'}).validate();
+
+        assert.equal(false, validator instanceof Error);
+    });
+});
