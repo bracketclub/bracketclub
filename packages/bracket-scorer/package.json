@@ -11,15 +11,15 @@
     "url": "http://github.com/tweetyourbracket/bracket-scorer/issues"
   },
   "dependencies": {
-    "bracket-data": "^4.2.2",
-    "bracket-validator": "^3.0.2",
-    "lodash": "^4.11.1"
+    "bracket-data": "^4.2.3",
+    "bracket-validator": "^3.0.3",
+    "lodash": "^4.14.2"
   },
   "devDependencies": {
     "bracket-generator": "^3.0.0",
-    "jshint": "^2.9.2",
-    "mocha": "^2.4.5",
-    "precommit-hook": "^3.0.0"
+    "git-validate": "^2.1.4",
+    "mocha": "^3.0.2",
+    "standard": "^8.0.0-beta.3"
   },
   "homepage": "http://github.com/tweetyourbracket/bracket-scorer",
   "keywords": [
@@ -39,7 +39,7 @@
     "url": "http://github.com/tweetyourbracket/bracket-scorer.git"
   },
   "scripts": {
-    "lint": "jshint .",
+    "lint": "standard",
     "test": "mocha -c -u bdd -R spec --timeout 10000 test/*.js",
     "validate": "npm ls"
   }
