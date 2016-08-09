@@ -26,6 +26,11 @@
     "ncaa",
     "tweetyourbracket"
   ],
+  "pre-commit": [
+    "lint",
+    "validate",
+    "test"
+  ],
   "license": "MIT",
   "main": "index.js",
   "repository": {
