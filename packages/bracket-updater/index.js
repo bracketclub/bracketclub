@@ -1,302 +1,304 @@
-var bracketData = require('bracket-data');
-var BracketValidator = require('bracket-validator');
-var _extend = require('lodash/object/assign');
-var _defaults = require('lodash/object/defaults');
-var _pick = require('lodash/object/pick');
-var _find = require('lodash/collection/find');
-var _each = require('lodash/collection/forEach');
-var _map = require('lodash/collection/map');
-var _isNumber = require('lodash/lang/isNumber');
-var _isArray = require('lodash/lang/isArray');
-var _values = require('lodash/object/values');
-var _compact = require('lodash/array/compact');
-var _intersection = require('lodash/array/intersection');
-var _shuffle = require('lodash/collection/shuffle');
+var bracketData = require('bracket-data')
+var BracketValidator = require('bracket-validator')
+var _extend = require('lodash/assign')
+var _defaults = require('lodash/defaults')
+var _pick = require('lodash/pick')
+var _find = require('lodash/find')
+var _each = require('lodash/forEach')
+var _map = require('lodash/map')
+var _isNumber = require('lodash/isNumber')
+var _isArray = require('lodash/isArray')
+var _values = require('lodash/values')
+var _compact = require('lodash/compact')
+var _intersection = require('lodash/intersection')
+var _shuffle = require('lodash/shuffle')
 
 var allIndices = function (arr, val) {
-  var indices = [];
-  var i = -1;
+  var indices = []
+  var i = -1
   while ((i = arr.indexOf(val, i + 1)) !== -1) {
-    indices.push(i);
+    indices.push(i)
   }
-  return indices;
-};
-
+  return indices
+}
 
 var teamNameMatches = function (team1, team2) {
-    var team1Name = team1 && team1.name;
-    var team1Names = team1 && team1.names;
-    var team2Name = team2 && team2.name;
-    var team2Names = team2 && team2.names;
+  var team1Name = team1 && team1.name
+  var team1Names = team1 && team1.names
+  var team2Name = team2 && team2.name
+  var team2Names = team2 && team2.names
 
-    if (!_isArray(team1Name)) {
-        team1Name = [team1Name];
-    }
+  if (!_isArray(team1Name)) {
+    team1Name = [team1Name]
+  }
 
-    if (team1Names) {
-        team1Name = team1Name.concat(team1Names);
-    }
+  if (team1Names) {
+    team1Name = team1Name.concat(team1Names)
+  }
 
-    team1Name = _compact(team1Name.map(function (name) {
-        return typeof name === 'string' ? name.toLowerCase() : null;
-    }));
+  team1Name = _compact(team1Name.map(function (name) {
+    return typeof name === 'string' ? name.toLowerCase() : null
+  }))
 
-    if (!_isArray(team2Name)) {
-        team2Name = [team2Name];
-    }
+  if (!_isArray(team2Name)) {
+    team2Name = [team2Name]
+  }
 
-    if (team2Names) {
-        team2Name = team1Name.concat(team2Names);
-    }
+  if (team2Names) {
+    team2Name = team1Name.concat(team2Names)
+  }
 
-    team2Name = _compact(team2Name.map(function (name) {
-        return typeof name === 'string' ? name.toLowerCase() : null;
-    }));
+  team2Name = _compact(team2Name.map(function (name) {
+    return typeof name === 'string' ? name.toLowerCase() : null
+  }))
 
-    if (team1Name.length && team2Name.length) {
-        return _intersection(team1Name, team2Name).length > 0;
-    }
+  if (team1Name.length && team2Name.length) {
+    return _intersection(team1Name, team2Name).length > 0
+  }
 
-    return false;
-};
+  return false
+}
+
 var seedMatches = function (team1, team2) {
-    return team1 && team2 && parseInt(team1.seed) === parseInt(team2.seed);
-};
+  return team1 && team2 && parseInt(team1.seed) === parseInt(team2.seed)
+}
 
+function Updater (options) {
+  this.bracketData = bracketData({
+    sport: options.sport,
+    year: options.year
+  })
 
-function Updater(options) {
-    this.bracketData = bracketData({
-        sport: options.sport,
-        year: options.year
-    });
+  this.validator = new BracketValidator({
+    sport: options.sport,
+    year: options.year
+  })
 
-    this.validator = new BracketValidator({
-        sport: options.sport,
-        year: options.year
-    });
-
-    return this.reset(options);
+  return this.reset(options)
 }
 
 Updater.prototype.reset = function (options) {
-    _defaults(options || {}, {
-        winner: {},
-        loser: {},
-        fromRegion: ''
-    });
+  _defaults(options || {}, {
+    winner: {},
+    loser: {},
+    fromRegion: ''
+  })
 
-    if (typeof options.winner === 'number' || !isNaN(options.winner)) options.winner = {seed: parseInt(options.winner, 10)};
-    if (typeof options.loser === 'number' || !isNaN(options.loser)) options.loser = {seed: parseInt(options.loser, 10)};
-    if (typeof options.winner === 'string' && isNaN(options.winner)) options.winner = {name: options.winner};
-    if (typeof options.loser === 'string' && isNaN(options.loser)) options.loser = {name: options.loser};
+  if (typeof options.winner === 'number' || !isNaN(options.winner)) options.winner = {seed: parseInt(options.winner, 10)}
+  if (typeof options.loser === 'number' || !isNaN(options.loser)) options.loser = {seed: parseInt(options.loser, 10)}
+  if (typeof options.winner === 'string' && isNaN(options.winner)) options.winner = {name: options.winner}
+  if (typeof options.loser === 'string' && isNaN(options.loser)) options.loser = {name: options.loser}
 
-    // If we got passed in null or something, set the properties we need to not break
-    if (!options.winner) options.winner = {};
-    if (!options.loser) options.loser = {};
-    if (!options.winner.name) options.winner.name = '';
-    if (!options.loser.name) options.loser.name = '';
+  // If we got passed in null or something, set the properties we need to not break
+  if (!options.winner) options.winner = {}
+  if (!options.loser) options.loser = {}
+  if (!options.winner.name) options.winner.name = ''
+  if (!options.loser.name) options.loser.name = ''
 
-    _extend(this, _pick(options, 'winner', 'loser', 'fromRegion', 'currentMaster'));
+  _extend(this, _pick(options, 'winner', 'loser', 'fromRegion', 'currentMaster'))
 
-    return this;
-};
+  return this
+}
 
 Updater.prototype.hasWinner = function () {
-    return !!(this.winner && (this.winner.name || this.winner.seed));
-};
+  return !!(this.winner && (this.winner.name || this.winner.seed))
+}
 
 Updater.prototype.hasLoser = function () {
-    return !!(this.loser && (this.loser.name || this.loser.seed));
-};
+  return !!(this.loser && (this.loser.name || this.loser.seed))
+}
 
 Updater.prototype.isFinal = function () {
-    var finalName = this.bracketData.constants.FINAL_NAME.toLowerCase(),
-        finalId = this.bracketData.constants.FINAL_ID.toLowerCase(),
-        region = this.fromRegion.toLowerCase();
+  var finalName = this.bracketData.constants.FINAL_NAME.toLowerCase()
+  var finalId = this.bracketData.constants.FINAL_ID.toLowerCase()
+  var region = this.fromRegion.toLowerCase()
 
-    return region === finalName || region === finalId;
-};
+  return region === finalName || region === finalId
+}
 
 Updater.prototype.isChampionship = function () {
-    return (/((National )?Championship( Game)?|NCG)/i).test(this.fromRegion);
-};
+  return (/((National )?Championship( Game)?|NCG)/i).test(this.fromRegion)
+}
 
 Updater.prototype.teamMatches = function (team1, team2) {
-    if (this.isFinal()) {
-        return teamNameMatches(team1, team2);
-    } else {
-        return seedMatches(team1, team2);
-    }
-};
+  if (this.isFinal()) {
+    return teamNameMatches(team1, team2)
+  } else {
+    return seedMatches(team1, team2)
+  }
+}
 
 Updater.prototype.gameMatches = function (winner, loser) {
-    return this.teamMatches(winner, this.winner) && this.teamMatches(loser, this.loser);
-};
+  return this.teamMatches(winner, this.winner) && this.teamMatches(loser, this.loser)
+}
 
 Updater.prototype.getSeed = function (winner) {
-    if (this.isFinal()) {
-        var finalTeams = this.validated[this.bracketData.constants.FINAL_ID].rounds[0];
-        var finalTeam = _find(finalTeams, function (team) {
-            return teamNameMatches(team, winner);
-        }, this);
-        return {fromRegion: finalTeam.fromRegion};
-    } else {
-        return {seed: winner.seed};
-    }
-};
+  if (this.isFinal()) {
+    var finalTeams = this.validated[this.bracketData.constants.FINAL_ID].rounds[0]
+    var finalTeam = _find(finalTeams, function (team) {
+      return teamNameMatches(team, winner)
+    })
+    return {fromRegion: finalTeam.fromRegion}
+  } else {
+    return {seed: winner.seed}
+  }
+}
 
 Updater.prototype.flatten = function (bracket) {
-    var self = this;
-    var flattenedBracket = '';
-    _each(bracket, function (bracketRegion) {
-        var regionString = _map(bracketRegion.rounds, function (round, roundIndex) {
-            if (roundIndex === 0) return '';
-            return _map(round, function (roundGame) {
-                if (roundGame === null) return self.bracketData.constants.UNPICKED_MATCH;
-                if (_isNumber(roundGame) || !isNaN(roundGame)) return roundGame;
-                if (bracketRegion.id === self.bracketData.constants.FINAL_ID) return roundGame.fromRegion;
-                return roundGame.seed;
-            }).join('');
-        }).join('')
+  var self = this
+  var flattenedBracket = ''
+  _each(bracket, function (bracketRegion) {
+    var regionString = _map(bracketRegion.rounds, function (round, roundIndex) {
+      if (roundIndex === 0) return ''
+      return _map(round, function (roundGame) {
+        if (roundGame === null) return self.bracketData.constants.UNPICKED_MATCH
+        if (_isNumber(roundGame) || !isNaN(roundGame)) return roundGame
+        if (bracketRegion.id === self.bracketData.constants.FINAL_ID) return roundGame.fromRegion
+        return roundGame.seed
+      }).join('')
+    }).join('')
         .replace(new RegExp(self.bracketData.order.join(''), 'g'), '')
-        .replace(new RegExp(_values(self.bracketData.constants.REGION_IDS).join(''), 'g'), '');
-        flattenedBracket += bracketRegion.id + regionString;
-    });
-    return flattenedBracket;
-};
+        .replace(new RegExp(_values(self.bracketData.constants.REGION_IDS).join(''), 'g'), '')
+    flattenedBracket += bracketRegion.id + regionString
+  })
+  return flattenedBracket
+}
 
 Updater.prototype.next = function (options, random) {
-    options && this.reset(options);
-    var bd = this.bracketData;
-    var validated = this.validator.validate(this.currentMaster);
-    var nextGame;
-    var maybeShuffle = random ? _shuffle : function (arr) { return arr; };
+  options && this.reset(options)
+  var bd = this.bracketData
+  var validated = this.validator.validate(this.currentMaster)
+  var nextGame
+  var maybeShuffle = random ? _shuffle : function (arr) { return arr }
 
-    var regionKeys = maybeShuffle(bd.constants.REGION_IDS).concat(bd.constants.FINAL_ID);
+  var regionKeys = maybeShuffle(bd.constants.REGION_IDS).concat(bd.constants.FINAL_ID)
 
-    _each(regionKeys, function (regionKey) {
-        var region = validated[regionKey];
-        var rounds = region.rounds;
+  _each(regionKeys, function (regionKey) {
+    var region = validated[regionKey]
+    var rounds = region.rounds
 
-        _each(rounds, function (round, roundIndex) {
-            var indices = allIndices(round, null);
-            var game = indices.length ? maybeShuffle(indices)[0] : null;
-            if (game !== null) {
-                nextGame = {
-                    region: regionKey,
-                    regionId: region.id,
-                    round: roundIndex,
-                    game: game
-                };
-                return false;
-            }
-            return true;
-        });
+    _each(rounds, function (round, roundIndex) {
+      var indices = allIndices(round, null)
+      var game = indices.length ? maybeShuffle(indices)[0] : null
+      if (game !== null) {
+        nextGame = {
+          region: regionKey,
+          regionId: region.id,
+          round: roundIndex,
+          game: game
+        }
+        return false
+      }
+      return true
+    })
 
-        return !nextGame;
-    });
+    return !nextGame
+  })
 
-    if (nextGame) {
-        var prevRound = validated[nextGame.region].rounds[nextGame.round - 1];
-        return maybeShuffle([
-            _extend({}, prevRound[nextGame.game * 2], {fromRegion: nextGame.regionId}),
-            _extend({}, prevRound[nextGame.game * 2 + 1], {fromRegion: nextGame.regionId}),
-        ]);
-    }
+  if (nextGame) {
+    var prevRound = validated[nextGame.region].rounds[nextGame.round - 1]
+    return maybeShuffle([
+      _extend({}, prevRound[nextGame.game * 2], {fromRegion: nextGame.regionId}),
+      _extend({}, prevRound[nextGame.game * 2 + 1], {fromRegion: nextGame.regionId})
+    ])
+  }
 
-    return null;
-};
+  return null
+}
 
 Updater.prototype.nextRandom = function (options) {
-    return this.next(options, true);
-};
+  return this.next(options, true)
+}
 
 Updater.prototype.update = function (options) {
-    options && this.reset(options);
-    var validated = this.validator.validate(this.currentMaster);
-    if (validated instanceof Error) return validated;
-    this.validated = validated;
+  options && this.reset(options)
 
-    if (this.isChampionship()) {
-        this.fromRegion = this.bracketData.constants.FINAL_ID;
-    }
+  var self = this
 
-    var region = validated[this.fromRegion] || _find(validated, function (item) {
-        return item.name.toLowerCase() === this.fromRegion.toLowerCase();
-    }, this);
+  var validated = this.validator.validate(this.currentMaster)
+  if (validated instanceof Error) return validated
+  this.validated = validated
 
-    if (!region) return new Error('No region');
-    if (!this.hasWinner()) return new Error('Supply at least winning team');
+  if (this.isChampionship()) {
+    this.fromRegion = this.bracketData.constants.FINAL_ID
+  }
 
-    var regionRoundIndex = null;
-    var nextRoundGameIndex = null;
-    var i, ii, m, mm, round, roundGame, otherTeam;
+  var region = validated[this.fromRegion] || _find(validated, function (item) {
+    return item.name.toLowerCase() === self.fromRegion.toLowerCase()
+  })
 
-    roundLoop:
+  if (!region) return new Error('No region')
+  if (!this.hasWinner()) return new Error('Supply at least winning team')
+
+  var regionRoundIndex = null
+  var nextRoundGameIndex = null
+  var i, ii, m, mm, round, roundGame, otherTeam
+
+  roundLoop: // eslint-disable-line no-labels
     for (i = region.rounds.length; i-- > 0;) {
-        round = region.rounds[i];
-        for (ii = round.length; ii-- > 0;) {
-            roundGame = round[ii],
-            otherTeam = round[(ii % 2 === 0) ? ii + 1 : ii - 1];
+      round = region.rounds[i]
+      for (ii = round.length; ii-- > 0;) {
+        roundGame = round[ii]
+        otherTeam = round[(ii % 2 === 0) ? ii + 1 : ii - 1]
 
-            if (roundGame !== null) {
-                if (this.hasWinner() && this.hasLoser() && this.gameMatches(roundGame, otherTeam)) {
-                    // If we have a winner and a loser look for the game that matches both
-                    // Place winner into the next round
-                    regionRoundIndex = i + 1;
-                    nextRoundGameIndex = Math.floor(ii / 2);
-                    break roundLoop;
-                } else {
-                    // If there is no other team, it means we want to use the winner of the latest game they appear
-                    // So if a user is picking a bracket, a winner can be picked without an opponent
-                    if (this.teamMatches(roundGame, this.winner) && !this.hasLoser()) {
-                        regionRoundIndex = i + 1;
-                        nextRoundGameIndex = Math.floor(ii / 2);
-                        otherTeam && (this.loser = otherTeam);
-                        break roundLoop;
-                    }
-                }
+        if (roundGame !== null) {
+          if (this.hasWinner() && this.hasLoser() && this.gameMatches(roundGame, otherTeam)) {
+            // If we have a winner and a loser look for the game that matches both
+            // Place winner into the next round
+            regionRoundIndex = i + 1
+            nextRoundGameIndex = Math.floor(ii / 2)
+            break roundLoop // eslint-disable-line no-labels
+          } else {
+            // If there is no other team, it means we want to use the winner of the latest game they appear
+            // So if a user is picking a bracket, a winner can be picked without an opponent
+            if (this.teamMatches(roundGame, this.winner) && !this.hasLoser()) {
+              regionRoundIndex = i + 1
+              nextRoundGameIndex = Math.floor(ii / 2)
+              otherTeam && (this.loser = otherTeam)
+              break roundLoop // eslint-disable-line no-labels
             }
+          }
         }
+      }
     }
 
-    if (regionRoundIndex !== null && nextRoundGameIndex !== null) {
-        var hasRound = !!region.rounds[regionRoundIndex];
-        if (hasRound) {
-            region.rounds[regionRoundIndex][nextRoundGameIndex] = this.getSeed(this.winner);
-            for (i = regionRoundIndex, m = region.rounds.length; i < m; i++) {
-                round = region.rounds[i];
-                for (ii = 0, mm = round.length; ii < mm; ii++) {
-                    roundGame = round[ii],
-                    otherTeam = round[(ii % 2 === 0) ? ii + 1 : ii - 1];
-                    // The losing team might have already advanced in the bracket
-                    // Such as when someone is picking a bracket and changed their mind
-                    // We need to remove all of the losing team from the rest of the rounds
-                    if (this.hasLoser() && roundGame !== null && this.teamMatches(roundGame, this.loser)) {
-                        round[ii] = null;
-                    }
-                }
-            }
+  if (regionRoundIndex !== null && nextRoundGameIndex !== null) {
+    var hasRound = !!region.rounds[regionRoundIndex]
+    if (hasRound) {
+      region.rounds[regionRoundIndex][nextRoundGameIndex] = this.getSeed(this.winner)
+      for (i = regionRoundIndex, m = region.rounds.length; i < m; i++) {
+        round = region.rounds[i]
+        for (ii = 0, mm = round.length; ii < mm; ii++) {
+          roundGame = round[ii]
+          otherTeam = round[(ii % 2 === 0) ? ii + 1 : ii - 1]
+          // The losing team might have already advanced in the bracket
+          // Such as when someone is picking a bracket and changed their mind
+          // We need to remove all of the losing team from the rest of the rounds
+          if (this.hasLoser() && roundGame !== null && this.teamMatches(roundGame, this.loser)) {
+            round[ii] = null
+          }
         }
+      }
     }
+  }
 
-    // Clear losing teams from final four also
-    var isFinalRegion = this.fromRegion === this.bracketData.constants.FINAL_ID;
-    if (this.hasLoser() && (!isFinalRegion || (isFinalRegion && regionRoundIndex === 1))) {
-        var fin = validated[this.bracketData.constants.FINAL_ID];
-        _each(fin.rounds, function (round, i) {
-            if (i > 0) {
-                _each(round, function (game, ii) {
-                    if (game && teamNameMatches(game, this.loser)) {
-                        validated[this.bracketData.constants.FINAL_ID].rounds[i][ii] = null;
-                    }
-                }, this);
-            }
-        }, this);
-    }
+  // Clear losing teams from final four also
+  var isFinalRegion = this.fromRegion === this.bracketData.constants.FINAL_ID
+  if (this.hasLoser() && (!isFinalRegion || (isFinalRegion && regionRoundIndex === 1))) {
+    var fin = validated[this.bracketData.constants.FINAL_ID]
+    _each(fin.rounds, function (round, i) {
+      if (i > 0) {
+        _each(round, function (game, ii) {
+          if (game && teamNameMatches(game, self.loser)) {
+            validated[self.bracketData.constants.FINAL_ID].rounds[i][ii] = null
+          }
+        })
+      }
+    })
+  }
 
-    this.currentMaster = this.flatten(validated);
-    return this.currentMaster;
-};
+  this.currentMaster = this.flatten(validated)
+  return this.currentMaster
+}
 
-module.exports = Updater;
+module.exports = Updater
