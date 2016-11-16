@@ -3,7 +3,7 @@ import Updater from 'bracket-updater'
 import Data from 'bracket-data'
 import Validator from 'bracket-validator'
 import { each, pick, sortBy, find, sortedIndexBy, orderBy, filter } from 'lodash'
-import {eachGame, nextGame} from './each-game'
+import { eachGame, nextGame } from './each-game'
 import binaryCombinations from './binary-combinations'
 
 export default class Possibilities {

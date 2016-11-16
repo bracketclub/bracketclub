@@ -49,8 +49,6 @@ testCI('can any user win', (t) => {
 
   const [winners, eliminated] = _.partition(outcomes, ({ canWin }) => !!canWin)
 
-  console.log(winners.length, eliminated.length)
-
   t.equal(winners.length, 19)
   t.equal(eliminated.length, 16)
   t.equal(outcomes.length, entries.length)
