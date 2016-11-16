@@ -10,6 +10,7 @@ var _omit = require('lodash/omit')
 var _difference = require('lodash/difference')
 var _isArray = require('lodash/isArray')
 var _some = require('lodash/some')
+var _every = require('lodash/every')
 var _filter = require('lodash/filter')
 var _find = require('lodash/find')
 var _each = require('lodash/forEach')
@@ -19,6 +20,7 @@ var _without = require('lodash/without')
 var _compact = require('lodash/compact')
 var _uniqBy = require('lodash/uniqBy')
 var _indexOf = require('lodash/indexOf')
+var _reduce = require('lodash/reduce')
 
 var _subset = function (small, big) {
   if (small.length === 0) return true
@@ -44,7 +46,7 @@ var wrapError = function () {
     error: true,
     result: new Error(_map(_toArray(arguments), function (arg) {
       return (typeof arg.message === 'string') ? arg.message : arg.toString()
-    }).join(', '))
+    }).join(' '))
   }
 }
 
@@ -157,7 +159,7 @@ Validator.prototype.decorateValidated = function (bracket) {
 
   _each(bracket, function (region) {
     decorated[region.id] = _extend({}, region, self.bracketData.bracket.regions[region.id] || self.bracketData.bracket[self.bracketData.constants.FINAL_ID])
-    decorated[region.id].rounds = _map(region.rounds, function (round) {
+    decorated[region.id].rounds = _map(region.rounds, function (round, roundIndex) {
       var returnRound = []
       _each(round, function (seed, index) {
         if (seed === self.bracketData.constants.UNPICKED_MATCH) {
@@ -171,15 +173,19 @@ Validator.prototype.decorateValidated = function (bracket) {
             returnRound[index] = {
               fromRegion: seed,
               seed: winningTeam,
+              winsIn: region.winsIn[roundIndex][index],
               name: self.teamNameFromRegion(seed, winningTeam)
             }
+            if (roundIndex === 0 || returnRound[index].winsIn == null) delete returnRound[index].winsIn
           }
         } else {
           returnRound[index] = {
             fromRegion: region.id,
             seed: seed,
+            winsIn: region.winsIn[roundIndex][index],
             name: self.teamNameFromRegion(region.id, seed)
           }
+          if (roundIndex === 0 || returnRound[index].winsIn == null) delete returnRound[index].winsIn
         }
       })
       return returnRound
@@ -203,12 +209,14 @@ Validator.prototype.validatePicks = function (options) {
   var self = this
 
   var rounds = options.rounds || []
+  var winsIn = options.winsIn || []
   var regionName = options.id
   var length = rounds.length
   var regionPicks = {}
   var errors = []
 
   _each(rounds, function (round, i) {
+    var winsInThis = winsIn[i]
     var requiredLength = (Math.pow(2, length - 1) / Math.pow(2, i))
     var nextRound = rounds[i + 1]
     var correctLength = (round.length === requiredLength)
@@ -216,14 +224,18 @@ Validator.prototype.validatePicks = function (options) {
     var thisRoundPickedGames = _without(round, self.bracketData.constants.UNPICKED_MATCH)
     var nextRoundPickedGames = (nextRound) ? _without(nextRound, self.bracketData.constants.UNPICKED_MATCH) : []
     var nextRoundIsSubset = (!lastItem && _subset(nextRoundPickedGames, thisRoundPickedGames))
+    var winsInCorrect = _every(winsInThis, function (w) { return w === null || self.bracketData.constants.BEST_OF_RANGE.indexOf(w) > -1 })
 
-    if (correctLength && (lastItem || nextRoundIsSubset)) {
+    if (correctLength && winsInCorrect && (lastItem || nextRoundIsSubset)) {
       regionPicks.id = options.id
       regionPicks.rounds = rounds
+      regionPicks.winsIn = winsIn
     } else if (!correctLength) {
-      errors.push('Incorrect number of pick in:', regionName, i + 1)
+      errors.push('Incorrect number of pick in: ' + regionName + (i + 1))
     } else if (!nextRoundIsSubset) {
-      errors.push('Round is not a subset of previous:', regionName, i + 2)
+      errors.push('Round is not a subset of previous: ' + regionName + (i + 2))
+    } else if (!winsInCorrect) {
+      errors.push('Round has incorrect possible winsIn in: ' + regionName + (i + 1))
     }
   })
 
@@ -238,13 +250,17 @@ Validator.prototype.getRounds = function (options) {
   options = options || {}
 
   var rounds = options.picks || []
+  var winsIn = options.winsIn || []
   var regionName = options.id || ''
   var length = rounds.length + 1
   var retRounds = [(regionName === this.bracketData.constants.FINAL_ID) ? this.bracketData.constants.REGION_IDS : this.bracketData.order]
+  var retWinsIn = [[]]
+
   var verify = function (arr, keep) {
     // Compacts the array and remove all duplicates that are not "X"
     return _compact(_uniqBy(arr, function (n) { return (_indexOf(keep, n) > -1) ? n + Math.random() : n }))
   }
+
   var checkVal = function (val) {
     var num = parseInt(val, 10)
     if (num >= 1 && num <= self.bracketData.constants.TEAMS_PER_REGION) {
@@ -258,13 +274,22 @@ Validator.prototype.getRounds = function (options) {
     }
   }
 
+  var checkWinsInVal = function (val) {
+    if (self.bracketData.constants.BEST_OF_RANGE.indexOf(val) > -1) {
+      return val
+    } else {
+      return null
+    }
+  }
+
   while (length > 1) {
     length = length / 2
     var roundGames = verify(_map(rounds.splice(0, Math.floor(length)), checkVal), [this.bracketData.constants.UNPICKED_MATCH])
+    retWinsIn.push(_map(winsIn.splice(0, Math.floor(length)), checkWinsInVal))
     retRounds.push(roundGames)
   }
 
-  return retRounds.length ? wrapSuccess({rounds: retRounds, id: regionName}) : wrapError('Could not get rounds from:', regionName)
+  return retRounds.length ? wrapSuccess({rounds: retRounds, winsIn: retWinsIn, id: regionName}) : wrapError('Could not get rounds from:', regionName)
 }
 
 // Takes a string of the picks for a region and validates them
@@ -272,16 +297,19 @@ Validator.prototype.getRounds = function (options) {
 Validator.prototype.picksToArray = function (picks, regionName) {
   var self = this
   var rTestRegionPicks = null
-  var regExpStr = ''
+  var regExpGroups = []
+  var bestOf = self.bracketData.constants.BEST_OF_RANGE
+  var captureGroupCount = bestOf ? 2 : 1
   var firstRoundLength = (regionName === this.bracketData.constants.FINAL_ID) ? this.bracketData.constants.REGION_COUNT : this.bracketData.constants.TEAMS_PER_REGION
-  var replacement = '$' + _range(1, firstRoundLength).join(',$')
+  var replacement = '$' + _range(1, bestOf ? (firstRoundLength * 2 - 1) : firstRoundLength).join(',$')
   var seeds = (regionName === this.bracketData.constants.FINAL_ID) ? this.bracketData.constants.REGION_IDS : this.bracketData.order
   var regExpJoiner = function (arr, reverse) {
     var newArr = (reverse) ? arr.reverse() : arr
     return '(' + newArr.join('|') + '|' + self.bracketData.constants.UNPICKED_MATCH + ')'
   }
-  var backref = function (i) {
-    return regExpJoiner(_map(_range(i, i + 2), function (n) { return '\\' + n }), true)
+  var backref = function (start, stop, step) {
+    // stop + 1 is so its inclusive
+    return regExpJoiner(_map(_range(start, stop + 1, step), function (n) { return '\\' + n }), true)
   }
 
   var i
@@ -289,26 +317,45 @@ Validator.prototype.picksToArray = function (picks, regionName) {
   if (regionName === this.bracketData.constants.FINAL_ID) {
     // Allow order independent final picks, we'll validate against matchups later
     for (i = 0; i < this.bracketData.constants.REGION_COUNT - 1; i++) {
-      regExpStr += regExpJoiner(seeds.slice(0, this.bracketData.constants.REGION_COUNT))
+      regExpGroups.push(regExpJoiner(seeds.slice(0, this.bracketData.constants.REGION_COUNT)))
       if (i > 0 && i === this.bracketData.constants.REGION_COUNT - 1) {
-        regExpStr += backref(1)
+        regExpGroups.push(backref(1, 2))
       }
     }
   } else {
     // Create capture groups for the first round of the region
     for (i = 0; i < firstRoundLength; i += 2) {
-      regExpStr += regExpJoiner(seeds.slice(i, i + 2))
+      regExpGroups.push(regExpJoiner(seeds.slice(i, i + 2)))
     }
     // Create capture groups using backreferences for the capture groups above
-    for (i = 1; i < firstRoundLength - 2; i += 2) {
-      regExpStr += backref(i)
+    for (i = 1; i < (firstRoundLength * captureGroupCount) - 2; i += (2 * captureGroupCount)) {
+      regExpGroups.push(backref(i, i + captureGroupCount, captureGroupCount))
     }
   }
 
-  rTestRegionPicks = new RegExp(regExpStr)
+  if (bestOf) {
+    regExpGroups = _reduce(regExpGroups, function (memo, group) {
+      memo.push(group)
+      memo.push('(' + bestOf.join('|') + ')?')
+      return memo
+    }, [])
+  }
+
+  rTestRegionPicks = new RegExp(regExpGroups.join(''))
 
   if (rTestRegionPicks.test(picks)) {
-    return wrapSuccess({picks: picks.replace(rTestRegionPicks, replacement).split(','), id: regionName})
+    var matchPicks = []
+    var winsInPicks = []
+
+    _each(picks.replace(rTestRegionPicks, replacement).split(','), function (pick, index) {
+      if (bestOf && index % 2) {
+        winsInPicks.push(pick ? +pick : null)
+      } else {
+        matchPicks.push(pick)
+      }
+    })
+
+    return wrapSuccess({picks: matchPicks, winsIn: winsInPicks, id: regionName})
   } else {
     return wrapError('Unable to parse picks in region:', regionName)
   }

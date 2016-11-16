@@ -7,15 +7,92 @@ var assert = require('assert')
 var year = '2013'
 var sport = 'ncaam'
 
-describe('A few random brackets: test only', function () {
-  for (var i = 0; i < 20; i++) {
+describe('A few random ncaa brackets', function () {
+  for (var i = 0; i < 100; i++) {
     (function () {
       it('the created and flat brackets should be equal', function () {
         var bg = new BracketGenerator({sport: sport, winners: 'random', year: year})
         var flat = bg.generate()
         var bv = new BracketValidator({flatBracket: flat, year: year, sport: sport, testOnly: true}).validate()
+        var v = new BracketValidator({flatBracket: flat, year: year, sport: sport}).validate()
         assert.equal(flat, bv)
         assert.equal(false, bv instanceof Error)
+        _.each(v, function (region) {
+          _.each(region.rounds, function (round) {
+            _.each(round, function (team) {
+              assert.ok(team.seed)
+              assert.ok(team.name)
+              assert.ok(team.fromRegion)
+              assert.ok(!team.winsIn)
+              assert.equal(typeof team.seed, 'number')
+              assert.equal(typeof team.name, 'string')
+              assert.equal(typeof team.fromRegion, 'string')
+              assert.equal(typeof team.winsIn, 'undefined')
+            })
+          })
+        })
+      })
+    })()
+  }
+})
+
+describe('A few random nhl brackets', function () {
+  for (var i = 0; i < 100; i++) {
+    (function () {
+      it('the created and flat brackets should be equal', function () {
+        var s = 'nhl'
+        var y = '2016'
+        var bg = new BracketGenerator({sport: s, winners: 'random', year: y})
+        var flat = bg.generate()
+        var bv = new BracketValidator({flatBracket: flat, year: y, sport: s, testOnly: true}).validate()
+        var v = new BracketValidator({flatBracket: flat, year: y, sport: s}).validate()
+        assert.equal(flat, bv)
+        assert.equal(false, bv instanceof Error)
+        _.each(v, function (region) {
+          _.each(region.rounds, function (round) {
+            _.each(round, function (team) {
+              assert.ok(team.seed)
+              assert.ok(team.name)
+              assert.ok(team.fromRegion)
+              assert.ok(!team.winsIn)
+              assert.equal(typeof team.seed, 'number')
+              assert.equal(typeof team.name, 'string')
+              assert.equal(typeof team.fromRegion, 'string')
+              assert.equal(typeof team.winsIn, 'undefined')
+            })
+          })
+        })
+      })
+    })()
+  }
+})
+
+describe('A few random nba brackets', function () {
+  for (var i = 0; i < 100; i++) {
+    (function () {
+      it('the created and flat brackets should be equal', function () {
+        var s = 'nba'
+        var y = '2016'
+        var bg = new BracketGenerator({sport: s, winners: 'random', year: y})
+        var flat = bg.generate()
+        var bv = new BracketValidator({flatBracket: flat, year: y, sport: s, testOnly: true}).validate()
+        var v = new BracketValidator({flatBracket: flat, year: y, sport: s}).validate()
+        assert.equal(flat, bv)
+        assert.equal(false, bv instanceof Error)
+        _.each(v, function (region) {
+          _.each(region.rounds, function (round) {
+            _.each(round, function (team) {
+              assert.ok(team.seed)
+              assert.ok(team.name)
+              assert.ok(team.fromRegion)
+              assert.ok(!team.winsIn)
+              assert.equal(typeof team.seed, 'number')
+              assert.equal(typeof team.name, 'string')
+              assert.equal(typeof team.fromRegion, 'string')
+              assert.equal(typeof team.winsIn, 'undefined')
+            })
+          })
+        })
       })
     })()
   }
@@ -206,11 +283,75 @@ describe('Bad Brackets', function () {
   })
 })
 
+var pickRounds = function (rounds, props) {
+  return rounds.map(function (round) {
+    return round.map(function (team) {
+      return _.pick(team, props)
+    })
+  })
+}
+
 describe('NBA', function () {
-  it('works with only two regions', function () {
-    var validator = new BracketValidator({flatBracket: 'W1423121E1423121FW', year: '2016', sport: 'nba'}).validate()
+  it('works with only two regions and with one region with winsIn', function () {
+    var validator = new BracketValidator({flatBracket: 'W1423121E17472737172717FW', year: '2016', sport: 'nba'}).validate()
 
     assert.equal(false, validator instanceof Error)
+    assert.deepEqual(pickRounds(validator.W.rounds, ['seed', 'winsIn']), [
+      [
+        { seed: 1 },
+        { seed: 8 },
+        { seed: 4 },
+        { seed: 5 },
+        { seed: 2 },
+        { seed: 7 },
+        { seed: 3 },
+        { seed: 6 }
+      ],
+      [
+        { seed: 1 },
+        { seed: 4 },
+        { seed: 2 },
+        { seed: 3 }
+      ],
+      [
+        { seed: 1 },
+        { seed: 2 }
+      ],
+      [
+        { seed: 1 }
+      ]
+    ])
+    assert.deepEqual(pickRounds(validator.E.rounds, ['seed', 'winsIn']), [
+      [
+        { seed: 1 },
+        { seed: 8 },
+        { seed: 4 },
+        { seed: 5 },
+        { seed: 2 },
+        { seed: 7 },
+        { seed: 3 },
+        { seed: 6 }
+      ],
+      [
+        { seed: 1, winsIn: 7 },
+        { seed: 4, winsIn: 7 },
+        { seed: 2, winsIn: 7 },
+        { seed: 3, winsIn: 7 }
+      ],
+      [
+        { seed: 1, winsIn: 7 },
+        { seed: 2, winsIn: 7 }
+      ],
+      [
+        { seed: 1, winsIn: 7 }
+      ]
+    ])
+    assert.deepEqual(validator.E.winsIn, [
+      [],
+      [7, 7, 7, 7],
+      [7, 7],
+      [7]
+    ])
   })
 })
 
@@ -219,21 +360,113 @@ describe('NHL', function () {
     var validator = new BracketValidator({flatBracket: 'C133P122M122A122FPMM', year: '2016', sport: 'nhl'}).validate()
 
     assert.equal(false, validator instanceof Error)
+
+    assert.deepEqual(validator.C.winsIn, [
+      [],
+      [null, null],
+      [null]
+    ])
   })
 
-  // Doesnt work yet
   // https://github.com/tweetyourbracket/bracket-validator/issues/9
-  it.skip('works with number of games picks', function () {
-    var validator = new BracketValidator({flatBracket: 'C143737P152627M142576A172627FP7M6M6', year: '2016', sport: 'nhl'}).validate()
+  it('works with number of games picks', function () {
+    var validator = new BracketValidator({flatBracket: 'C143737P152627M142526A172627FP7M6M6', year: '2016', sport: 'nhl'}).validate()
 
     assert.equal(false, validator instanceof Error)
+
+    assert.deepEqual(validator.C.winsIn, [
+      [],
+      [4, 7],
+      [7]
+    ])
+
+    assert.deepEqual(pickRounds(validator.C.rounds, ['seed', 'winsIn']), [
+      [
+        { seed: 1 },
+        { seed: 4 },
+        { seed: 2 },
+        { seed: 3 }
+      ],
+      [
+        { seed: 1, winsIn: 4 },
+        { seed: 3, winsIn: 7 }
+      ],
+      [
+        { seed: 3, winsIn: 7 }
+      ]
+    ])
+
+    assert.deepEqual(validator.M.winsIn, [
+      [],
+      [4, 5],
+      [6]
+    ])
+
+    assert.deepEqual(pickRounds(validator.M.rounds, ['seed', 'winsIn']), [
+      [
+        { seed: 1 },
+        { seed: 4 },
+        { seed: 2 },
+        { seed: 3 }
+      ],
+      [
+        { seed: 1, winsIn: 4 },
+        { seed: 2, winsIn: 5 }
+      ],
+      [
+        { seed: 2, winsIn: 6 }
+      ]
+    ])
   })
 
-  // Doesnt work yet
   // https://github.com/tweetyourbracket/bracket-validator/issues/9
-  it.skip('works with only first round number of picks', function () {
+  it('works with only first round number of picks', function () {
     var validator = new BracketValidator({flatBracket: 'C14373P15262M14252A17262FPMM', year: '2016', sport: 'nhl'}).validate()
 
     assert.equal(false, validator instanceof Error)
+
+    assert.deepEqual(validator.C.winsIn, [
+      [],
+      [4, 7],
+      [null]
+    ])
+
+    assert.deepEqual(pickRounds(validator.C.rounds, ['seed', 'winsIn']), [
+      [
+        { seed: 1 },
+        { seed: 4 },
+        { seed: 2 },
+        { seed: 3 }
+      ],
+      [
+        { seed: 1, winsIn: 4 },
+        { seed: 3, winsIn: 7 }
+      ],
+      [
+        { seed: 3 }
+      ]
+    ])
+
+    assert.deepEqual(validator.M.winsIn, [
+      [],
+      [4, 5],
+      [null]
+    ])
+
+    assert.deepEqual(pickRounds(validator.M.rounds, ['seed', 'winsIn']), [
+      [
+        { seed: 1 },
+        { seed: 4 },
+        { seed: 2 },
+        { seed: 3 }
+      ],
+      [
+        { seed: 1, winsIn: 4 },
+        { seed: 2, winsIn: 5 }
+      ],
+      [
+        { seed: 2 }
+      ]
+    ])
   })
 })
