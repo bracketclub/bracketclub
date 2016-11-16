@@ -77,9 +77,11 @@ describe('NBA', function () {
     assert.equal(s.standardPPR, 0)
   })
 
-  it('Should not count a bonus as PPR both teams are not remaining', function () {
-    var entry = 'W17472737172717E17572737173717FE7'
-    var master = 'W17472737172727E17572737173717FX'
+  it('Should not count a bonus as PPR if both teams are not remaining', function () {
+    var entry = ' W  17  47  27  37  17  27  17  E  17  57  27  37  17  37  17  F  E7'.replace(/\s*/g, '')
+    var master = 'W  17  47  27  37  17  27  27  E  17  57  27  37  17  37  17  F  X '.replace(/\s*/g, '')
+    // Best Score =  13  13  13  13  31  31  0      13  13  13  13  31  31  59     (100)
+
     var scorer = new BracketScorer({
       entry: entry,
       master: master,
@@ -90,13 +92,29 @@ describe('NBA', function () {
     var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
     assert.equal(s.standard, 287)
-    assert.equal(true, _.isArray(s.rounds))
-    assert.equal(s.rounds.length, 4)
     assert.deepEqual(s.rounds, [8, 4, 1, 0])
-    assert.equal(true, _.isArray(s.bonus))
-    assert.equal(s.bonus.length, 4)
     assert.deepEqual(s.bonus, [8, 4, 1, 0])
     assert.equal(s.standardPPR, 100)
+  })
+
+  it('Should not count a bonus as PPR if both teams are not remaining in semifinals', function () {
+    var entry = ' W  17  47  27  37  17  27   17  E  17  47  27  37  17   27    27   F  E7'.replace(/\s*/g, '')
+    var master = 'W  87  47  27  37  X   X    X   E  87  47  27  37  X    X     X    F  X '.replace(/\s*/g, '')
+    // Best Score =  0   13  13  13  (0) (31) (0)    0   13  13  13  (0)  (31)  (50)   (100)
+
+    var scorer = new BracketScorer({
+      entry: entry,
+      master: master,
+      sport: sport,
+      year: year
+    })
+
+    var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
+
+    assert.equal(s.standard, 78)
+    assert.deepEqual(s.rounds, [6, 0, 0, 0])
+    assert.deepEqual(s.bonus, [6, 0, 0, 0])
+    assert.equal(s.standardPPR, 212)
   })
 })
 
@@ -262,9 +280,9 @@ describe('NHL', function () {
   })
 
   it('Should count series for PPR with eliminated teams', function () {
-    var entry = ' C14 35 37 P 14 25 27 M 14 25 27 A 14 25 27 F C7 M7    C7'.replace(/\s*/g, '')
-    var master = 'C14 25 X  P 14 25 X  M 14 25 X  A 14 25 X  F X  X     X'.replace(/\s*/g, '')
-    //           PPR     0          25+6       25+6       25+6 0  50+0  0
+    var entry = ' C14 35 37 P 14 25 27 M 14 25 27 A 14 25 27    F C7 M7    C7'.replace(/\s*/g, '')
+    var master = 'C14 25 X  P 14 25 X  M 14 25 X  A 14 25 X     F X  X     X'.replace(/\s*/g, '')
+    //           PPR     0          25+6       25+6       25+6    0  50+9  0
     var scorer = new BracketScorer({
       entry: entry,
       master: master,
@@ -281,6 +299,29 @@ describe('NHL', function () {
     assert.equal(true, _.isArray(s.bonus))
     assert.equal(s.bonus.length, 4)
     assert.deepEqual(s.bonus, [7, 0, 0, 0])
-    assert.equal(s.standardPPR, 143)
+    assert.equal(s.standardPPR, 152)
+  })
+
+  it('Should count series for PPR with eliminated teams into final four', function () {
+    var entry = ' C14 35 37 P 14 25 27 M 14 25 27 A 14 25 27   F C7 M7    C7'.replace(/\s*/g, '')
+    var master = 'C14 25 X  P 14 25 X  M 14 25 X  A 14 25 17   F X  X     X'.replace(/\s*/g, '')
+    //           PPR     0          25+6       25+6       0+0    0  50+0  0
+    var scorer = new BracketScorer({
+      entry: entry,
+      master: master,
+      sport: sport,
+      year: year
+    })
+
+    var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
+
+    assert.equal(s.standard, 91)
+    assert.equal(true, _.isArray(s.rounds))
+    assert.equal(s.rounds.length, 4)
+    assert.deepEqual(s.rounds, [7, 0, 0, 0])
+    assert.equal(true, _.isArray(s.bonus))
+    assert.equal(s.bonus.length, 4)
+    assert.deepEqual(s.bonus, [7, 0, 0, 0])
+    assert.equal(s.standardPPR, 112)
   })
 })

@@ -11,6 +11,7 @@ var _cloneDeep = require('lodash/cloneDeep')
 var _extend = require('lodash/assign')
 var _isPlainObject = require('lodash/isPlainObject')
 var _findIndex = require('lodash/findIndex')
+var _pick = require('lodash/pick')
 
 var eliminations = function () {
   var _eliminations = []
@@ -218,17 +219,16 @@ Scorer.prototype._roundLoop = function (entry, methods) {
       var getDiffResult = getScoreResult || isFinal
       if (getScoreResult || getDiffResult) {
         _each(round, function (game, gameIndex) {
-          var findOpponent = function (rounds) {
+          var findOpponent = function (rounds, g) {
             var previousRound = rounds[isFinal && roundIndex === 0 ? roundIndex : roundIndex - 1]
-            var isAFinalRound = previousRound.length === 2
-            var otherGameIndex = (gameIndex % 2 === 0) ? gameIndex + 1 : gameIndex - 1
-            return previousRound[isAFinalRound ? (_findIndex(previousRound, game) ? 0 : 1) : otherGameIndex]
+            var gameIndex = _findIndex(previousRound, _pick(g, 'fromRegion', 'seed', 'name'))
+            return previousRound[(gameIndex % 2 === 0) ? gameIndex + 1 : gameIndex - 1]
           }
 
           var masterRounds = self.validatedMaster[regionId].rounds
           var masterGame = masterRounds[roundIndex][gameIndex]
-          var masterOpponent = findOpponent(masterRounds)
-          var opponent = findOpponent(region.rounds)
+          var masterOpponent = findOpponent(masterRounds, masterGame)
+          var opponent = findOpponent(region.rounds, game)
 
           var status
           var bonusStatus
