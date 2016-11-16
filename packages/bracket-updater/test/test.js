@@ -409,3 +409,63 @@ describe('Bracket Updater', function () {
     assert.equal(bracket, c.EMPTY.replace('MWXXXXX', 'MW18546'))
   })
 })
+
+describe('NBA', () => {
+  it('Game should be updated', function () {
+    var beforeBracket = 'W142312XE142312XFX'
+    var u = new BracketUpdater({
+      currentMaster: beforeBracket,
+      year: '2016',
+      sport: 'nba'
+    })
+
+    assert.equal('W1423121E142312XFX', u.update({
+      fromRegion: 'W',
+      winner: 1,
+      loser: 2
+    }))
+
+    assert.equal('W1423121E1423121FX', u.update({
+      fromRegion: 'E',
+      winner: 1,
+      loser: 2
+    }))
+
+    assert.equal('W1423121E1423121FW', u.update({
+      fromRegion: 'FINALS',
+      winner: { name: 'Golden State', seed: 1 },
+      loser: { name: 'Cleveland', seed: 1 }
+    }))
+  })
+
+  it('should update played competitions', () => {
+    var beforeBracket = 'W174727371727XE174727371727XFX'
+    var u = new BracketUpdater({
+      currentMaster: beforeBracket,
+      year: '2016',
+      sport: 'nba'
+    })
+
+    assert.equal('W17472737172714E174727371727XFX', u.update({
+      fromRegion: 'W',
+      winner: 1,
+      loser: 2,
+      playedCompetitions: 4
+    }))
+
+    assert.equal('W17472737172714E17472737172715FX', u.update({
+      fromRegion: 'E',
+      winner: 1,
+      loser: 2,
+      playedCompetitions: 5
+    }))
+
+    assert.equal('W17472737172714E17472737172715FW7', u.update({
+      fromRegion: 'FINALS',
+      winner: { name: 'Golden State', seed: 1 },
+      loser: { name: 'Cleveland', seed: 1 },
+      playedCompetitions: 7
+    }))
+  })
+})
+

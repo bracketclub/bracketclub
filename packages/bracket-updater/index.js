@@ -151,10 +151,18 @@ Updater.prototype.flatten = function (bracket) {
     var regionString = _map(bracketRegion.rounds, function (round, roundIndex) {
       if (roundIndex === 0) return ''
       return _map(round, function (roundGame) {
-        if (roundGame === null) return self.bracketData.constants.UNPICKED_MATCH
-        if (_isNumber(roundGame) || !isNaN(roundGame)) return roundGame
-        if (bracketRegion.id === self.bracketData.constants.FINAL_ID) return roundGame.fromRegion
-        return roundGame.seed
+        var roundValue
+        var pc = roundGame && (roundGame.winsIn || roundGame.playedCompetitions)
+        if (roundGame === null) {
+          return self.bracketData.constants.UNPICKED_MATCH
+        } else if (_isNumber(roundGame) || !isNaN(roundGame)) {
+          roundValue = roundGame
+        } else if (bracketRegion.id === self.bracketData.constants.FINAL_ID) {
+          roundValue = roundGame.fromRegion
+        } else {
+          roundValue = roundGame.seed
+        }
+        return roundValue.toString() + (pc ? pc.toString() : '')
       }).join('')
     }).join('')
         .replace(new RegExp(self.bracketData.order.join(''), 'g'), '')
@@ -265,7 +273,7 @@ Updater.prototype.update = function (options) {
   if (regionRoundIndex !== null && nextRoundGameIndex !== null) {
     var hasRound = !!region.rounds[regionRoundIndex]
     if (hasRound) {
-      region.rounds[regionRoundIndex][nextRoundGameIndex] = this.getSeed(this.winner)
+      region.rounds[regionRoundIndex][nextRoundGameIndex] = _extend(this.getSeed(this.winner), _pick(options, 'playedCompetitions'))
       for (i = regionRoundIndex, m = region.rounds.length; i < m; i++) {
         round = region.rounds[i]
         for (ii = 0, mm = round.length; ii < mm; ii++) {
