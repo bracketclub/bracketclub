@@ -18,12 +18,15 @@ describe('NBA', function () {
       year: year
     })
 
-    var s = scorer.score(['standard', 'standardPPR', 'rounds'])
+    var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
     assert.equal(s.standard, 0)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.ok(_.every(s.rounds, function (s) { return s === 0 }))
+    assert.equal(true, _.isArray(s.bonus))
+    assert.equal(s.bonus.length, 4)
+    assert.ok(_.every(s.bonus, function (s) { return s === 0 }))
     assert.equal(s.standardPPR, 458)
   })
 
@@ -40,12 +43,15 @@ describe('NBA', function () {
       }
     })
 
-    var s = scorer.score(['standard', 'standardPPR', 'rounds'])
+    var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
     assert.equal(s.standard, 0)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.ok(_.every(s.rounds, function (s) { return s === 0 }))
+    assert.equal(true, _.isArray(s.bonus))
+    assert.equal(s.bonus.length, 4)
+    assert.ok(_.every(s.bonus, function (s) { return s === 0 }))
     assert.equal(s.standardPPR, 380)
   })
 })
@@ -64,12 +70,15 @@ describe('NHL', function () {
       year: year
     })
 
-    var s = scorer.score(['standard', 'standardPPR', 'rounds'])
+    var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
     assert.equal(s.standard, 0)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.ok(_.every(s.rounds, function (s) { return s === 0 }))
+    assert.equal(true, _.isArray(s.bonus))
+    assert.equal(s.bonus.length, 4)
+    assert.ok(_.every(s.bonus, function (s) { return s === 0 }))
     assert.equal(s.standardPPR, 458)
   })
 
@@ -86,12 +95,15 @@ describe('NHL', function () {
       }
     })
 
-    var s = scorer.score(['standard', 'standardPPR', 'rounds'])
+    var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
     assert.equal(s.standard, 0)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.ok(_.every(s.rounds, function (s) { return s === 0 }))
+    assert.equal(true, _.isArray(s.bonus))
+    assert.equal(s.bonus.length, 4)
+    assert.ok(_.every(s.bonus, function (s) { return s === 0 }))
     assert.equal(s.standardPPR, 380)
   })
 
@@ -105,12 +117,15 @@ describe('NHL', function () {
       year: year
     })
 
-    var s = scorer.score(['standard', 'standardPPR', 'rounds'])
+    var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
     assert.equal(s.standard, 380)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.deepEqual(s.rounds, [8, 4, 2, 1])
+    assert.equal(true, _.isArray(s.bonus))
+    assert.equal(s.bonus.length, 4)
+    assert.ok(_.every(s.bonus, function (s) { return s === 0 }))
     assert.equal(s.standardPPR, 0)
   })
 
@@ -124,12 +139,15 @@ describe('NHL', function () {
       year: year
     })
 
-    var s = scorer.score(['standard', 'standardPPR', 'rounds'])
+    var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
     assert.equal(s.standard, 380)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.deepEqual(s.rounds, [8, 4, 2, 1])
+    assert.equal(true, _.isArray(s.bonus))
+    assert.equal(s.bonus.length, 4)
+    assert.ok(_.every(s.bonus, function (s) { return s === 0 }))
     assert.equal(s.standardPPR, 0)
   })
 
@@ -143,12 +161,15 @@ describe('NHL', function () {
       year: year
     })
 
-    var s = scorer.score(['standard', 'standardPPR', 'rounds'])
+    var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
     assert.equal(s.standard, 458)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.deepEqual(s.rounds, [8, 4, 2, 1])
+    assert.equal(true, _.isArray(s.bonus))
+    assert.equal(s.bonus.length, 4)
+    assert.deepEqual(s.bonus, [8, 4, 2, 1])
     assert.equal(s.standardPPR, 0)
   })
 
@@ -162,12 +183,15 @@ describe('NHL', function () {
       year: year
     })
 
-    var s = scorer.score(['standard', 'standardPPR', 'rounds'])
+    var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
     assert.equal(s.standard, 428)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.deepEqual(s.rounds, [8, 4, 2, 1])
+    assert.equal(true, _.isArray(s.bonus))
+    assert.equal(s.bonus.length, 4)
+    assert.deepEqual(s.bonus, [7, 3, 1, 0])
     assert.equal(s.standardPPR, 0)
   })
 
@@ -181,12 +205,15 @@ describe('NHL', function () {
       year: year
     })
 
-    var s = scorer.score(['standard', 'standardPPR', 'rounds'])
+    var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
     assert.equal(s.standard, 104)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.deepEqual(s.rounds, [8, 0, 0, 0])
+    assert.equal(true, _.isArray(s.bonus))
+    assert.equal(s.bonus.length, 4)
+    assert.deepEqual(s.bonus, [8, 0, 0, 0])
     assert.equal(s.standardPPR, 354)
   })
 
@@ -200,12 +227,15 @@ describe('NHL', function () {
       year: year
     })
 
-    var s = scorer.score(['standard', 'standardPPR', 'rounds'])
+    var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
     assert.equal(s.standard, 91)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.deepEqual(s.rounds, [7, 0, 0, 0])
+    assert.equal(true, _.isArray(s.bonus))
+    assert.equal(s.bonus.length, 4)
+    assert.deepEqual(s.bonus, [7, 0, 0, 0])
     assert.equal(s.standardPPR, 152)
   })
 })
