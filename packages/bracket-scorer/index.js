@@ -10,6 +10,19 @@ var _isArray = require('lodash/isArray')
 var _cloneDeep = require('lodash/cloneDeep')
 var _extend = require('lodash/assign')
 var _isPlainObject = require('lodash/isPlainObject')
+var _findIndex = require('lodash/findIndex')
+
+var eliminations = function () {
+  var _eliminations = []
+  return {
+    push: function (g) {
+      g && _eliminations.push(g.fromRegion + g.seed)
+    },
+    contains: function (g) {
+      return g && _contains(_eliminations, g.fromRegion + g.seed)
+    }
+  }
+}
 
 var getResult = {
   totalScore: function (bd, result) {
@@ -26,7 +39,7 @@ var getResult = {
     } else if (_isArray(scoringSystem) && scoringSystem.length === initialValues.rounds(bd).length && _isArray(scoringSystem[0]) && scoringSystem[0].length === 2) {
       // The scoring system is an array of arrays that is equal to the number of rounds
       // Each array has a number of points per correct pick and a number of points for the correct number of games
-      return (scoringSystem[result.roundIndex][0] * 10) + (result.bonusStatus ? scoringSystem[result.roundIndex][1] * 10 : 0)
+      return (scoringSystem[result.roundIndex][0] * 10) + (result.bonusStatus === 'correct' ? scoringSystem[result.roundIndex][1] * 10 : 0)
     } else if (_isArray(scoringSystem) && _isArray(scoringSystem[0]) && scoringSystem.length === initialValues.rounds(bd).length && scoringSystem[0].length === bd.constants.TEAMS_PER_REGION) {
       // The scoring system is an array of arrays. There is one array for each round
       // and each sub-array has one value for each seed. So we return the value for the current round+seed
@@ -44,12 +57,12 @@ var getResult = {
         options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].correct = false
         options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].shouldBe = options.masterGame
       }
-      options.eliminated.push(options.game.fromRegion + options.game.seed)
+      options.eliminated.push(options.game)
     } else if (options.status === 'correct') {
       if (options.diff) {
         options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].correct = true
       }
-    } else if (options.status === 'unplayed' && _contains(options.eliminated, options.game.fromRegion + options.game.seed)) {
+    } else if (options.status === 'unplayed' && options.eliminated.contains(options.game)) {
       if (options.diff) {
         options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].eliminated = true
       }
@@ -59,7 +72,8 @@ var getResult = {
           roundIndex: options.trueRoundIndex,
           status: 'correct',
           seed: options.game.seed,
-          bonusStatus: !_contains(options.eliminated, options.game.fromRegion + options.game.seed),
+          // The bonus will be applied to points remaining if it is not already incorrect and both teams are not eliminated
+          bonusStatus: options.bonusStatus === 'incorrect' || options.eliminated.contains(options.game) || options.eliminated.contains(options.opponentGame) ? 'incorrect' : 'correct',
           type: pprMethod.replace('PPR', '')
         })
       })
@@ -69,7 +83,7 @@ var getResult = {
     options.rounds[options.roundIndex] += (options.status === 'correct' ? 1 : 0)
   },
   bonus: function (options) {
-    options.bonus[options.roundIndex] += (options.bonusStatus ? 1 : 0)
+    options.bonus[options.roundIndex] += (options.bonusStatus === 'correct' ? 1 : 0)
   }
 }
 
@@ -183,7 +197,7 @@ Scorer.prototype._roundLoop = function (entry, methods) {
   var self = this
   var bd = self.bracketData
   var c = bd.constants
-  var eliminatedTeams = []
+  var eliminatedTeams = eliminations()
   var pprMethods = []
   var regionRounds = roundCount(c.TEAMS_PER_REGION)
 
@@ -198,24 +212,44 @@ Scorer.prototype._roundLoop = function (entry, methods) {
 
   _each(entry, function (region, regionId) {
     var isFinal = regionId === self.bracketData.constants.FINAL_ID
-    _each(region.rounds, function (games, roundIndex) {
+    _each(region.rounds, function (round, roundIndex) {
       var trueRoundIndex = (isFinal ? regionRounds + roundIndex : roundIndex) - 1
       var getScoreResult = roundIndex > 0
       var getDiffResult = getScoreResult || isFinal
       if (getScoreResult || getDiffResult) {
-        _each(games, function (game, gameIndex) {
-          var masterGame = self.validatedMaster[regionId].rounds[roundIndex][gameIndex]
+        _each(round, function (game, gameIndex) {
+          var findOpponent = function (rounds) {
+            var previousRound = rounds[isFinal && roundIndex === 0 ? roundIndex : roundIndex - 1]
+            var isAFinalRound = previousRound.length === 2
+            var otherGameIndex = (gameIndex % 2 === 0) ? gameIndex + 1 : gameIndex - 1
+            return previousRound[isAFinalRound ? (_findIndex(previousRound, game) ? 0 : 1) : otherGameIndex]
+          }
+
+          var masterRounds = self.validatedMaster[regionId].rounds
+          var masterGame = masterRounds[roundIndex][gameIndex]
+          var masterOpponent = findOpponent(masterRounds)
+          var opponent = findOpponent(region.rounds)
+
           var status
           var bonusStatus
 
           // Set the status of the result
           if (masterGame === null) {
             status = 'unplayed'
+            // If the game did not pick a winsIn or it does not apply then
+            // consider it incorrect for the purposes of points remaining
+            bonusStatus = game.winsIn ? 'unplayed' : 'incorrect'
           } else if (game.name === masterGame.name) {
             status = 'correct'
-            bonusStatus = typeof game.winsIn !== 'undefined' && game.winsIn === masterGame.winsIn
+            // If both opponents and the winsIn match then the bonus is correct
+            bonusStatus = (
+              opponent && masterOpponent && opponent.name === masterOpponent.name
+            ) && (
+              game.winsIn && masterGame.winsIn && game.winsIn === masterGame.winsIn
+            ) ? 'correct' : 'incorrect'
           } else {
             status = 'incorrect'
+            bonusStatus = 'incorrect'
           }
 
           // The diff methods needs to be called to get the diff result or any PPR results
@@ -250,7 +284,9 @@ Scorer.prototype._roundLoop = function (entry, methods) {
                 trueRoundIndex: trueRoundIndex,
                 gameIndex: gameIndex,
                 game: game,
+                opponentGame: opponent,
                 status: status,
+                bonusStatus: bonusStatus,
                 eliminated: eliminatedTeams,
                 masterGame: masterGame,
                 pprMethods: pprMethods,
