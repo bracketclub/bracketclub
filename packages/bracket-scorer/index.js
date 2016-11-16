@@ -59,8 +59,7 @@ var getResult = {
           roundIndex: options.trueRoundIndex,
           status: 'correct',
           seed: options.game.seed,
-          // TODO: add up bonus based on both teams being not eliminated
-          bonus: false,
+          bonus: !_contains(options.eliminated, options.game.fromRegion + options.game.seed),
           type: pprMethod.replace('PPR', '')
         })
       })
@@ -211,8 +210,7 @@ Scorer.prototype._roundLoop = function (entry, methods) {
             status = 'unplayed'
           } else if (game.name === masterGame.name) {
             status = 'correct'
-            // TODO: opponent also needs to be right
-            bonus = typeof game.games !== 'undefined' && game.games === masterGame.games
+            bonus = typeof game.winsIn !== 'undefined' && game.winsIn === masterGame.winsIn
           } else {
             status = 'incorrect'
           }
