@@ -11,14 +11,14 @@
     "url": "http://github.com/tweetyourbracket/bracket-generator/issues"
   },
   "dependencies": {
-    "bracket-data": "^4.2.3",
-    "lodash": "^4.14.2"
+    "bracket-data": "^4.4.0",
+    "lodash": "^4.17.1"
   },
   "devDependencies": {
-    "bracket-validator": "^3.0.3",
-    "git-validate": "^2.1.4",
-    "mocha": "^3.0.2",
-    "standard": "^8.0.0-beta.3"
+    "bracket-validator": "^3.1.0",
+    "git-validate": "^2.2.2",
+    "mocha": "^3.1.2",
+    "standard": "^8.5.0"
   },
   "homepage": "http://github.com/tweetyourbracket/bracket-generator",
   "keywords": [
