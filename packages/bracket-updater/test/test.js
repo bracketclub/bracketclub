@@ -389,6 +389,28 @@ describe('Bracket Updater', function () {
     assert.equal(bracket.indexOf(bd.constants.UNPICKED_MATCH), -1)
   })
 
+  it('Should get pick next games in order with played competitions', function () {
+    var bracket = bracketData({year: '2016', sport: 'nba'}).constants.EMPTY
+    var u1 = new BracketUpdater({
+      year: '2016',
+      sport: 'nba'
+    })
+
+    for (var i = 0; i < 15; i++) {
+      var next = u1.next({currentMaster: bracket})
+      bracket = u1.update({
+        currentMaster: bracket,
+        fromRegion: next[0].fromRegion,
+        winner: {seed: next[0].seed, name: next[0].name},
+        loser: {seed: next[1].seed, name: next[1].name},
+        playedCompetitions: 7
+      })
+    }
+
+    assert.equal(bracket.indexOf(bd.constants.UNPICKED_MATCH), -1)
+    assert.equal(bracket, 'W17472737172717E17472737172717FW7')
+  })
+
   it('Should get pick next games in order', function () {
     var bracket = c.EMPTY
     var u1 = new BracketUpdater({
