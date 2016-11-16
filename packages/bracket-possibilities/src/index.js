@@ -23,7 +23,8 @@ export default class Possibilities {
         current = this._updater.update({
           currentMaster: current,
           fromRegion: region.id,
-          winner: pick(game, 'seed', 'name')
+          winner: pick(game, 'seed', 'name'),
+          playedCompetitions: game.winsIn
         })
       }
     })
@@ -50,7 +51,8 @@ export default class Possibilities {
               if (game === null) {
                 return {
                   fromRegion: region.id,
-                  winner: pick(prevRound[gameIndex * 2 + c], 'seed', 'name')
+                  winner: pick(prevRound[gameIndex * 2 + c], 'seed', 'name'),
+                  playedCompetitions: prevRound[gameIndex * 2 + c].winsIn
                 }
               }
             }

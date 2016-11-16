@@ -31,6 +31,31 @@ test('compare', (t) => {
   t.end()
 })
 
+test.only('compare NBA', (t) => {
+  const entry = ' W  17  47  27  37  17  27  17  E  17  47  27  37  17  27  27  F  E7'.replace(/\s*/g, '')
+  const master = 'W  87  47  27  37  X   X   X   E  87  47  27  37  X   X   X   F  X '.replace(/\s*/g, '')
+  // Best Score =    0   13  13  13  0   31  0      0   13  13  13  0   31  50     100
+  const sport = 'nba'
+  const year = '2016'
+
+  const p = new Possibilities({ sport, year })
+  const best = p.best({ entry, master })
+  const bestScore = p.bestScore({ entry, master })
+  const possibilities = p.possibilities({ entry, master })
+  const scores = possibilities.map((p) => new Scorer({ sport, year }).standard({ entry, master: p }))
+
+  t.equal(best, 'W87472737X27XE87472737X2727FE7')
+  t.equal(bestScore, 290)
+  t.equal(possibilities.length, 8)
+  t.equal(typeof possibilities[0], 'string')
+  t.equal(_.uniq(possibilities).length, 8)
+  t.equal(scores.length, 8)
+  t.equal(scores[0], 290)
+  t.equal(_.uniq(scores).length, 1)
+
+  t.end()
+})
+
 testCI('can any user win', (t) => {
   const entries = require('./fixtures/entries-ncaam-2016')
   const usernames = _.map(entries, ({ user }) => user.username)
