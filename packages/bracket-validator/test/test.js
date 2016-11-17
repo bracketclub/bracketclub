@@ -49,16 +49,15 @@ describe('A few random nhl brackets', function () {
         assert.equal(flat, bv)
         assert.equal(false, bv instanceof Error)
         _.each(v, function (region) {
-          _.each(region.rounds, function (round) {
+          _.each(region.rounds, function (round, index) {
             _.each(round, function (team) {
               assert.ok(team.seed)
               assert.ok(team.name)
               assert.ok(team.fromRegion)
-              assert.ok(!team.winsIn)
               assert.equal(typeof team.seed, 'number')
               assert.equal(typeof team.name, 'string')
               assert.equal(typeof team.fromRegion, 'string')
-              assert.equal(typeof team.winsIn, 'undefined')
+              assert.equal(typeof team.winsIn, index === 0 ? 'undefined' : 'number')
             })
           })
         })
@@ -80,16 +79,15 @@ describe('A few random nba brackets', function () {
         assert.equal(flat, bv)
         assert.equal(false, bv instanceof Error)
         _.each(v, function (region) {
-          _.each(region.rounds, function (round) {
+          _.each(region.rounds, function (round, index) {
             _.each(round, function (team) {
               assert.ok(team.seed)
               assert.ok(team.name)
               assert.ok(team.fromRegion)
-              assert.ok(!team.winsIn)
               assert.equal(typeof team.seed, 'number')
               assert.equal(typeof team.name, 'string')
               assert.equal(typeof team.fromRegion, 'string')
-              assert.equal(typeof team.winsIn, 'undefined')
+              assert.equal(typeof team.winsIn, index === 0 ? 'undefined' : 'number')
             })
           })
         })
