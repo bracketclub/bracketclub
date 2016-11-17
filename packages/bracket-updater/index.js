@@ -13,6 +13,10 @@ var _compact = require('lodash/compact')
 var _intersection = require('lodash/intersection')
 var _shuffle = require('lodash/shuffle')
 
+var _constant = function (item) {
+  return item
+}
+
 var allIndices = function (arr, val) {
   var indices = []
   var i = -1
@@ -176,10 +180,11 @@ Updater.prototype.next = function (options, random) {
   options && this.reset(options)
   var bd = this.bracketData
   var validated = this.validator.validate(this.currentMaster)
+  var randomOrder = typeof random === 'boolean' ? random : (random && random.order)
+  var randomWinner = typeof random === 'boolean' ? random : (random && random.winner)
   var nextGame
-  var maybeShuffle = random ? _shuffle : function (arr) { return arr }
 
-  var regionKeys = maybeShuffle(bd.constants.REGION_IDS).concat(bd.constants.FINAL_ID)
+  var regionKeys = (randomOrder ? _shuffle : _constant)(bd.constants.REGION_IDS).concat(bd.constants.FINAL_ID)
 
   _each(regionKeys, function (regionKey) {
     var region = validated[regionKey]
@@ -187,7 +192,7 @@ Updater.prototype.next = function (options, random) {
 
     _each(rounds, function (round, roundIndex) {
       var indices = allIndices(round, null)
-      var game = indices.length ? maybeShuffle(indices)[0] : null
+      var game = indices.length ? (randomOrder ? _shuffle : _constant)(indices)[0] : null
       if (game !== null) {
         nextGame = {
           region: regionKey,
@@ -205,7 +210,7 @@ Updater.prototype.next = function (options, random) {
 
   if (nextGame) {
     var prevRound = validated[nextGame.region].rounds[nextGame.round - 1]
-    return maybeShuffle([
+    return (randomWinner ? _shuffle : _constant)([
       _extend({}, prevRound[nextGame.game * 2], {fromRegion: nextGame.regionId}),
       _extend({}, prevRound[nextGame.game * 2 + 1], {fromRegion: nextGame.regionId})
     ])
