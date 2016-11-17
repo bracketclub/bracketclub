@@ -58,7 +58,7 @@ var getResult = {
       options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].winsInCorrect = options.bonusStatus === 'correct'
     }
 
-    if (options.diff) {
+    if (options.diff && options.masterGame) {
       options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].shouldBe = options.masterGame
     }
 

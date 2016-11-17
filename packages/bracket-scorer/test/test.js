@@ -437,17 +437,17 @@ describe('Bracket Differ', function () {
     var champion = res.FF.rounds[2][0]
 
     assert.equal(true, finalFour.eliminated)
-    assert.equal('object', typeof finalFour.shouldBe)
+    assert.equal('undefined', typeof finalFour.shouldBe)
     assert.equal(3, finalFour.seed)
     assert.equal('Duke', finalFour.name)
 
     assert.equal(true, ncg.eliminated)
-    assert.equal('object', typeof ncg.shouldBe)
+    assert.equal('undefined', typeof ncg.shouldBe)
     assert.equal(3, ncg.seed)
     assert.equal('Duke', ncg.name)
 
     assert.equal(true, champion.eliminated)
-    assert.equal('object', typeof champion.shouldBe)
+    assert.equal('undefined', typeof champion.shouldBe)
     assert.equal(3, champion.seed)
     assert.equal('Duke', champion.name)
   })
