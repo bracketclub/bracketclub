@@ -118,3 +118,79 @@ describe('Bracket generator', function () {
     }
   })
 })
+
+describe('NBA', function () {
+  it('NBA brackets can be validated with bestof', function () {
+    for (var i = 0, m = 1000; i < m; i++) {
+      (function () {
+        var generator = new BracketGenerator({year: '2016', sport: 'nba', winners: 'random'})
+        var bracket = generator.generate()
+        var testValidator = new BracketValidator({
+          year: '2016',
+          sport: 'nba',
+          testOnly: true,
+          allowEmpty: false,
+          flatBracket: bracket
+        }).validate()
+        var bracketValidator = new BracketValidator({
+          year: '2016',
+          sport: 'nba',
+          allowEmpty: false,
+          flatBracket: bracket
+        }).validate()
+
+        assert.equal(false, testValidator instanceof Error)
+        assert.equal(bracket, testValidator)
+
+        _.each(bracketValidator, function (b) {
+          _.each(b.rounds, function (r, i) {
+            if (i > 0) {
+              _.each(r, function (g) {
+                assert.ok(g.winsIn)
+                assert.equal(typeof g.winsIn, 'number')
+              })
+            }
+          })
+        })
+      })(i)
+    }
+  })
+})
+
+describe('NHL', function () {
+  it('NHL brackets can be validated with bestof', function () {
+    for (var i = 0, m = 1000; i < m; i++) {
+      (function () {
+        var generator = new BracketGenerator({year: '2016', sport: 'nhl', winners: 'random'})
+        var bracket = generator.generate()
+        var testValidator = new BracketValidator({
+          year: '2016',
+          sport: 'nhl',
+          testOnly: true,
+          allowEmpty: false,
+          flatBracket: bracket
+        }).validate()
+        var bracketValidator = new BracketValidator({
+          year: '2016',
+          sport: 'nhl',
+          allowEmpty: false,
+          flatBracket: bracket
+        }).validate()
+
+        assert.equal(false, testValidator instanceof Error)
+        assert.equal(bracket, testValidator)
+
+        _.each(bracketValidator, function (b) {
+          _.each(b.rounds, function (r, i) {
+            if (i > 0) {
+              _.each(r, function (g) {
+                assert.ok(g.winsIn)
+                assert.equal(typeof g.winsIn, 'number')
+              })
+            }
+          })
+        })
+      })(i)
+    }
+  })
+})

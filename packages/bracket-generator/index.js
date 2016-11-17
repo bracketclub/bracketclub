@@ -2,6 +2,7 @@ var bracketData = require('bracket-data')
 var _isString = require('lodash/isString')
 var _map = require('lodash/map')
 var _random = require('lodash/random')
+var _sample = require('lodash/sample')
 var _uniq = require('lodash/uniq')
 var _toArray = require('lodash/toArray')
 var _difference = require('lodash/difference')
@@ -13,6 +14,7 @@ var _extend = require('lodash/assign')
 var _filter = require('lodash/filter')
 var _omit = require('lodash/omit')
 var _pick = require('lodash/pick')
+var _reduce = require('lodash/reduce')
 
 function Generator (options) {
   this.bracketData = bracketData({
@@ -49,20 +51,22 @@ Generator.prototype.generateWinner = function (matchup) {
 
   var possible = {
     random: _random(matchup.length - 1),
-          // Higher means higher seed OR if seeds are the same 2nd team
+    // Higher means higher seed OR if seeds are the same 2nd team
     higher: function () {
       if (_uniq(matchup, true).length < 2) return 1
       return matchup.indexOf(Math.max.apply(Math, matchup))
     },
-          // Lower means lower seed OR if seeds are the same 1st team
+    // Lower means lower seed OR if seeds are the same 1st team
     lower: function () {
       if (_uniq(matchup, true).length < 2) return 0
       return matchup.indexOf(Math.min.apply(Math, matchup))
     }
   }
+
   var pickIndex = this.options.winners.length >= this.bracketData.order.length
     ? this.regionCounter * (this.bracketData.order.length - 1) + (this.winnerCounter + 1) - 1
     : this.winnerCounter
+
   var pick = this.options.winners.charAt(pickIndex)
   var winner
 
@@ -153,10 +157,29 @@ Generator.prototype.winningTeamFromRegion = function (fromRegion) {
   }).rounds)[0]
 }
 
+Generator.prototype.addBestOfToRounds = function (rounds) {
+  var bestOf = this.bracketData.constants.BEST_OF_RANGE
+
+  if (!bestOf) return rounds
+
+  return _map(rounds, function (round, index) {
+    if (index === 0) {
+      return round
+    } else {
+      return _reduce(round, function (acc, pick) {
+        acc.push(pick)
+        acc.push(_sample(bestOf))
+        return acc
+      }, [])
+    }
+  })
+}
+
 Generator.prototype.generate = function (winners) {
+  var self = this
   winners && this.reset({winners: winners})
   return _map(_flatten(_toArray(this.generateBracket())), function (region) {
-    return region.id + _flatten(region.rounds).join('')
+    return region.id + _flatten(self.addBestOfToRounds(region.rounds)).join('')
   }).join('')
     .replace(new RegExp(this.bracketData.order.join(''), 'g'), '')
     .replace(new RegExp(this.generateFinalFour().join(''), 'g'), '')
