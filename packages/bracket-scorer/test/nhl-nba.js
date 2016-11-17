@@ -116,6 +116,72 @@ describe('NBA', function () {
     assert.deepEqual(s.bonus, [6, 0, 0, 0])
     assert.equal(s.standardPPR, 212)
   })
+
+  it('should diff without best of', function () {
+    var entry = 'W1423121E1523131FW'
+    var master = 'W1423121E1523131FW'
+    var diff = new BracketScorer({
+      entry: entry,
+      master: master,
+      sport: sport,
+      year: year
+    }).diff()
+
+    _.each(diff, (region) => {
+      _.each(region.rounds, (round, index) => {
+        if (index > 0) {
+          _.each(round, (game) => {
+            assert.ok(game.correct)
+            assert.ok(typeof game.winsInCorrect, 'undefined')
+          })
+        }
+      })
+    })
+  })
+
+  it('should diff with best of', function () {
+    var entry = 'W17472737172717E17472737172717FW7'
+    var master = 'W17472737172717E17472737172717FW7'
+    var diff = new BracketScorer({
+      entry: entry,
+      master: master,
+      sport: sport,
+      year: year
+    }).diff()
+
+    _.each(diff, (region) => {
+      _.each(region.rounds, (round, index) => {
+        if (index > 0) {
+          _.each(round, (game) => {
+            assert.equal(game.correct, true)
+            assert.equal(game.winsInCorrect, true)
+          })
+        }
+      })
+    })
+  })
+
+  it('should diff without best of if master does not have it', function () {
+    var entry = 'W17472737172717E17472737172717FW7'
+    var master = 'W1423121E1423121FW'
+    var diff = new BracketScorer({
+      entry: entry,
+      master: master,
+      sport: sport,
+      year: year
+    }).diff()
+
+    _.each(diff, (region) => {
+      _.each(region.rounds, (round, index) => {
+        if (index > 0) {
+          _.each(round, (game) => {
+            assert.equal(game.correct, true)
+            assert.equal(game.winsInCorrect, void 0)
+          })
+        }
+      })
+    })
+  })
 })
 
 describe('NHL', function () {

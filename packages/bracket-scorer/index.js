@@ -53,6 +53,11 @@ var getResult = {
   },
   diff: function (bd, options) {
     var self = this
+
+    if ((options.bonusStatus === 'incorrect' || options.bonusStatus === 'correct') && options.diff) {
+      options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].winsInCorrect = options.bonusStatus === 'correct'
+    }
+
     if (options.status === 'incorrect') {
       if (options.diff) {
         options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].correct = false
@@ -74,7 +79,7 @@ var getResult = {
           status: 'correct',
           seed: options.game.seed,
           // The bonus will be applied to points remaining if it is not already incorrect and both teams are not eliminated
-          bonusStatus: options.bonusStatus === 'incorrect' || options.eliminated.contains(options.game) || options.eliminated.contains(options.opponentGame) ? 'incorrect' : 'correct',
+          bonusStatus: options.bonusStatus === 'incorrect' || options.bonusStatus === 'unused' || options.eliminated.contains(options.game) || options.eliminated.contains(options.opponentGame) ? 'incorrect' : 'correct',
           type: pprMethod.replace('PPR', '')
         })
       })
@@ -232,13 +237,14 @@ Scorer.prototype._roundLoop = function (entry, methods) {
 
           var status
           var bonusStatus
+          var defaultBonusStatus = masterGame && masterGame.winsIn ? 'incorrect' : 'unused'
 
           // Set the status of the result
           if (masterGame === null) {
             status = 'unplayed'
             // If the game did not pick a winsIn or it does not apply then
             // consider it incorrect for the purposes of points remaining
-            bonusStatus = game.winsIn ? 'unplayed' : 'incorrect'
+            bonusStatus = game.winsIn ? 'unplayed' : defaultBonusStatus
           } else if (game.name === masterGame.name) {
             status = 'correct'
             // If both opponents and the winsIn match then the bonus is correct
@@ -246,10 +252,10 @@ Scorer.prototype._roundLoop = function (entry, methods) {
               opponent && masterOpponent && opponent.name === masterOpponent.name
             ) && (
               game.winsIn && masterGame.winsIn && game.winsIn === masterGame.winsIn
-            ) ? 'correct' : 'incorrect'
+            ) ? 'correct' : defaultBonusStatus
           } else {
             status = 'incorrect'
-            bonusStatus = 'incorrect'
+            bonusStatus = defaultBonusStatus
           }
 
           // The diff methods needs to be called to get the diff result or any PPR results
