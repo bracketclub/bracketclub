@@ -392,10 +392,10 @@ describe('Bracket Differ', function () {
     assert.equal(undefined, res.E.rounds[2][0].eliminated)
     assert.equal(undefined, res.S.rounds[2][0].eliminated)
 
-    assert.equal(undefined, res.MW.rounds[1][0].shouldBe)
-    assert.equal(undefined, res.W.rounds[1][0].shouldBe)
-    assert.equal(undefined, res.E.rounds[1][0].shouldBe)
-    assert.equal(undefined, res.S.rounds[1][0].shouldBe)
+    assert.deepEqual({ fromRegion: 'MW', seed: 1, name: 'Louisville' }, res.MW.rounds[1][0].shouldBe)
+    assert.deepEqual({ fromRegion: 'W', seed: 1, name: 'Gonzaga' }, res.W.rounds[1][0].shouldBe)
+    assert.deepEqual({ fromRegion: 'E', seed: 1, name: 'Indiana' }, res.E.rounds[1][0].shouldBe)
+    assert.deepEqual({ fromRegion: 'S', seed: 1, name: 'Kansas' }, res.S.rounds[1][0].shouldBe)
   })
 
   it('Check final four: all wrong', function () {
@@ -437,17 +437,17 @@ describe('Bracket Differ', function () {
     var champion = res.FF.rounds[2][0]
 
     assert.equal(true, finalFour.eliminated)
-    assert.equal('undefined', typeof finalFour.shouldBe)
+    assert.equal('object', typeof finalFour.shouldBe)
     assert.equal(3, finalFour.seed)
     assert.equal('Duke', finalFour.name)
 
     assert.equal(true, ncg.eliminated)
-    assert.equal('undefined', typeof ncg.shouldBe)
+    assert.equal('object', typeof ncg.shouldBe)
     assert.equal(3, ncg.seed)
     assert.equal('Duke', ncg.name)
 
     assert.equal(true, champion.eliminated)
-    assert.equal('undefined', typeof champion.shouldBe)
+    assert.equal('object', typeof champion.shouldBe)
     assert.equal(3, champion.seed)
     assert.equal('Duke', champion.name)
   })

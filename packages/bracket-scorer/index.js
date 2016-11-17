@@ -58,10 +58,13 @@ var getResult = {
       options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].winsInCorrect = options.bonusStatus === 'correct'
     }
 
+    if (options.diff) {
+      options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].shouldBe = options.masterGame
+    }
+
     if (options.status === 'incorrect') {
       if (options.diff) {
         options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].correct = false
-        options.diff[options.regionId].rounds[options.roundIndex][options.gameIndex].shouldBe = options.masterGame
       }
       options.eliminated.push(options.game)
     } else if (options.status === 'correct') {
