@@ -509,5 +509,24 @@ describe('NBA', () => {
       playedCompetitions: 7
     }))
   })
+
+  it('should not update played competitions when it is 1', () => {
+    var beforeBracket = c.EMPTY
+    var afterBracket = beforeBracket.replace('MWX', 'MW1')
+    var update = {
+      currentMaster: beforeBracket,
+      playedCompetitions: 1,
+      fromRegion: 'MW',
+      winner: 1,
+      loser: 16
+    }
+
+    var updater = new BracketUpdater({
+      year: year,
+      sport: sport
+    })
+
+    assert.equal(updater.update(update), afterBracket)
+  })
 })
 
