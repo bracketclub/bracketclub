@@ -32,17 +32,17 @@
   ],
   "license": "MIT",
   "main": "index.js",
-  "private": true,
   "pre-commit": [
     "lint",
     "validate"
   ],
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git://github.com/tweetyourbracket/bracket-insights.git"
   },
   "scripts": {
-    "data": "./lib/data.sh",
+    "fetch-data": "./bin/fetch-data.sh",
     "lint": "standard",
     "validate": "npm ls"
   }
