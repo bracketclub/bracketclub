@@ -7,6 +7,8 @@ ENTRIES=entries
 MASTERS=masters
 DATA_DIR=".data"
 
+mkdir -p $DATA_DIR
+
 curl -s ${API}${ENTRIES}/${MEN}-2012 > ${DATA_DIR}/${ENTRIES}-${MEN}-2012.json
 curl -s ${API}${ENTRIES}/${MEN}-2013 > ${DATA_DIR}/${ENTRIES}-${MEN}-2013.json
 curl -s ${API}${ENTRIES}/${MEN}-2014 > ${DATA_DIR}/${ENTRIES}-${MEN}-2014.json
