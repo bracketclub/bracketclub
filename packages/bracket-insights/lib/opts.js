@@ -30,8 +30,8 @@ module.exports = () => {
     }))
   }
 
-  return {
+  return [{
     sport: argv.sport,
     year: argv.year
-  }
+  }]
 }

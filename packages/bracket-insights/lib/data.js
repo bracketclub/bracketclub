@@ -1,14 +1,14 @@
 const _ = require('lodash')
 const Validator = require('bracket-validator')
 const Scorer = require('bracket-scorer')
-const Possibilities = require('bracket-possibilities').default
+const Possibilities = require('bracket-possibilities')
 
 module.exports = (opts) => {
   const sport = opts.sport
   const year = opts.year
 
-  const masters = require(`../data/masters-${sport}-${year}.json`)
-  const entries = require(`../data/entries-${sport}-${year}.json`)
+  const masters = require(`../.data/masters-${sport}-${year}.json`)
+  const entries = require(`../.data/entries-${sport}-${year}.json`)
 
   return {
     sport,
