@@ -8,7 +8,7 @@
     "url": "http://lukekarrys.com"
   },
   "bugs": {
-    "url": "http://github.com/tweetyourbracket/bracket-insights/issues"
+    "url": "https://github.com/bracketclub/bracket-insights/issues"
   },
   "dependencies": {
     "bracket-data": "^4.4.0",
@@ -24,11 +24,12 @@
     "git-validate": "^2.2.2",
     "standard": "^8.6.0"
   },
-  "homepage": "http://github.com/tweetyourbracket/bracket-insights",
+  "homepage": "https://github.com/bracketclub/bracket-insights",
   "keywords": [
     "bracket",
     "ncaa",
-    "tweetyourbracket"
+    "tweetyourbracket",
+    "bracketclub"
   ],
   "license": "MIT",
   "main": "index.js",
@@ -39,7 +40,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/tweetyourbracket/bracket-insights.git"
+    "url": "https://github.com/bracketclub/bracket-insights.git"
   },
   "scripts": {
     "fetch-data": "./bin/fetch-data.sh",

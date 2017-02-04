@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-API=https://tyb-api.now.sh/
+API=https://bc-api.now.sh/
 MEN=ncaam
 WOMEN=ncaaw
 ENTRIES=entries
