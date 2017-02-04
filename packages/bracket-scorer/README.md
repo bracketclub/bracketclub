@@ -5,7 +5,7 @@ Find the score of a tournament bracket.
 
 [![NPM](https://nodei.co/npm/bracket-scorer.png)](https://nodei.co/npm/bracket-scorer/)
 
-[![Build Status](https://travis-ci.org/tweetyourbracket/bracket-scorer.png?branch=master)](https://travis-ci.org/tweetyourbracket/bracket-scorer)
+[![Build Status](https://travis-ci.org/bracketclub/bracket-scorer.png?branch=master)](https://travis-ci.org/bracketclub/bracket-scorer)
 
 ## What is this?
 
@@ -13,7 +13,7 @@ Find the score of a tournament bracket.
 
 ## API / Usage
 
-Make a new `bracket-scorer` object with an options object (the year and sport options are required and passed directly to [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#which-sports-does-it-have)):
+Make a new `bracket-scorer` object with an options object (the year and sport options are required and passed directly to [`bracket-data`](https://github.com/bracketclub/bracket-data#which-sports-does-it-have)):
 
 ```js
 var BracketScorer = require('bracket-scorer');
@@ -28,11 +28,11 @@ scorer.score();
 
 ### options
 
-- `sport`: The sport you are scoring. See [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#api) for more info.
-- `year`: The year you are scoring. See [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#api) for more info.
+- `sport`: The sport you are scoring. See [`bracket-data`](https://github.com/bracketclub/bracket-data#api) for more info.
+- `year`: The year you are scoring. See [`bracket-data`](https://github.com/bracketclub/bracket-data#api) for more info.
 - `entry`: (String or Array, required) The entry bracket to score. Can also be an array of strings and the result will be an array of scores.
 - `master`: (String, required) The master bracket to score the entry against.
-- `scoring`: (Object, optional) Scoring systems that can be used. By default the scoring systems from the year/sport [`bracket-data`](https://github.com/tweetyourbracket/bracket-data) will be available. Those can be overriden here. See [below](#scoring) for possible scoring system formats.
+- `scoring`: (Object, optional) Scoring systems that can be used. By default the scoring systems from the year/sport [`bracket-data`](https://github.com/bracketclub/bracket-data) will be available. Those can be overriden here. See [below](#scoring) for possible scoring system formats.
 
 ### methods
 
@@ -73,19 +73,19 @@ console.log(s.MW.rounds[0][0].correct)
 
 ### default scoring methods
 
-Check out [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#what-data-does-this-module-give-me) to see the specific scoring systems for each sport/year.
+Check out [`bracket-data`](https://github.com/bracketclub/bracket-data#what-data-does-this-module-give-me) to see the specific scoring systems for each sport/year.
 
 Also by default this module adds the following:
 
 - `rounds`: Returns an array with a count for how many correct picks in each round.
-- `diff`: Not really a scoring system, but this will return the [validated entry bracket](https://github.com/tweetyourbracket/bracket-validator) with the following properties added to each game.
+- `diff`: Not really a scoring system, but this will return the [validated entry bracket](https://github.com/bracketclub/bracket-validator) with the following properties added to each game.
   - `correct: true/false` Whether thr game is correct or not. Only applies to completed games
   - `shouldBe: team` If the pick is incorrect, this is the team that is actually in that position
   - `eliminated: true` If the game is unplayed and that team is knocked out, this will be true
 
 ### `scoring`
 
-*Note: usually you wont need to mess with this as a few scoring systems are contained for each sport in the [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#what-data-does-this-module-give-me) module. But if you want to create your own scoring systeam, this is what you need to know.*
+*Note: usually you wont need to mess with this as a few scoring systems are contained for each sport in the [`bracket-data`](https://github.com/bracketclub/bracket-data#what-data-does-this-module-give-me) module. But if you want to create your own scoring systeam, this is what you need to know.*
 
 Scoring systems in the `scoring` option can have a few different forms. Any key in `scoring` will be created as a convenience method on the scorer. Here's an example:
 
@@ -126,5 +126,5 @@ scorer.score('massivelyWeightedChampion');
 
 ## Anything else?
 
-If this is interesting to you, I think you should follow me ([@lukekarrys](https://twitter.com/lukekarrys)) and [@tweetthebracket](https://twitter.com/tweetthebracket) on Twitter. There are also a lot of other bracket related modules on our [GitHub organization page](https://github.com/tweetyourbracket).
+If this is interesting to you, I think you should follow me ([@lukekarrys](https://twitter.com/lukekarrys)) and [@tweetthebracket](https://twitter.com/tweetthebracket) on Twitter. There are also a lot of other bracket related modules on our [GitHub organization page](https://github.com/bracketclub).
 
