@@ -8,7 +8,7 @@
     "url": "http://lukekarrys.com"
   },
   "bugs": {
-    "url": "http://github.com/tweetyourbracket/bracket-generator/issues"
+    "url": "https://github.com/bracketclub/bracket-generator/issues"
   },
   "dependencies": {
     "bracket-data": "^4.4.0",
@@ -20,11 +20,12 @@
     "mocha": "^3.1.2",
     "standard": "^8.5.0"
   },
-  "homepage": "http://github.com/tweetyourbracket/bracket-generator",
+  "homepage": "https://github.com/bracketclub/bracket-generator",
   "keywords": [
     "bracket",
     "ncaa",
-    "tweetyourbracket"
+    "tweetyourbracket",
+    "bracketclub"
   ],
   "pre-commit": [
     "lint",
@@ -35,7 +36,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/tweetyourbracket/bracket-generator.git"
+    "url": "https://github.com/bracketclub/bracket-generator.git"
   },
   "scripts": {
     "lint": "standard",
