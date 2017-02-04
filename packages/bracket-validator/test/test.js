@@ -366,7 +366,7 @@ describe('NHL', function () {
     ])
   })
 
-  // https://github.com/tweetyourbracket/bracket-validator/issues/9
+  // https://github.com/bracketclub/bracket-validator/issues/9
   it('works with number of games picks', function () {
     var validator = new BracketValidator({flatBracket: 'C143737P152627M142526A172627FP7M6M6', year: '2016', sport: 'nhl'}).validate()
 
@@ -417,7 +417,7 @@ describe('NHL', function () {
     ])
   })
 
-  // https://github.com/tweetyourbracket/bracket-validator/issues/9
+  // https://github.com/bracketclub/bracket-validator/issues/9
   it('works with only first round number of picks', function () {
     var validator = new BracketValidator({flatBracket: 'C14373P15262M14252A17262FPMM', year: '2016', sport: 'nhl'}).validate()
 

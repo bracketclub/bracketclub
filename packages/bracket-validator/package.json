@@ -8,7 +8,7 @@
     "url": "http://lukekarrys.com"
   },
   "bugs": {
-    "url": "http://github.com/tweetyourbracket/bracket-validator/issues"
+    "url": "https://github.com/bracketclub/bracket-validator/issues"
   },
   "dependencies": {
     "bracket-data": "^4.4.0",
@@ -20,11 +20,12 @@
     "mocha": "^3.1.2",
     "standard": "^8.5.0"
   },
-  "homepage": "http://github.com/tweetyourbracket/bracket-validator",
+  "homepage": "https://github.com/bracketclub/bracket-validator",
   "keywords": [
     "bracket",
     "ncaa",
-    "tweetyourbracket"
+    "tweetyourbracket",
+    "bracketclub"
   ],
   "license": "MIT",
   "main": "index.js",
@@ -35,7 +36,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/tweetyourbracket/bracket-validator.git"
+    "url": "https://github.com/bracketclub/bracket-validator.git"
   },
   "scripts": {
     "lint": "standard",

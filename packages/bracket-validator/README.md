@@ -5,19 +5,19 @@ Validate a tournament bracket.
 
 [![NPM](https://nodei.co/npm/bracket-validator.png)](https://nodei.co/npm/bracket-validator/)
 
-[![Build Status](https://travis-ci.org/tweetyourbracket/bracket-validator.png?branch=master)](https://travis-ci.org/tweetyourbracket/bracket-validator)
+[![Build Status](https://travis-ci.org/bracketclub/bracket-validator.png?branch=master)](https://travis-ci.org/bracketclub/bracket-validator)
 
-*To see the data this repo is built on, check out [bracket-data](https://github.com/tweetyourbracket/bracket-data).*
+*To see the data this repo is built on, check out [bracket-data](https://github.com/bracketclub/bracket-data).*
 
 ## What is this?
 
 `bracket-validator` is a module that takes a [string representation of a bracket](https://gist.github.com/lukekarrys/2028007#explanation) and validates it against the real data for that bracket's sport and year.
 
-The main use case for this is to validate a user's entry against the actual data in order to score it or display it showing correct/incorrect picks. There are other modules which rely on `bracket-validator` such as [`bracket-scorer`](https://github.com/tweetyourbracket/bracket-scorer) and [`bracket-updater`](https://github.com/tweetyourbracket/bracket-updater).
+The main use case for this is to validate a user's entry against the actual data in order to score it or display it showing correct/incorrect picks. There are other modules which rely on `bracket-validator` such as [`bracket-scorer`](https://github.com/bracketclub/bracket-scorer) and [`bracket-updater`](https://github.com/bracketclub/bracket-updater).
 
 ## API / Usage
 
-Make a new `bracket-validator` object with an options object (the year and sport options are required and passed directly to [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#which-sports-does-it-have)):
+Make a new `bracket-validator` object with an options object (the year and sport options are required and passed directly to [`bracket-data`](https://github.com/bracketclub/bracket-data#which-sports-does-it-have)):
 
 ```js
 var BracketValidator = require('bracket-validator');
@@ -32,8 +32,8 @@ console.log(validator.validate());
 
 ### options
 
-- `sport`: The sport you are validating. See [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#api) for more info.
-- `year`: The year you are validating. See [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#api) for more info.
+- `sport`: The sport you are validating. See [`bracket-data`](https://github.com/bracketclub/bracket-data#api) for more info.
+- `year`: The year you are validating. See [`bracket-data`](https://github.com/bracketclub/bracket-data#api) for more info.
 - `testOnly`: (Boolean, default: false) Whether to only test the validation and not return an expanded bracket
 - `allowEmpty`: (Boolean, default: true) Whether the validation should allow unpicked matches. This is useful for validating a bracket as a user is selecting it.
 - `flatBracket`: (String, default: '') The user's bracket to validate
@@ -49,4 +49,4 @@ console.log(validator.validate());
 
 ## Anything else?
 
-If this is interesting to you, I think you should follow me ([@lukekarrys](https://twitter.com/lukekarrys)) and [@tweetthebracket](https://twitter.com/tweetthebracket) on Twitter. There are also a lot of other bracket related modules on our [GitHub organization page](https://github.com/tweetyourbracket).
+If this is interesting to you, I think you should follow me ([@lukekarrys](https://twitter.com/lukekarrys)) and [@tweetthebracket](https://twitter.com/tweetthebracket) on Twitter. There are also a lot of other bracket related modules on our [GitHub organization page](https://github.com/bracketclub).
