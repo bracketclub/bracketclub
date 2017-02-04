@@ -4,7 +4,7 @@ bracket-possibilities
 Get the best possible outcomes for a bracket based on a partially complete master bracket.
 
 [![NPM](https://nodei.co/npm/bracket-possibilities.png)](https://nodei.co/npm/bracket-possibilities/)
-[![Build Status](https://travis-ci.org/tweetyourbracket/bracket-possibilities.png?branch=master)](https://travis-ci.org/tweetyourbracket/bracket-possibilities)
+[![Build Status](https://travis-ci.org/bracketclub/bracket-possibilities.png?branch=master)](https://travis-ci.org/bracketclub/bracket-possibilities)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
 
 ## Install
@@ -16,7 +16,7 @@ npm install bracket-possibilities --save
 
 ## API / Usage
 
-Make a new `bracket-possibilities` instance with an options object (the year and sport options are required and passed directly to [`bracket-data`](https://github.com/tweetyourbracket/bracket-data#which-sports-does-it-have)):
+Make a new `bracket-possibilities` instance with an options object (the year and sport options are required and passed directly to [`bracket-data`](https://github.com/bracketclub/bracket-data#which-sports-does-it-have)):
 
 ```js
 import P from 'bracket-possibilities'
