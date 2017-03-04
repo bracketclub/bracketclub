@@ -452,4 +452,3 @@ describe('Bracket Differ', function () {
     assert.equal('Duke', champion.name)
   })
 })
-
