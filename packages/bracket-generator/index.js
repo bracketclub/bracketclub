@@ -64,7 +64,7 @@ Generator.prototype.generateWinner = function (matchup) {
   }
 
   var pickIndex = this.options.winners.length >= this.bracketData.order.length
-    ? this.regionCounter * (this.bracketData.order.length - 1) + (this.winnerCounter + 1) - 1
+    ? (this.regionCounter * (this.bracketData.order.length - 1)) + (this.winnerCounter + 1) - 1
     : this.winnerCounter
 
   var pick = this.options.winners.charAt(pickIndex)
