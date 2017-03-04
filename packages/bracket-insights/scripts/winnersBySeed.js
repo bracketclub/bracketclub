@@ -10,4 +10,3 @@ module.exports.after = (arr) => ({
   title: 'Total',
   data: _.chain(arr).map('data').flatten().countBy()
 })
-

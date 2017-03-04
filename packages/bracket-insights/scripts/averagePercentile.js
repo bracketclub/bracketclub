@@ -8,7 +8,7 @@ module.exports = (o) => {
     return [
       entry.user.username,
       rank + 1,
-      Math.abs(rank / scored.length - 1) * 100
+      Math.abs((rank / scored.length) - 1) * 100
     ]
   })
 }
