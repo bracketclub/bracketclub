@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "git-validate": "^2.2.2",
-    "standard": "^8.6.0"
+    "standard": "^9.0.0"
   },
   "homepage": "https://github.com/bracketclub/bracket-insights",
   "keywords": [

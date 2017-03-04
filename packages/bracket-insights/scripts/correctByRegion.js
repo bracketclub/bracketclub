@@ -23,4 +23,3 @@ module.exports.after = (arr) => ({
     correctByRegion: _.chain(arr).map('data').flatten().maxBy((d) => d.correctByRegion[0])
   }
 })
-
