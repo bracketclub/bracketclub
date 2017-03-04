@@ -529,4 +529,3 @@ describe('NBA', () => {
     assert.equal(updater.update(update), afterBracket)
   })
 })
-

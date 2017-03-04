@@ -212,7 +212,7 @@ Updater.prototype.next = function (options, random) {
     var prevRound = validated[nextGame.region].rounds[nextGame.round - 1]
     return (randomWinner ? _shuffle : _constant)([
       _extend({}, prevRound[nextGame.game * 2], {fromRegion: nextGame.regionId}),
-      _extend({}, prevRound[nextGame.game * 2 + 1], {fromRegion: nextGame.regionId})
+      _extend({}, prevRound[(nextGame.game * 2) + 1], {fromRegion: nextGame.regionId})
     ])
   }
 
