@@ -301,7 +301,7 @@ Validator.prototype.picksToArray = function (picks, regionName) {
   var bestOf = self.bracketData.constants.BEST_OF_RANGE
   var captureGroupCount = bestOf ? 2 : 1
   var firstRoundLength = (regionName === this.bracketData.constants.FINAL_ID) ? this.bracketData.constants.REGION_COUNT : this.bracketData.constants.TEAMS_PER_REGION
-  var replacement = '$' + _range(1, bestOf ? (firstRoundLength * 2 - 1) : firstRoundLength).join(',$')
+  var replacement = '$' + _range(1, bestOf ? ((firstRoundLength * 2) - 1) : firstRoundLength).join(',$')
   var seeds = (regionName === this.bracketData.constants.FINAL_ID) ? this.bracketData.constants.REGION_IDS : this.bracketData.order
   var regExpJoiner = function (arr, reverse) {
     var newArr = (reverse) ? arr.reverse() : arr
