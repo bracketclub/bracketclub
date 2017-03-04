@@ -51,8 +51,8 @@ export default class Possibilities {
               if (game === null) {
                 return {
                   fromRegion: region.id,
-                  winner: pick(prevRound[gameIndex * 2 + c], 'seed', 'name'),
-                  playedCompetitions: prevRound[gameIndex * 2 + c].winsIn
+                  winner: pick(prevRound[(gameIndex * 2) + c], 'seed', 'name'),
+                  playedCompetitions: prevRound[(gameIndex * 2) + c].winsIn
                 }
               }
             }
