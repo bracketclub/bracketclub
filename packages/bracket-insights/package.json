@@ -37,7 +37,8 @@
   "main": "index.js",
   "pre-commit": [
     "lint",
-    "validate"
+    "validate",
+    "test"
   ],
   "private": true,
   "repository": {
