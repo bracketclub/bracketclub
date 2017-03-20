@@ -8,7 +8,7 @@ module.exports = (o) => {
     return [
       entry.user.username,
       rank + 1,
-      Math.abs((rank / scored.length) - 1) * 100
+      _.round(Math.abs((rank / scored.length) - 1) * 100, 2)
     ]
   })
 }
@@ -23,9 +23,9 @@ module.exports.after = (arr) => {
       .reject((entries) => entries.length < 2)
       .map((entries) => [
         entries[0][0],
-        _.chain(entries).map('2').mean().value()
+        _.chain(entries).map('2').mean().round(2).value()
       ])
-      .orderBy('avg', 'desc')
+      .orderBy('1', 'desc')
       .value()
   }
 }

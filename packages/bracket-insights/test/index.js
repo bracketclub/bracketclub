@@ -17,7 +17,7 @@ const exexScript = (index, args = '') => (t, cb = _.noop) => exec(`node index --
   t.notOk(err)
   t.notOk(stderr)
   t.ok(stdout)
-  const lines = stdout.split('\n').filter((l) => !l.startsWith('===')).slice(1).filter(Boolean)
+  const lines = stdout.split('\n').filter(Boolean).filter((l) => !l.startsWith('===')).slice(1)
   cb({ lines, output: lines.join('\n') })
 })
 

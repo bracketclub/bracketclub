@@ -7,7 +7,7 @@ module.exports = (o) => {
 
   return _.chain(current)
   .map((master) => {
-    const winner = _.orderBy(o.scorer.score('standard', {entry: o.entries, master}), 'score', 'desc')[0]
+    const winner = _.orderBy(o.scorer.score(o.scoring, {entry: o.entries, master}), 'score', 'desc')[0]
     return {
       username: winner.user.username,
       validated: validator.validate(master)

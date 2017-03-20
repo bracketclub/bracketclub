@@ -5,6 +5,8 @@ const getData = require('./lib/data')
 const argv = require('yargs')
   .string('dataDir')
   .default('dataDir', '.data')
+  .string('scoring')
+  .default('scoring', 'standard')
   .string('user')
   .number('master')
   .string('script')
@@ -14,7 +16,7 @@ const scriptName = argv.script
 const script = require(`./scripts/${scriptName}`)
 const after = script.after
 
-const argvActionData = _.pick(argv, 'user', 'master', 'dataDir')
+const argvActionData = _.pick(argv, 'user', 'master', 'dataDir', 'scoring')
 const action = (o) => _.flowRight(script, getData)(_.assign(argvActionData, o))
 
 const log = (str) => {
@@ -24,23 +26,27 @@ const log = (str) => {
 
 const replacer = (key, value) => {
   if (Array.isArray(value) && value.every(_.overSome(_.isNumber, _.isString))) {
-    return `[${value.join(', ')}]`
+    return `[${value.join(' -- ')}]`
   }
 
   return value
 }
+
+const stringify = (data) => JSON.stringify(data, replacer, 2)
+  .replace(/"\[/g, '')
+  .replace(/\]",?/g, '')
 
 opts
   .map((o) => _.assign({data: action(o)}, o))
   .forEach((o, index, arr) => {
     if (index === 0) log()
 
-    log(o.sport, o.year)
-    log(JSON.stringify(o.data, replacer, 2))
+    log(`${o.sport} ${o.year}`)
+    log(stringify(o.data))
 
     if (index === arr.length - 1 && arr.length > 1 && after) {
       const afterData = after(arr)
       log(afterData.title)
-      log(JSON.stringify(afterData.data, replacer, 2))
+      log(stringify(afterData.data))
     }
   })
