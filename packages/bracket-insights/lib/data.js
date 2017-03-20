@@ -4,15 +4,16 @@ const Scorer = require('bracket-scorer')
 const Possibilities = require('bracket-possibilities')
 
 module.exports = (opts) => {
-  const sport = opts.sport
-  const year = opts.year
+  const {sport, year, user, master, dataDir} = opts
 
-  const masters = require(`../.data/masters-${sport}-${year}.json`)
-  const entries = require(`../.data/entries-${sport}-${year}.json`)
+  const masters = require(`../${dataDir}/masters-${sport}-${year}.json`)
+  const entries = require(`../${dataDir}/entries-${sport}-${year}.json`)
 
   return {
     sport,
     year,
+    user,
+    master,
     entries,
     masters,
     validator: new Validator({sport, year}),

@@ -1,13 +1,21 @@
 const _ = require('lodash')
 const opts = require('./lib/opts')()
 const getData = require('./lib/data')
-const argv = require('yargs').string('script').argv
+
+const argv = require('yargs')
+  .string('dataDir')
+  .default('dataDir', '.data')
+  .string('user')
+  .number('master')
+  .string('script')
+  .argv
 
 const scriptName = argv.script
 const script = require(`./scripts/${scriptName}`)
 const after = script.after
 
-const action = (o) => _.flowRight(script, getData)(o)
+const argvActionData = _.pick(argv, 'user', 'master', 'dataDir')
+const action = (o) => _.flowRight(script, getData)(_.assign(argvActionData, o))
 
 const log = (str) => {
   if (str) console.log(str)

@@ -1,10 +1,11 @@
 const _ = require('lodash')
+const pickMaster = require('../lib/pickMaster')
 
 module.exports = (o) => {
-  const beforeFF = o.possibilities.possibilities(o.masters.brackets[60])
+  const current = o.possibilities.possibilities(pickMaster(o))
   const validator = o.validator
 
-  return _.chain(beforeFF)
+  return _.chain(current)
   .map((master) => {
     const winner = _.orderBy(o.scorer.score('standard', {entry: o.entries, master}), 'score', 'desc')[0]
     return {

@@ -1,7 +1,8 @@
 const _ = require('lodash')
+const pickMaster = require('../lib/pickMaster')
 
 module.exports = (o) => {
-  const v = o.validator.validate(_.last(o.masters.brackets))
+  const v = o.validator.validate(pickMaster(o))
   const regions = _.omit(v, 'FF')
 
   const round1s = _.map(regions, (region) => region.rounds[1])

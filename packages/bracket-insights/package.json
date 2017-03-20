@@ -11,25 +11,27 @@
     "url": "https://github.com/bracketclub/bracket-insights/issues"
   },
   "dependencies": {
-    "bracket-data": "^4.4.0",
+    "bracket-data": "^4.5.9",
     "bracket-generator": "^3.1.0",
     "bracket-possibilities": "^1.3.0",
     "bracket-scorer": "^3.4.1",
     "bracket-updater": "^3.4.1",
     "bracket-validator": "^3.1.0",
-    "lodash": "^4.17.2",
-    "yargs": "^6.5.0"
+    "lodash": "^4.17.4",
+    "yargs": "^7.0.2"
   },
   "devDependencies": {
     "git-validate": "^2.2.2",
-    "standard": "^9.0.0"
+    "standard": "^9.0.2",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.6.3"
   },
   "homepage": "https://github.com/bracketclub/bracket-insights",
   "keywords": [
     "bracket",
+    "bracketclub",
     "ncaa",
-    "tweetyourbracket",
-    "bracketclub"
+    "tweetyourbracket"
   ],
   "license": "MIT",
   "main": "index.js",
@@ -45,7 +47,8 @@
   "scripts": {
     "fetch-data": "./bin/fetch-data.sh",
     "lint": "standard",
-    "validate": "npm ls",
-    "start": "node index"
+    "start": "node index",
+    "test": "tape test/index.js",
+    "validate": "npm ls"
   }
 }

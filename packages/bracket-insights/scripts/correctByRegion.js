@@ -1,8 +1,11 @@
 const _ = require('lodash')
+const filterByUser = require('../lib/filterByUser')
+const pickMaster = require('../lib/pickMaster')
 
 module.exports = (o) => _.chain(o.entries)
+  .filter(filterByUser(o))
   .map((entry) => {
-    const scored = o.scorer.diff({entry: entry.bracket, master: _.last(o.masters.brackets)})
+    const scored = o.scorer.diff({entry: entry.bracket, master: pickMaster(o)})
 
     const correctByRegion = _.chain(scored).map((value) =>
       _(value.rounds).drop().flatten().filter('correct', true).value().length

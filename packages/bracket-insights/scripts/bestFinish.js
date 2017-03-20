@@ -1,10 +1,13 @@
 const _ = require('lodash')
+const filterByUser = require('../lib/filterByUser')
+const pickMaster = require('../lib/pickMaster')
 
 module.exports = (o) => _.chain(o.entries)
+  .filter(filterByUser(o))
   .map((entry) => {
     const best = o.possibilities.finishes({
       entries: o.entries,
-      master: o.masters.brackets[58],
+      master: pickMaster(o),
       findEntry: _.pick(entry, 'id')
     })[0]
 
