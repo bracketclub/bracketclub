@@ -25,7 +25,7 @@ const log = (str) => {
 }
 
 const replacer = (key, value) => {
-  if (Array.isArray(value) && value.every(_.overSome(_.isNumber, _.isString))) {
+  if (Array.isArray(value) && value.every(_.overSome(_.isNumber, _.isString)) && value.join(' ').length < 100) {
     return `[${value.join(' -- ')}]`
   }
 
