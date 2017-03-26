@@ -49,9 +49,16 @@ p.possibilities({ entry, master })
 p.canWin({ entries, master, findEntry })
 // null or something like { rank: 1, bracket: 'SOME WINNING BRACKET' }
 
-// This will return all the `possibilities` where the entry matched by `findEntry`
+// This will return some of the `possibilities` where the entry matched by `findEntry`
 // will finish in 1st place (tied or not)
 p.winners({ entries, master, findEntry })
+// [{ rank: 1,  bracket: 'OUTCOME1' }, { rank: 1, bracket: 'OUTCOME2' }, ...]
+
+// This will return all of the `possibilities` where the entry matched by `findEntry`
+// will finish in 1st place (tied or not). The difference between `winners` is that
+// method will short circuit some outcomes by only trying games where the entry
+// does not have an elimiated team winning
+p.allWinners({ entries, master, findEntry })
 // [{ rank: 1,  bracket: 'OUTCOME1' }, { rank: 1, bracket: 'OUTCOME2' }, ...]
 
 // Find all top 5 finishes for the entry matched by `findEntry`

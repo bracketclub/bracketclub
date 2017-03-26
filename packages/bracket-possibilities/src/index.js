@@ -2,7 +2,7 @@ import Scorer from 'bracket-scorer'
 import Updater from 'bracket-updater'
 import Data from 'bracket-data'
 import Validator from 'bracket-validator'
-import { each, pick, sortBy, find, sortedIndexBy, orderBy, filter } from 'lodash'
+import { each, pick, sortBy, find, sortedLastIndexOf, orderBy, filter } from 'lodash'
 import { eachGame, nextGame } from './each-game'
 import binaryCombinations from './binary-combinations'
 
@@ -79,10 +79,12 @@ export default class Possibilities {
       }
     }
 
-    each(this.possibilities({ entry: entryBracket, master }), (bracket) => {
+    const possibilities = type === 'all' ? master : { entry: entryBracket, master }
+
+    each(this.possibilities(possibilities), (bracket) => {
       const scores = sortBy(this._scorer.score(scoreType, { entry: entries, master: bracket }), 'score')
       const scoredEntry = find(scores, findEntry)
-      const entryRank = scores.length - sortedIndexBy(scores, scoredEntry, 'score')
+      const entryRank = scores.length - sortedLastIndexOf(scores.map((s) => s.score), scoredEntry.score)
       const winner = scores[scores.length - 1]
       const behind = winner.score - scoredEntry.score
 
@@ -119,5 +121,10 @@ export default class Possibilities {
   winners (options) {
     // Will return some winning possible finishes
     return this.finishes({ ...options, rank: 1 })
+  }
+
+  allWinners (options) {
+    // Will return all winning brackets
+    return this.finishes({ ...options, type: 'all', rank: 1 })
   }
 }

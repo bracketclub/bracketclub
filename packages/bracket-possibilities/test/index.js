@@ -31,7 +31,7 @@ test('compare', (t) => {
   t.end()
 })
 
-test.only('compare NBA', (t) => {
+test('compare NBA', (t) => {
   const entry = ' W  17  47  27  37  17  27  17  E  17  47  27  37  17  27  27  F  E7'.replace(/\s*/g, '')
   const master = 'W  87  47  27  37  X   X   X   E  87  47  27  37  X   X   X   F  X '.replace(/\s*/g, '')
   // Best Score =    0   13  13  13  0   31  0      0   13  13  13  0   31  50     100
@@ -114,6 +114,29 @@ test('can user win gooley', (t) => {
   t.end()
 })
 
+test('can user win all gooley', (t) => {
+  const entries = require('./fixtures/entries-ncaam-2016')
+  const master = 'S1951311372153212XW18124113102143212XE195461472156716XMW191241131015141110110XFFXXX'
+  const p = new Possibilities({ sport, year })
+
+  const allWinners = p.allWinners({
+    findEntry: ({ user }) => user.username.toLowerCase() === 'jvhurley',
+    master,
+    entries
+  })
+
+  const winners = p.winners({
+    findEntry: ({ user }) => user.username.toLowerCase() === 'jvhurley',
+    master,
+    entries
+  })
+
+  t.equal(allWinners.length, 14)
+  t.equal(winners.length, 2)
+
+  t.end()
+})
+
 test('can user get top 5', (t) => {
   const entries = require('./fixtures/entries-ncaam-2016')
   const master = 'S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX'
@@ -126,7 +149,7 @@ test('can user get top 5', (t) => {
     rank: 5
   })
 
-  t.equal(finishes.length, 84)
+  t.equal(finishes.length, 116)
 
   t.end()
 })
