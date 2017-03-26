@@ -8,6 +8,7 @@ const sport = 'ncaam'
 const year = '2016'
 
 const testCI = CI ? test : test.skip
+const log = CI ? console.log.bind(console) : () => {}
 
 test('compare', (t) => {
   const entry = 'S195411372141121111W19541131021532522E195463721437131MW19546141021562522FFSMWS'
@@ -63,19 +64,20 @@ testCI('can any user win', (t) => {
   const p = new Possibilities({ sport, year })
 
   const outcomes = usernames.map((username) => {
+    const timing = Date.now()
     const canWin = p.canWin({
       findEntry: ({ user }) => user.username === username,
       master,
       entries
     })
-
+    log(Date.now() - timing, JSON.stringify(canWin))
     return { username, canWin }
   })
 
   const [winners, eliminated] = _.partition(outcomes, ({ canWin }) => !!canWin)
 
-  t.equal(winners.length, 19)
-  t.equal(eliminated.length, 16)
+  t.equal(winners.length, 23)
+  t.equal(eliminated.length, 12)
   t.equal(outcomes.length, entries.length)
 
   t.end()
@@ -92,7 +94,7 @@ testCI('can user win', (t) => {
     entries
   })
 
-  t.equal(winners.length, 878)
+  t.equal(winners.length, 916)
 
   t.end()
 })
