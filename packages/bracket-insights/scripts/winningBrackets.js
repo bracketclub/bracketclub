@@ -8,7 +8,8 @@ module.exports = (o) => _.chain(o.entries)
     const winners = o.possibilities.winners({
       entries: o.entries,
       master: pickMaster(o),
-      findEntry: _.pick(entry, 'id')
+      findEntry: _.pick(entry, 'id'),
+      type: o.all ? 'all' : null
     })
 
     return {

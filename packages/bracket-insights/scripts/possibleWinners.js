@@ -6,13 +6,18 @@ module.exports = (o) => {
   const validator = o.validator
 
   return _.chain(current)
-  .map((master) => {
-    const winner = _.orderBy(o.scorer.score(o.scoring, {entry: o.entries, master}), 'score', 'desc')[0]
-    return {
-      username: winner.user.username,
-      validated: validator.validate(master)
-    }
-  })
+  .reduce((acc, master) => {
+    const scored = _.orderBy(o.scorer.score(o.scoring, {entry: o.entries, master}), 'score', 'desc')
+    const winningScore = scored[0].score
+    const winners = _.filter(scored, { score: winningScore }).map((winner) => {
+      return {
+        username: winner.user.username,
+        validated: validator.validate(master)
+      }
+    })
+    acc.push(...winners)
+    return acc
+  }, [])
   .groupBy('username')
   .map((value, username) => {
     return {

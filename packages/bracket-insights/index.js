@@ -10,13 +10,14 @@ const argv = require('yargs')
   .string('user')
   .number('master')
   .string('script')
+  .boolean('all')
   .argv
 
 const scriptName = argv.script
 const script = require(`./scripts/${scriptName}`)
 const after = script.after
 
-const argvActionData = _.pick(argv, 'user', 'master', 'dataDir', 'scoring')
+const argvActionData = _.pick(argv, 'user', 'master', 'dataDir', 'scoring', 'all')
 const action = (o) => _.flowRight(script, getData)(_.assign(argvActionData, o))
 
 const log = (str) => {
