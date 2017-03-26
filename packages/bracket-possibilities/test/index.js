@@ -94,7 +94,7 @@ testCI('can user win', (t) => {
     entries
   })
 
-  t.equal(winners.length, 916)
+  t.equal(winners.length, 914)
 
   t.end()
 })
