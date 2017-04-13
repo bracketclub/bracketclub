@@ -8,30 +8,25 @@ const argv = require('yargs')
   .array('events')
   .argv
 
+const has = (val) => Array.isArray(val) && val.length
+
+const combine = (sports, years) => sports.reduce((acc, sport) => {
+  acc.push(...years.map((year) => ({sport, year})))
+  return acc
+}, [])
+
 module.exports = () => {
-  if (Array.isArray(argv.events) && argv.events.length) {
-    return argv.events.map((event) => ({
+  const {events, sports, years, sport, year} = argv
+
+  if (has(events)) {
+    return events.map((event) => ({
       sport: event.split('-')[0],
       year: event.split('-')[1]
     }))
   }
 
-  if (Array.isArray(argv.sports) && argv.sports.length) {
-    return argv.sports.map((sport) => ({
-      sport,
-      year: argv.year
-    }))
-  }
-
-  if (Array.isArray(argv.years) && argv.years.length) {
-    return argv.years.map((year) => ({
-      year,
-      sport: argv.sport
-    }))
-  }
-
-  return [{
-    sport: argv.sport,
-    year: argv.year
-  }]
+  if (has(sports) && has(years)) return combine(sports, years)
+  if (has(sports)) return combine(sports, [year])
+  if (has(years)) return combine([sport], years)
+  return combine([sport], [year])
 }

@@ -2,23 +2,15 @@ const _ = require('lodash')
 const opts = require('./lib/opts')()
 const getData = require('./lib/data')
 
+// Anything can be passed in through yargs and makes it way to the script
+// so define any defaults that need to always be assigned here
 const argv = require('yargs')
-  .string('dataDir')
   .default('dataDir', '.data')
-  .string('scoring')
   .default('scoring', 'standard')
-  .string('user')
-  .number('master')
-  .string('script')
-  .boolean('all')
   .argv
 
-const scriptName = argv.script
-const script = require(`./scripts/${scriptName}`)
+const script = require(`./scripts/${argv.script}`)
 const after = script.after
-
-const argvActionData = _.pick(argv, 'user', 'master', 'dataDir', 'scoring', 'all')
-const action = (o) => _.flowRight(script, getData)(_.assign(argvActionData, o))
 
 const log = (str) => {
   if (str) console.log(str)
@@ -33,12 +25,23 @@ const replacer = (key, value) => {
   return value
 }
 
-const stringify = (data) => JSON.stringify(data, replacer, 2)
-  .replace(/"\[/g, '')
-  .replace(/\]",?/g, '')
+const stringify = (data) => {
+  if (data instanceof Error) {
+    return `Error: ${data.message}`
+  }
+
+  return JSON.stringify(data, replacer, 2)
+    .replace(/"\[/g, '')
+    .replace(/\]",?/g, '')
+}
 
 opts
-  .map((o) => _.assign({data: action(o)}, o))
+  .map((o) => {
+    const data = getData(_.assign({}, argv, o))
+    if (data === null) return null
+    return _.assign({data: script(data)}, o)
+  })
+  .filter(Boolean)
   .forEach((o, index, arr) => {
     if (index === 0) log()
 
