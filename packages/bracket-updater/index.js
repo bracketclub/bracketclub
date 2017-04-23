@@ -114,14 +114,16 @@ Updater.prototype.hasLoser = function () {
 
 Updater.prototype.isFinal = function () {
   var finalName = this.bracketData.constants.FINAL_NAME.toLowerCase()
+  var finalFullname = this.bracketData.constants.FINAL_FULLNAME.toLowerCase()
   var finalId = this.bracketData.constants.FINAL_ID.toLowerCase()
   var region = this.fromRegion.toLowerCase()
 
-  return region === finalName || region === finalId
+  return region === finalName || region === finalFullname || region === finalId
 }
 
 Updater.prototype.isChampionship = function () {
-  return (/((National )?Championship( Game)?|NCG)/i).test(this.fromRegion)
+  var championshipName = this.bracketData.constants.FINAL_CHAMPIONSHIP_NAME
+  return championshipName ? this.fromRegion.toLowerCase() === championshipName.toLowerCase() : false
 }
 
 Updater.prototype.teamMatches = function (team1, team2) {
@@ -236,8 +238,13 @@ Updater.prototype.update = function (options) {
     this.fromRegion = this.bracketData.constants.FINAL_ID
   }
 
+  // Looks up by id and then tries to find a match by name or fullname
   var region = validated[this.fromRegion] || _find(validated, function (item) {
-    return item.name.toLowerCase() === self.fromRegion.toLowerCase()
+    var fromRegion = self.fromRegion.toLowerCase()
+    var name = item.name && item.name.toLowerCase()
+    var fullname = item.fullname && item.fullname.toLowerCase()
+    var id = item.id && item.id.toLowerCase()
+    return name === fromRegion || fullname === fromRegion || id === fromRegion
   })
 
   if (!region) return new Error('No region')

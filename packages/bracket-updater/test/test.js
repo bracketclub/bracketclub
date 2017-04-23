@@ -239,7 +239,7 @@ describe('Bracket Updater', function () {
       sport: sport
     }).update({
       currentMaster: sFF,
-      fromRegion: 'Championship',
+      fromRegion: 'National Championship',
       winner: {name: 'Kansas'},
       loser: {name: 'Louisville'}
     })
@@ -474,9 +474,24 @@ describe('NBA', () => {
     }))
 
     assert.equal('W1423121E1423121FW', u.update({
-      fromRegion: 'FINALS',
+      fromRegion: 'NBA FINALS',
       winner: { name: 'Golden State', seed: 1 },
       loser: { name: 'Cleveland', seed: 1 }
+    }))
+  })
+
+  it('should be updated with fullname region', function () {
+    var beforeBracket = 'W142312XE142312XFX'
+    var u = new BracketUpdater({
+      currentMaster: beforeBracket,
+      year: '2016',
+      sport: 'nba'
+    })
+
+    assert.equal('W1423121E142312XFX', u.update({
+      fromRegion: 'western conference',
+      winner: 1,
+      loser: 2
     }))
   })
 
@@ -503,7 +518,7 @@ describe('NBA', () => {
     }))
 
     assert.equal('W17472737172714E17472737172715FW7', u.update({
-      fromRegion: 'FINALS',
+      fromRegion: 'NBA FINALS',
       winner: { name: 'Golden State', seed: 1 },
       loser: { name: 'Cleveland', seed: 1 },
       playedCompetitions: 7
