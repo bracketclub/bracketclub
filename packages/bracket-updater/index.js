@@ -129,9 +129,13 @@ Updater.prototype.isChampionship = function () {
 Updater.prototype.teamMatches = function (team1, team2) {
   if (this.isFinal()) {
     return teamNameMatches(team1, team2)
-  } else {
+  }
+
+  if (team1.seed && team2.seed) {
     return seedMatches(team1, team2)
   }
+
+  return teamNameMatches(team1, team2)
 }
 
 Updater.prototype.gameMatches = function (winner, loser) {
