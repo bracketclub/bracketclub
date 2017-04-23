@@ -495,6 +495,22 @@ describe('NBA', () => {
     }))
   })
 
+  it('Should be updated without a seed', function () {
+    var beforeBracket = 'WXXXXXXXEXXXXXXXFX'
+    var u = new BracketUpdater({
+      currentMaster: beforeBracket,
+      year: '2017',
+      sport: 'nba'
+    })
+
+    assert.equal('WXXXXXXXEXX24XXXXFX', u.update({
+      fromRegion: 'eastern conference',
+      playedCompetitions: 4,
+      winner: {name: 'Cleveland'},
+      loser: {name: 'Indiana'}
+    }))
+  })
+
   it('should update played competitions', () => {
     var beforeBracket = 'W174727371727XE174727371727XFX'
     var u = new BracketUpdater({

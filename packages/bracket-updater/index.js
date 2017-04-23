@@ -4,6 +4,7 @@ var _extend = require('lodash/assign')
 var _defaults = require('lodash/defaults')
 var _pick = require('lodash/pick')
 var _find = require('lodash/find')
+var _findIndex = require('lodash/findIndex')
 var _each = require('lodash/forEach')
 var _map = require('lodash/map')
 var _isNumber = require('lodash/isNumber')
@@ -142,15 +143,15 @@ Updater.prototype.gameMatches = function (winner, loser) {
   return this.teamMatches(winner, this.winner) && this.teamMatches(loser, this.loser)
 }
 
-Updater.prototype.getSeed = function (winner) {
+Updater.prototype.getWinnerInfo = function (winner) {
   if (this.isFinal()) {
     var finalTeams = this.validated[this.bracketData.constants.FINAL_ID].rounds[0]
-    var finalTeam = _find(finalTeams, function (team) {
-      return teamNameMatches(team, winner)
-    })
+    var finalTeam = _find(finalTeams, function (team) { return teamNameMatches(team, winner) })
     return {fromRegion: finalTeam.fromRegion}
-  } else {
+  } else if (winner.seed) {
     return {seed: winner.seed}
+  } else {
+    return {name: winner.name, names: winner.names}
   }
 }
 
@@ -169,6 +170,9 @@ Updater.prototype.flatten = function (bracket) {
           roundValue = roundGame
         } else if (bracketRegion.id === self.bracketData.constants.FINAL_ID) {
           roundValue = roundGame.fromRegion
+        } else if (roundGame.name || roundGame.names) {
+          var indexByName = _findIndex(bracketRegion.teams, function (t) { return teamNameMatches({name: t}, roundGame) })
+          roundValue = indexByName > -1 ? indexByName + 1 : null
         } else {
           roundValue = roundGame.seed
         }
@@ -289,7 +293,7 @@ Updater.prototype.update = function (options) {
   if (regionRoundIndex !== null && nextRoundGameIndex !== null) {
     var hasRound = !!region.rounds[regionRoundIndex]
     if (hasRound) {
-      region.rounds[regionRoundIndex][nextRoundGameIndex] = _extend(this.getSeed(this.winner), _pick(options, 'playedCompetitions'))
+      region.rounds[regionRoundIndex][nextRoundGameIndex] = _extend(this.getWinnerInfo(this.winner), _pick(options, 'playedCompetitions'))
       for (i = regionRoundIndex, m = region.rounds.length; i < m; i++) {
         round = region.rounds[i]
         for (ii = 0, mm = round.length; ii < mm; ii++) {
