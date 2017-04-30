@@ -7,6 +7,7 @@ Update a tournament bracket after the completion of a game.
 [![Build Status](https://travis-ci.org/bracketclub/bracket-updater.png?branch=master)](https://travis-ci.org/bracketclub/bracket-updater)
 [![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-updater.svg)](https://greenkeeper.io/)
 
+
 ## API / Usage
 
 Make a new `bracket-updater` object with an options object (the year and sport options are required and passed directly to [`bracket-data`](https://github.com/bracketclub/bracket-data#which-sports-does-it-have)):
