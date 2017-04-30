@@ -1,12 +1,11 @@
 bracket-insights
 ==========================
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-insights.svg)](https://greenkeeper.io/)
-
 Write scripts to get insights about bracket entries or masters.
 
 [![Build Status](https://travis-ci.org/bracketclub/bracket-insights.png?branch=master)](https://travis-ci.org/bracketclub/bracket-insights)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
+[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-insights.svg)](https://greenkeeper.io/)
 
 ## Usage
 
