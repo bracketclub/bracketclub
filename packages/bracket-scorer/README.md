@@ -1,6 +1,8 @@
 bracket-scorer
 ==============
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-scorer.svg)](https://greenkeeper.io/)
+
 Find the score of a tournament bracket.
 
 [![NPM](https://nodei.co/npm/bracket-scorer.png)](https://nodei.co/npm/bracket-scorer/)
