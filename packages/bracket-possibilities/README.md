@@ -1,6 +1,8 @@
 bracket-possibilities
 ==================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-possibilities.svg)](https://greenkeeper.io/)
+
 Get the best possible outcomes for a bracket based on a partially complete master bracket.
 
 [![NPM](https://nodei.co/npm/bracket-possibilities.png)](https://nodei.co/npm/bracket-possibilities/)
