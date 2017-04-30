@@ -1,13 +1,11 @@
 bracket-generator
 =================
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-generator.svg)](https://greenkeeper.io/)
-
 Generate a tournament bracket.
 
 [![NPM](https://nodei.co/npm/bracket-generator.png)](https://nodei.co/npm/bracket-generator/)
-
 [![Build Status](https://travis-ci.org/bracketclub/bracket-generator.png?branch=master)](https://travis-ci.org/bracketclub/bracket-generator)
+[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-generator.svg)](https://greenkeeper.io/)
 
 
 ## What is this?
