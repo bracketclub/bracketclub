@@ -1,6 +1,8 @@
 bracket-validator
 ==============
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-validator.svg)](https://greenkeeper.io/)
+
 Validate a tournament bracket.
 
 [![NPM](https://nodei.co/npm/bracket-validator.png)](https://nodei.co/npm/bracket-validator/)
