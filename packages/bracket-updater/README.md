@@ -1,6 +1,8 @@
 bracket-updater
 ===============
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-updater.svg)](https://greenkeeper.io/)
+
 Update a tournament bracket after the completion of a game.
 
 [![NPM](https://nodei.co/npm/bracket-updater.png)](https://nodei.co/npm/bracket-updater/)
