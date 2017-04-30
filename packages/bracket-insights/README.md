@@ -1,6 +1,8 @@
 bracket-insights
 ==========================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-insights.svg)](https://greenkeeper.io/)
+
 Write scripts to get insights about bracket entries or masters.
 
 [![Build Status](https://travis-ci.org/bracketclub/bracket-insights.png?branch=master)](https://travis-ci.org/bracketclub/bracket-insights)
