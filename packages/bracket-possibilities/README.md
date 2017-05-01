@@ -1,13 +1,13 @@
 bracket-possibilities
 ==================
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-possibilities.svg)](https://greenkeeper.io/)
-
 Get the best possible outcomes for a bracket based on a partially complete master bracket.
 
 [![NPM](https://nodei.co/npm/bracket-possibilities.png)](https://nodei.co/npm/bracket-possibilities/)
 [![Build Status](https://travis-ci.org/bracketclub/bracket-possibilities.png?branch=master)](https://travis-ci.org/bracketclub/bracket-possibilities)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
+[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-possibilities.svg)](https://greenkeeper.io/)
+
 
 ## Install
 
