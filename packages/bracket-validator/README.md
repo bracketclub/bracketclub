@@ -1,13 +1,11 @@
 bracket-validator
 ==============
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-validator.svg)](https://greenkeeper.io/)
-
 Validate a tournament bracket.
 
 [![NPM](https://nodei.co/npm/bracket-validator.png)](https://nodei.co/npm/bracket-validator/)
-
 [![Build Status](https://travis-ci.org/bracketclub/bracket-validator.png?branch=master)](https://travis-ci.org/bracketclub/bracket-validator)
+[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-validator.svg)](https://greenkeeper.io/)
 
 *To see the data this repo is built on, check out [bracket-data](https://github.com/bracketclub/bracket-data).*
 
