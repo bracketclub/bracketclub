@@ -22,7 +22,7 @@
     "babel-preset-stage-0": "^6.16.0",
     "babel-tape-runner": "^2.0.1",
     "git-validate": "^2.2.2",
-    "standard": "^9.0.0",
+    "standard": "^10.0.2",
     "tape": "^4.6.3"
   },
   "files": [
