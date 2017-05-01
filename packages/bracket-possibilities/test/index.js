@@ -46,12 +46,12 @@ test('compare NBA', (t) => {
   const scores = possibilities.map((p) => new Scorer({ sport, year }).standard({ entry, master: p }))
 
   t.equal(best, 'W87472737X27XE87472737X2727FE7')
-  t.equal(bestScore, 290)
+  t.equal(bestScore, 302)
   t.equal(possibilities.length, 8)
   t.equal(typeof possibilities[0], 'string')
   t.equal(_.uniq(possibilities).length, 8)
   t.equal(scores.length, 8)
-  t.equal(scores[0], 290)
+  t.equal(scores[0], 302)
   t.equal(_.uniq(scores).length, 1)
 
   t.end()
