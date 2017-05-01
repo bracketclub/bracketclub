@@ -27,7 +27,7 @@ describe('NBA', function () {
     assert.equal(true, _.isArray(s.bonus))
     assert.equal(s.bonus.length, 4)
     assert.ok(_.every(s.bonus, function (s) { return s === 0 }))
-    assert.equal(s.standardPPR, 380)
+    assert.equal(s.standardPPR, 396)
   })
 
   it('Should score against an empty master without series scoring', function () {
@@ -67,7 +67,7 @@ describe('NBA', function () {
 
     var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
-    assert.equal(s.standard, 387)
+    assert.equal(s.standard, 406)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.deepEqual(s.rounds, [8, 4, 1, 1])
@@ -91,7 +91,7 @@ describe('NBA', function () {
 
     var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
-    assert.equal(s.standard, 287)
+    assert.equal(s.standard, 306)
     assert.deepEqual(s.rounds, [8, 4, 1, 0])
     assert.deepEqual(s.bonus, [8, 4, 1, 0])
     assert.equal(s.standardPPR, 100)
@@ -111,7 +111,7 @@ describe('NBA', function () {
 
     var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
-    assert.equal(s.standard, 78)
+    assert.equal(s.standard, 90)
     assert.deepEqual(s.rounds, [6, 0, 0, 0])
     assert.deepEqual(s.bonus, [6, 0, 0, 0])
     assert.equal(s.standardPPR, 212)
@@ -207,7 +207,7 @@ describe('NHL', function () {
     assert.equal(true, _.isArray(s.bonus))
     assert.equal(s.bonus.length, 4)
     assert.ok(_.every(s.bonus, function (s) { return s === 0 }))
-    assert.equal(s.standardPPR, 380)
+    assert.equal(s.standardPPR, 396)
   })
 
   it('Should score against an empty master without series scoring', function () {
@@ -247,7 +247,7 @@ describe('NHL', function () {
 
     var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
-    assert.equal(s.standard, 380)
+    assert.equal(s.standard, 396)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.deepEqual(s.rounds, [8, 4, 2, 1])
@@ -269,7 +269,7 @@ describe('NHL', function () {
 
     var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
-    assert.equal(s.standard, 380)
+    assert.equal(s.standard, 396)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.deepEqual(s.rounds, [8, 4, 2, 1])
@@ -291,7 +291,7 @@ describe('NHL', function () {
 
     var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
-    assert.equal(s.standard, 458)
+    assert.equal(s.standard, 492)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.deepEqual(s.rounds, [8, 4, 2, 1])
@@ -313,7 +313,7 @@ describe('NHL', function () {
 
     var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
-    assert.equal(s.standard, 428)
+    assert.equal(s.standard, 447)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.deepEqual(s.rounds, [8, 4, 2, 1])
@@ -335,14 +335,14 @@ describe('NHL', function () {
 
     var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
-    assert.equal(s.standard, 104)
+    assert.equal(s.standard, 120)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.deepEqual(s.rounds, [8, 0, 0, 0])
     assert.equal(true, _.isArray(s.bonus))
     assert.equal(s.bonus.length, 4)
     assert.deepEqual(s.bonus, [8, 0, 0, 0])
-    assert.equal(s.standardPPR, 354)
+    assert.equal(s.standardPPR, 372)
   })
 
   it('Should count series for PPR with eliminated teams', function () {
@@ -358,14 +358,14 @@ describe('NHL', function () {
 
     var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
-    assert.equal(s.standard, 91)
+    assert.equal(s.standard, 105)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.deepEqual(s.rounds, [7, 0, 0, 0])
     assert.equal(true, _.isArray(s.bonus))
     assert.equal(s.bonus.length, 4)
     assert.deepEqual(s.bonus, [7, 0, 0, 0])
-    assert.equal(s.standardPPR, 152)
+    assert.equal(s.standardPPR, 155)
   })
 
   it('Should count series for PPR with eliminated teams into final four', function () {
@@ -381,7 +381,7 @@ describe('NHL', function () {
 
     var s = scorer.score(['standard', 'standardPPR', 'rounds', 'bonus'])
 
-    assert.equal(s.standard, 91)
+    assert.equal(s.standard, 105)
     assert.equal(true, _.isArray(s.rounds))
     assert.equal(s.rounds.length, 4)
     assert.deepEqual(s.rounds, [7, 0, 0, 0])
