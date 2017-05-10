@@ -11,13 +11,13 @@
     "url": "https://github.com/bracketclub/bracket-validator/issues"
   },
   "dependencies": {
-    "bracket-data": "^4.4.0",
-    "lodash": "^4.17.2"
+    "bracket-data": "^4.5.18",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "bracket-generator": "^3.1.0",
     "git-validate": "^2.2.2",
-    "mocha": "^3.1.2",
+    "mocha": "^3.3.0",
     "standard": "^10.0.2"
   },
   "homepage": "https://github.com/bracketclub/bracket-validator",
