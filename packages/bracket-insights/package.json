@@ -11,7 +11,7 @@
     "url": "https://github.com/bracketclub/bracket-insights/issues"
   },
   "dependencies": {
-    "bracket-data": "^4.5.18",
+    "bracket-data": "^4.5.29",
     "bracket-generator": "^3.1.0",
     "bracket-possibilities": "^1.4.0",
     "bracket-scorer": "^3.4.1",

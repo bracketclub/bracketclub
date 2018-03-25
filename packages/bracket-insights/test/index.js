@@ -57,11 +57,27 @@ test('user filter work', (t) => {
 test('master filter work', (t) => {
   exexScript('possible-winners', {master: 63})(t, (err, {lines}) => {
     t.notOk(err)
-    t.equal(lines.length, 6)
+    t.equal(lines.length, 8)
   })
   exexScript('possible-winners', {master: -1})(t, (err, {lines}) => {
     t.notOk(err)
-    t.equal(lines.length, 10)
+    t.equal(lines.length, 14)
+  })
+  t.end()
+})
+
+test('possible-winners down to elite 8', (t) => {
+  exexScript('possible-winners', {master: -7})(t, (err, {output}) => {
+    const data = JSON.parse(output)
+    const results = data.reduce((memo, i) => memo + i.results.length, 0)
+    t.notOk(err)
+    t.equal(128, results)
+  })
+  exexScript('possible-winners', {master: -6})(t, (err, {output}) => {
+    const data = JSON.parse(output)
+    const results = data.reduce((memo, i) => memo + i.results.length, 0)
+    t.notOk(err)
+    t.equal(64, results)
   })
   t.end()
 })
