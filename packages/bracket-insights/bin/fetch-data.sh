@@ -6,7 +6,7 @@ API="https://bc-api.now.sh/"
 ENTRIES="entries"
 MASTERS="masters"
 SPORTS=("ncaam" "ncaaw" "nba" "nhl")
-YEARS=("2012" "2013" "2014" "2015" "2016" "2017", "2018")
+YEARS=("2012" "2013" "2014" "2015" "2016" "2017" "2018")
 DATA_DIR=".data"
 
 mkdir -p $DATA_DIR
