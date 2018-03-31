@@ -325,13 +325,7 @@ Updater.prototype.update = function (options) {
     })
   }
 
-  var newMaster = this.flatten(validated)
-
-  if (newMaster === this.currentMaster) {
-    return new Error('Update could not be applied')
-  }
-
-  this.currentMaster = newMaster
+  this.currentMaster = this.flatten(validated)
   return this.currentMaster
 }
 
