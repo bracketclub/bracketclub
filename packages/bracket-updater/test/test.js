@@ -450,6 +450,30 @@ describe('Bracket Updater', function () {
 
     assert.equal(bracket, c.EMPTY.replace('MWXXXXX', 'MW18546'))
   })
+
+  it.only('should fail when a loser doesnt match', () => {
+    var updater = new BracketUpdater({
+      year: '2018',
+      sport: 'ncaaw'
+    })
+
+    var result = updater.update({
+      currentMaster: 'A195411310215112121S195411310214112121K1954113721432131L1812463721462161FFXKX',
+      playedCompetitions: 1,
+      fromRegion: 'final four',
+      winner: {
+        seed: 1,
+        name: 'Notre Dame'
+      },
+      loser: {
+        seed: 1,
+        name: 'Connecticut'
+      }
+    })
+
+    assert.equal(result.message, 'Update could not be applied')
+    assert.equal(result instanceof Error, true)
+  })
 })
 
 describe('NBA', () => {
