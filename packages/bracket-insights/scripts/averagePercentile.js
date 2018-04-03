@@ -32,7 +32,8 @@ module.exports.after = (arr) => {
       .reject((entries) => entries.length < 2)
       .map((entries) => [
         entries[0][0],
-        _.chain(entries).map('2').mean().round(2).value()
+        _.chain(entries).map('2').mean().round(2).value(),
+        entries.length
       ])
       .orderBy('1', 'desc')
       .value()
