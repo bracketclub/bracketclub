@@ -468,3 +468,45 @@ describe('NHL', function () {
     ])
   })
 })
+
+describe.only('World Cup', function () {
+  it('works', function () {
+    var validator = new BracketValidator({flatBracket: 'L1423121R1423121FL', year: '2018', sport: 'wcm'}).validate()
+
+    assert.equal(false, validator instanceof Error)
+
+    assert.deepEqual(validator.L.winsIn, [
+      [],
+      [null, null, null, null],
+      [null, null],
+      [null]
+    ])
+
+    assert.deepEqual(validator.R.winsIn, [
+      [],
+      [null, null, null, null],
+      [null, null],
+      [null]
+    ])
+  })
+
+  it('works with winsIn', function () {
+    var validator = new BracketValidator({flatBracket: 'L11422331112213R11422331112211FL1', year: '2018', sport: 'wcm'}).validate()
+
+    assert.equal(false, validator instanceof Error)
+
+    assert.deepEqual(validator.L.winsIn, [
+      [],
+      [1, 2, 3, 1],
+      [1, 2],
+      [3]
+    ])
+
+    assert.deepEqual(validator.R.winsIn, [
+      [],
+      [1, 2, 3, 1],
+      [1, 2],
+      [1]
+    ])
+  })
+})
