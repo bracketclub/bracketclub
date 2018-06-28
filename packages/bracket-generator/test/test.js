@@ -194,3 +194,43 @@ describe('NHL', function () {
     }
   })
 })
+
+describe('World Cup', function () {
+  it('wc brackets can be validated with bestof', function () {
+    for (var i = 0, m = 1000; i < m; i++) {
+      (function () {
+        var generator = new BracketGenerator({year: '2018', sport: 'wcm', winners: 'random'})
+        var bracket = generator.generate()
+        var testValidator = new BracketValidator({
+          year: '2018',
+          sport: 'wcm',
+          testOnly: true,
+          allowEmpty: false,
+          flatBracket: bracket
+        }).validate()
+        var bracketValidator = new BracketValidator({
+          year: '2018',
+          sport: 'wcm',
+          allowEmpty: false,
+          flatBracket: bracket
+        }).validate()
+
+        assert.equal(false, testValidator instanceof Error)
+        assert.equal(bracket, testValidator)
+
+        _.each(bracketValidator, function (b) {
+          _.each(b.rounds, function (r, i) {
+            if (i > 0) {
+              _.each(r, function (g) {
+                assert.ok(g.winsIn)
+                assert.equal(typeof g.winsIn, 'number')
+                assert.ok(g.winsIn >= 1)
+                assert.ok(g.winsIn <= 3)
+              })
+            }
+          })
+        })
+      })(i)
+    }
+  })
+})
