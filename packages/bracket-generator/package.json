@@ -17,8 +17,8 @@
   "devDependencies": {
     "bracket-validator": "^3.1.0",
     "git-validate": "^2.2.2",
-    "mocha": "^3.1.2",
-    "standard": "^9.0.0"
+    "mocha": "^4.0.0",
+    "standard": "^10.0.2"
   },
   "homepage": "https://github.com/bracketclub/bracket-generator",
   "keywords": [
