@@ -469,7 +469,7 @@ describe('NHL', function () {
   })
 })
 
-describe.only('World Cup', function () {
+describe('World Cup', function () {
   it('works', function () {
     var validator = new BracketValidator({flatBracket: 'L1423121R1423121FL', year: '2018', sport: 'wcm'}).validate()
 
