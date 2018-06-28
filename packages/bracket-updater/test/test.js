@@ -566,4 +566,34 @@ describe('NBA', () => {
 
     assert.equal(updater.update(update), afterBracket)
   })
+
+  it('except in the world cup', () => {
+    var year = '2018'
+    var sport = 'wcm'
+
+    var start = bracketData({year: year, sport: sport}).constants.EMPTY
+
+    var updater = new BracketUpdater({
+      year,
+      sport
+    })
+
+    var bracket = updater.update({
+      currentMaster: start,
+      playedCompetitions: 1,
+      fromRegion: 'L',
+      winner: 1,
+      loser: 8
+    })
+
+    bracket = updater.update({
+      currentMaster: bracket,
+      playedCompetitions: 3,
+      fromRegion: 'L',
+      winner: 4,
+      loser: 5
+    })
+
+    assert.equal(bracket, start.replace('LXX', 'L1143'))
+  })
 })

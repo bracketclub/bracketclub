@@ -176,7 +176,9 @@ Updater.prototype.flatten = function (bracket) {
         } else {
           roundValue = roundGame.seed
         }
-        return roundValue.toString() + (!pc || (pc === 1 || pc === '1') ? '' : pc.toString())
+        var bor = (self.bracketData.constants.BEST_OF_RANGE || []).map(function (i) { return Number(i) })
+        var emptyPc = !pc || bor.indexOf(Number(pc)) === -1
+        return roundValue.toString() + (emptyPc ? '' : pc.toString())
       }).join('')
     }).join('')
         .replace(new RegExp(self.bracketData.order.join(''), 'g'), '')
