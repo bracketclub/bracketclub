@@ -2,11 +2,11 @@
 
 set -x
 
-API="https://bc-api.now.sh/"
+API="https://bracketclub.herokuapp.com/"
 ENTRIES="entries"
 MASTERS="masters"
-SPORTS=("ncaam" "ncaaw" "nba" "nhl")
-YEARS=("2012" "2013" "2014" "2015" "2016" "2017" "2018" "2019")
+SPORTS=("ncaam" "ncaaw" "nba" "nhl" "wcm")
+YEARS=("2012" "2013" "2014" "2015" "2016" "2017" "2018" "2019" "2020" "2021")
 DATA_DIR=".data"
 
 mkdir -p $DATA_DIR

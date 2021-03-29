@@ -11,18 +11,20 @@
     "url": "https://github.com/bracketclub/bracket-insights/issues"
   },
   "dependencies": {
-    "bracket-data": "^4.5.41",
-    "bracket-generator": "^3.1.0",
+    "bracket-data": "^4.6.10",
+    "bracket-generator": "^3.1.1",
     "bracket-possibilities": "^1.4.0",
-    "bracket-scorer": "^3.4.1",
-    "bracket-updater": "^3.4.4",
-    "bracket-validator": "^3.1.0",
-    "lodash": "^4.17.4",
+    "bracket-scorer": "^3.4.2",
+    "bracket-updater": "^3.4.7",
+    "bracket-validator": "^3.1.1",
+    "lodash": "^4.17.21",
     "yargs": "^10.0.3"
   },
   "devDependencies": {
+    "eslint": "^7.23.0",
+    "eslint-config-prettier": "^8.1.0",
     "git-validate": "^2.2.2",
-    "standard": "^10.0.2",
+    "prettier": "^2.2.1",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3"
   },
@@ -37,7 +39,6 @@
   "main": "index.js",
   "pre-commit": [
     "lint",
-    "validate",
     "test"
   ],
   "private": true,
@@ -47,9 +48,8 @@
   },
   "scripts": {
     "fetch-data": "./bin/fetch-data.sh",
-    "lint": "standard",
+    "lint": "prettier -l . && eslint .",
     "start": "node index",
-    "test": "tape test/index.js",
-    "validate": "npm ls"
+    "test": "tape test/index.js"
   }
 }
