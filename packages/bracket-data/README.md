@@ -3,8 +3,6 @@
 Get some helpful data for a tournament bracket.
 
 [![NPM](https://nodei.co/npm/bracket-data.png)](https://nodei.co/npm/bracket-data/)
-[![Build Status](https://travis-ci.org/bracketclub/bracket-data.png?branch=master)](https://travis-ci.org/bracketclub/bracket-data)
-[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-data.svg)](https://greenkeeper.io/)
 
 ## What is a bracket?
 
@@ -28,15 +26,15 @@ In Node, you can require the module as normally would:
 // Node usage
 var ncaam2013 = require("bracket-data")({
   year: "2013",
-  sport: "ncaam"
-});
+  sport: "ncaam",
+})
 ```
 
 In a browser, the files are provided prebuilt so that you don't include the whole bundle.
 
 ```js
 // For usage in a browser without bundling data for any other sport/year
-var ncaam2013 = require("bracket-data/browser/ncaam-2013");
+var ncaam2013 = require("bracket-data/browser/ncaam-2013")
 ```
 
 If you don't care about including all the data for every sport/year, then you can still require it normally:
@@ -45,8 +43,8 @@ If you don't care about including all the data for every sport/year, then you ca
 // Browser usage, although this bundles data for every sport/year
 var ncaam2013 = require("bracket-data")({
   year: "2013",
-  sport: "ncaam"
-});
+  sport: "ncaam",
+})
 ```
 
 ## Other Scripts
@@ -139,7 +137,7 @@ MW18124637211232121W19121361410291362929S185411371514315434E1912463721432434FFMW
 - `order`: an array with the first round team order. This is useful for display purposes as it is ordered how the teams should be paired from top-to-bottom for each region to start the bracket:
 
 ```js
-[1, 16, 8, 9, 5, 12, 4, 13, 6, 11, 3, 14, 7, 10, 2, 15];
+;[1, 16, 8, 9, 5, 12, 4, 13, 6, 11, 3, 14, 7, 10, 2, 15]
 ```
 
 - `scoring`: any data from the json files about how to possibly score a bracket. There is no set format for the scoring data, and due to this fact, scoring data will vary quite a bit from sport to sport and year to year. You could even come up with your own scoring system, PR it, and then write your own module to score each bracket. It could be as simple as

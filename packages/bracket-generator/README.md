@@ -1,14 +1,11 @@
-bracket-generator
-=================
+# bracket-generator
 
 Generate a tournament bracket.
 
 [![NPM](https://nodei.co/npm/bracket-generator.png)](https://nodei.co/npm/bracket-generator/)
-[![Build Status](https://travis-ci.org/bracketclub/bracket-generator.png?branch=master)](https://travis-ci.org/bracketclub/bracket-generator)
-[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-generator.svg)](https://greenkeeper.io/)
-
 
 ## What is this?
+
 `bracket-generator`, well, it generates brackets! (Check out [`bracket-data`](https://github.com/bracketclub/bracket-data) for more info about brackets and their data.)
 
 More specifically, this module generates a [string representation of a bracket](https://gist.github.com/lukekarrys/2028007#explanation). That string can then be used with a whole bunch of others modules to [validate it](https://github.com/bracketclub/bracket-validator), [update it](https://github.com/bracketclub/bracket-updater), or [score it](https://github.com/bracketclub/bracket-scorer).
@@ -20,13 +17,13 @@ This module isn't that useful for selecting brackets (unless you wanted to stage
 Make a new `bracket-generator` object with an options object (the year and sport options are required and passed directly to [`bracket-data`](https://github.com/bracketclub/bracket-data#which-sports-does-it-have)):
 
 ```js
-var BracketGenerator = require('bracket-generator');
+var BracketGenerator = require("bracket-generator")
 var generator = new BracketGenerator({
-   year: '2013',
-   sport: 'ncaam',
-   winners: 'random'
-});
-console.log(generator.generate());
+  year: "2013",
+  sport: "ncaam",
+  winners: "random",
+})
+console.log(generator.generate())
 ```
 
 ### options

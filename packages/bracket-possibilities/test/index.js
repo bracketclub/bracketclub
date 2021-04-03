@@ -1,29 +1,36 @@
-import test from 'tape'
-import _ from 'lodash'
-import Scorer from 'bracket-scorer'
-import Possibilities from '../src/index'
+import test from "tape"
+import _ from "lodash"
+import Scorer from "bracket-scorer"
+import Possibilities from "../src/index"
 
 const CI = process.env.CI
-const sport = 'ncaam'
-const year = '2016'
+const sport = "ncaam"
+const year = "2016"
 
 const testCI = CI ? test : test.skip
 const log = CI ? console.log.bind(console) : () => {}
 
-test('compare', (t) => {
-  const entry = 'S195411372141121111W19541131021532522E195463721437131MW19546141021562522FFSMWS'
-  const master = 'S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX'
+test("compare", (t) => {
+  const entry =
+    "S195411372141121111W19541131021532522E195463721437131MW19546141021562522FFSMWS"
+  const master =
+    "S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX"
 
   const p = new Possibilities({ sport, year })
   const best = p.best({ entry, master })
   const bestScore = p.bestScore({ entry, master })
   const possibilities = p.possibilities({ entry, master })
-  const scores = possibilities.map((p) => new Scorer({ sport, year }).standard({ entry, master: p }))
+  const scores = possibilities.map((p) =>
+    new Scorer({ sport, year }).standard({ entry, master: p })
+  )
 
-  t.equal(best, 'S195131137215321X1W181241131021432X22E19546147215671X1MW191241131015141110XXXFFSXS')
+  t.equal(
+    best,
+    "S195131137215321X1W181241131021432X22E19546147215671X1MW191241131015141110XXXFFSXS"
+  )
   t.equal(bestScore, 1240)
   t.equal(possibilities.length, 128)
-  t.equal(typeof possibilities[0], 'string')
+  t.equal(typeof possibilities[0], "string")
   t.equal(_.uniq(possibilities).length, 128)
   t.equal(scores.length, 128)
   t.equal(scores[0], 1240)
@@ -32,23 +39,31 @@ test('compare', (t) => {
   t.end()
 })
 
-test('compare NBA', (t) => {
-  const entry = ' W  17  47  27  37  17  27  17  E  17  47  27  37  17  27  27  F  E7'.replace(/\s*/g, '')
-  const master = 'W  87  47  27  37  X   X   X   E  87  47  27  37  X   X   X   F  X '.replace(/\s*/g, '')
+test("compare NBA", (t) => {
+  const entry = " W  17  47  27  37  17  27  17  E  17  47  27  37  17  27  27  F  E7".replace(
+    /\s*/g,
+    ""
+  )
+  const master = "W  87  47  27  37  X   X   X   E  87  47  27  37  X   X   X   F  X ".replace(
+    /\s*/g,
+    ""
+  )
   // Best Score =    0   13  13  13  0   31  0      0   13  13  13  0   31  50     100
-  const sport = 'nba'
-  const year = '2016'
+  const sport = "nba"
+  const year = "2016"
 
   const p = new Possibilities({ sport, year })
   const best = p.best({ entry, master })
   const bestScore = p.bestScore({ entry, master })
   const possibilities = p.possibilities({ entry, master })
-  const scores = possibilities.map((p) => new Scorer({ sport, year }).standard({ entry, master: p }))
+  const scores = possibilities.map((p) =>
+    new Scorer({ sport, year }).standard({ entry, master: p })
+  )
 
-  t.equal(best, 'W87472737X27XE87472737X2727FE7')
+  t.equal(best, "W87472737X27XE87472737X2727FE7")
   t.equal(bestScore, 302)
   t.equal(possibilities.length, 8)
-  t.equal(typeof possibilities[0], 'string')
+  t.equal(typeof possibilities[0], "string")
   t.equal(_.uniq(possibilities).length, 8)
   t.equal(scores.length, 8)
   t.equal(scores[0], 302)
@@ -57,10 +72,11 @@ test('compare NBA', (t) => {
   t.end()
 })
 
-testCI('can any user win', (t) => {
-  const entries = require('./fixtures/entries-ncaam-2016')
+testCI("can any user win", (t) => {
+  const entries = require("./fixtures/entries-ncaam-2016")
   const usernames = _.map(entries, ({ user }) => user.username)
-  const master = 'S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX'
+  const master =
+    "S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX"
   const p = new Possibilities({ sport, year })
 
   const outcomes = usernames.map((username) => {
@@ -68,7 +84,7 @@ testCI('can any user win', (t) => {
     const canWin = p.canWin({
       findEntry: ({ user }) => user.username === username,
       master,
-      entries
+      entries,
     })
     log(Date.now() - timing, JSON.stringify(canWin))
     return { username, canWin }
@@ -83,15 +99,16 @@ testCI('can any user win', (t) => {
   t.end()
 })
 
-testCI('can user win', (t) => {
-  const entries = require('./fixtures/entries-ncaam-2016')
-  const master = 'S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX'
+testCI("can user win", (t) => {
+  const entries = require("./fixtures/entries-ncaam-2016")
+  const master =
+    "S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX"
   const p = new Possibilities({ sport, year })
 
   const winners = p.winners({
-    findEntry: ({ user }) => user.username.toLowerCase() === 'oneatatime',
+    findEntry: ({ user }) => user.username.toLowerCase() === "oneatatime",
     master,
-    entries
+    entries,
   })
 
   t.equal(winners.length, 914)
@@ -99,16 +116,17 @@ testCI('can user win', (t) => {
   t.end()
 })
 
-test('can user win gooley', (t) => {
-  const entries = require('./fixtures/entries-ncaam-2016')
-  const master = 'S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX'
+test("can user win gooley", (t) => {
+  const entries = require("./fixtures/entries-ncaam-2016")
+  const master =
+    "S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX"
   const p = new Possibilities({ sport, year })
 
   const winners = p.winners({
-    findEntry: ({ user }) => user.username.toLowerCase() === 'tessatweettrain',
+    findEntry: ({ user }) => user.username.toLowerCase() === "tessatweettrain",
     master,
     entries,
-    scoreType: 'gooley'
+    scoreType: "gooley",
   })
 
   t.equal(winners.length, 2)
@@ -116,21 +134,22 @@ test('can user win gooley', (t) => {
   t.end()
 })
 
-test('can user win all gooley', (t) => {
-  const entries = require('./fixtures/entries-ncaam-2016')
-  const master = 'S1951311372153212XW18124113102143212XE195461472156716XMW191241131015141110110XFFXXX'
+test("can user win all gooley", (t) => {
+  const entries = require("./fixtures/entries-ncaam-2016")
+  const master =
+    "S1951311372153212XW18124113102143212XE195461472156716XMW191241131015141110110XFFXXX"
   const p = new Possibilities({ sport, year })
 
   const allWinners = p.allWinners({
-    findEntry: ({ user }) => user.username.toLowerCase() === 'jvhurley',
+    findEntry: ({ user }) => user.username.toLowerCase() === "jvhurley",
     master,
-    entries
+    entries,
   })
 
   const winners = p.winners({
-    findEntry: ({ user }) => user.username.toLowerCase() === 'jvhurley',
+    findEntry: ({ user }) => user.username.toLowerCase() === "jvhurley",
     master,
-    entries
+    entries,
   })
 
   t.equal(allWinners.length, 14)
@@ -139,16 +158,17 @@ test('can user win all gooley', (t) => {
   t.end()
 })
 
-test('can user get top 5', (t) => {
-  const entries = require('./fixtures/entries-ncaam-2016')
-  const master = 'S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX'
+test("can user get top 5", (t) => {
+  const entries = require("./fixtures/entries-ncaam-2016")
+  const master =
+    "S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX"
   const p = new Possibilities({ sport, year })
 
   const finishes = p.finishes({
-    findEntry: ({ user }) => user.username.toLowerCase() === 'lukekarryz',
+    findEntry: ({ user }) => user.username.toLowerCase() === "lukekarryz",
     master,
     entries,
-    rank: 5
+    rank: 5,
   })
 
   t.equal(finishes.length, 116)
@@ -156,8 +176,9 @@ test('can user get top 5', (t) => {
   t.end()
 })
 
-test('possibilities can take a string', (t) => {
-  const master = 'S19513113721532122W181241131021432122E195461472156716XMW191241131015141110110XFFXXX'
+test("possibilities can take a string", (t) => {
+  const master =
+    "S19513113721532122W181241131021432122E195461472156716XMW191241131015141110110XFFXXX"
   const p = new Possibilities({ sport, year })
 
   const possibilities = p.possibilities(master)

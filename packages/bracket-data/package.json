@@ -18,15 +18,11 @@
     "alce": "^1.2.0",
     "browserify": "^14.0.0",
     "cheerio": "^1.0.0-rc.2",
-    "eslint": "^7.22.0",
-    "eslint-config-prettier": "^8.1.0",
-    "git-validate": "^2.1.4",
     "js-size": "^2.0.0",
     "lodash": "^4.14.2",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "mocha": "^4.0.0",
-    "prettier": "^2.2.1",
     "request": "^2.74.0",
     "scores": "^3.3.0",
     "walkdir": "0.0.12"
@@ -40,10 +36,6 @@
   ],
   "license": "MIT",
   "main": "lib/index.js",
-  "pre-commit": [
-    "lint",
-    "test"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/bracketclub/bracket-data.git"
@@ -51,9 +43,9 @@
   "scripts": {
     "bracketology": "node build/bracketology.js -y $(date '+%Y') -s ncaaw && node build/bracketology.js -y $(date '+%Y') -s ncaam",
     "browser:size": "browserify browser/index | js-size",
-    "build": "node build/browser",
-    "lint": "prettier -l . && eslint .",
+    "build": "node build/browser.js",
     "names": "node build/names.js",
-    "test": "npm run build && mocha -c -u bdd -R spec test/*.js"
+    "pretest": "node build/browser.js",
+    "test": "mocha -c -u bdd -R spec test/*.js"
   }
 }

@@ -1,13 +1,8 @@
-bracket-possibilities
-==================
+# bracket-possibilities
 
 Get the best possible outcomes for a bracket based on a partially complete master bracket.
 
 [![NPM](https://nodei.co/npm/bracket-possibilities.png)](https://nodei.co/npm/bracket-possibilities/)
-[![Build Status](https://travis-ci.org/bracketclub/bracket-possibilities.png?branch=master)](https://travis-ci.org/bracketclub/bracket-possibilities)
-[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
-[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-possibilities.svg)](https://greenkeeper.io/)
-
 
 ## Install
 
@@ -15,21 +10,21 @@ Get the best possible outcomes for a bracket based on a partially complete maste
 npm install bracket-possibilities --save
 ```
 
-
 ## API / Usage
 
 Make a new `bracket-possibilities` instance with an options object (the year and sport options are required and passed directly to [`bracket-data`](https://github.com/bracketclub/bracket-data#which-sports-does-it-have)):
 
 ```js
-import P from 'bracket-possibilities'
+import P from "bracket-possibilities"
 
-const p = new P({ sport: 'ncaam', year: '2016' })
+const p = new P({ sport: "ncaam", year: "2016" })
 
 // Hey its my entry from 2016 and the actual completed games through the Sweet 16
-const entries = require('./all-entries.json')
-const findEntry = ({ user }) => user.username === 'lukekarrys'
+const entries = require("./all-entries.json")
+const findEntry = ({ user }) => user.username === "lukekarrys"
 const entry = entries.find(findEntry).bracket
-const master = 'S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX'
+const master =
+  "S19513113721532XXXW181241131021432XXXE1954614721567XXXMW191241131015141110XXXFFXXX"
 
 // This will return the best possible future bracket for 'entry' with any unwinnable
 // games (meaning the entry has an eliminated team winning) replaced with 'X'
@@ -71,7 +66,7 @@ p.finishes({ entries, master, findEntry, rank: 5 })
 // Pass `scoreType` to any method involving scoring to use a different scoring
 // system for the end result. Eg, find the best possible score using the gooley
 // scoring system
-p.bestScore({ entry, master, scoreType: 'gooley' })
+p.bestScore({ entry, master, scoreType: "gooley" })
 ```
 
 ### LICENSE

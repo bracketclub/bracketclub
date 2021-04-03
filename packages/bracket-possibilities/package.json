@@ -37,25 +37,13 @@
   ],
   "license": "MIT",
   "main": "lib/index.js",
-  "pre-commit": [
-    "lint",
-    "validate",
-    "test"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/bracketclub/bracket-possibilities.git"
   },
   "scripts": {
     "compile": "babel src --out-dir lib",
-    "lint": "standard",
     "prepublish": "npm run compile",
-    "test": "babel-tape-runner test/*.js | tap-format-spec",
-    "validate": "npm ls"
-  },
-  "standard": {
-    "ignore": [
-      "lib/*"
-    ]
+    "test": "babel-tape-runner test/*.js | tap-format-spec"
   }
 }

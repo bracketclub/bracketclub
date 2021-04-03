@@ -1,13 +1,10 @@
-bracket-validator
-==============
+# bracket-validator
 
 Validate a tournament bracket.
 
 [![NPM](https://nodei.co/npm/bracket-validator.png)](https://nodei.co/npm/bracket-validator/)
-[![Build Status](https://travis-ci.org/bracketclub/bracket-validator.png?branch=master)](https://travis-ci.org/bracketclub/bracket-validator)
-[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-validator.svg)](https://greenkeeper.io/)
 
-*To see the data this repo is built on, check out [bracket-data](https://github.com/bracketclub/bracket-data).*
+_To see the data this repo is built on, check out [bracket-data](https://github.com/bracketclub/bracket-data)._
 
 ## What is this?
 
@@ -20,14 +17,15 @@ The main use case for this is to validate a user's entry against the actual data
 Make a new `bracket-validator` object with an options object (the year and sport options are required and passed directly to [`bracket-data`](https://github.com/bracketclub/bracket-data#which-sports-does-it-have)):
 
 ```js
-var BracketValidator = require('bracket-validator');
+var BracketValidator = require("bracket-validator")
 var validator = new BracketValidator({
-   year: '2013',
-   sport: 'ncaam',
-   /* User bracket string */
-   flatBracket: 'MW1812463XXXXXXXXXW19XX614XXXXXXXXXSXX54XXXXXXXXXXXEXX12463XXXXXXXXXFFXXX'
-});
-console.log(validator.validate());
+  year: "2013",
+  sport: "ncaam",
+  /* User bracket string */
+  flatBracket:
+    "MW1812463XXXXXXXXXW19XX614XXXXXXXXXSXX54XXXXXXXXXXXEXX12463XXXXXXXXXFFXXX",
+})
+console.log(validator.validate())
 ```
 
 ### options
@@ -45,7 +43,6 @@ console.log(validator.validate());
   - The `flatBracket` if validation is successfull and `testOnly` is set to `true`
   - An expanded bracket object created from `flatBracket` if validation is successful. It will have each region containing a multidimensional array: `rounds`. This is ordered by round and picks, where if a pick is made it will contain the team `seed` and `name` and if a pick is not made it will be `null`.
 - `reset(flatBracket)`: Reset the validator to use a new `flatBracket`.
-
 
 ## Anything else?
 

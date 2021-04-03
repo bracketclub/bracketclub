@@ -1,4 +1,4 @@
-import { each } from 'lodash'
+import { each } from "lodash"
 
 export const eachGame = (bracket, iterator, returnOnMatch = false) => {
   let match
@@ -7,7 +7,13 @@ export const eachGame = (bracket, iterator, returnOnMatch = false) => {
     each(region.rounds, (round, roundIndex) => {
       each(round, (game, gameIndex) => {
         if (roundIndex === 0) return false
-        match = iterator({ game, gameIndex, region, roundIndex, prevRound: region.rounds[roundIndex - 1] })
+        match = iterator({
+          game,
+          gameIndex,
+          region,
+          roundIndex,
+          prevRound: region.rounds[roundIndex - 1],
+        })
         return returnOnMatch ? !match : true
       })
       return returnOnMatch ? !match : true

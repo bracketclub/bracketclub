@@ -16,9 +16,7 @@
   },
   "devDependencies": {
     "bracket-generator": "^3.1.0",
-    "git-validate": "^2.2.2",
-    "mocha": "^4.0.0",
-    "standard": "^10.0.2"
+    "mocha": "^4.0.0"
   },
   "homepage": "https://github.com/bracketclub/bracket-validator",
   "keywords": [
@@ -29,18 +27,11 @@
   ],
   "license": "MIT",
   "main": "index.js",
-  "pre-commit": [
-    "lint",
-    "validate",
-    "test"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/bracketclub/bracket-validator.git"
   },
   "scripts": {
-    "lint": "standard",
-    "test": "mocha -c -u bdd -R spec --timeout 10000 test/*.js",
-    "validate": "npm ls"
+    "test": "mocha -c -u bdd -R spec --timeout 10000 test/*.js"
   }
 }

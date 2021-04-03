@@ -1,17 +1,17 @@
-var getBestOfRange = require("./bestOfRange");
+var getBestOfRange = require("./bestOfRange")
 
 module.exports = function (data) {
-  var finalData = data.finalRegion;
+  var finalData = data.finalRegion
   var regionIds = data.regions.map(function (r) {
-    return r.id;
-  });
-  var finalId = finalData.id;
-  var finalName = finalData.name;
-  var finalFullname = finalData.fullname;
-  var championshipName = finalData.championshipName;
-  var allIds = regionIds.concat(finalId);
-  var teamsPerRegion = data.teams[Object.keys(data.teams)[0]].length;
-  var unpickedMatch = "X";
+    return r.id
+  })
+  var finalId = finalData.id
+  var finalName = finalData.name
+  var finalFullname = finalData.fullname
+  var championshipName = finalData.championshipName
+  var allIds = regionIds.concat(finalId)
+  var teamsPerRegion = data.teams[Object.keys(data.teams)[0]].length
+  var unpickedMatch = "X"
 
   var constants = {
     BEST_OF: data.bestOf,
@@ -26,13 +26,13 @@ module.exports = function (data) {
     FINAL_FULLNAME: finalFullname || finalName,
     FINAL_CHAMPIONSHIP_NAME: championshipName,
     UNPICKED_MATCH: unpickedMatch,
-    TEAMS_PER_REGION: teamsPerRegion
-  };
-
-  var bestOfRange = getBestOfRange(data.bestOf);
-  if (bestOfRange.length) {
-    constants.BEST_OF_RANGE = bestOfRange;
+    TEAMS_PER_REGION: teamsPerRegion,
   }
 
-  return constants;
-};
+  var bestOfRange = getBestOfRange(data.bestOf)
+  if (bestOfRange.length) {
+    constants.BEST_OF_RANGE = bestOfRange
+  }
+
+  return constants
+}

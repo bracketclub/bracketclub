@@ -1,0 +1,16 @@
+{
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "extends": ["eslint:recommended", "prettier"],
+  "overrides": [
+    {
+      "files": ["bracket-insights/**/*.js"],
+      "env": {
+        "es2020": true
+      }
+    }
+  ]
+}

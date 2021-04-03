@@ -1,13 +1,8 @@
-bracket-scorer
-==============
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/bracketclub/bracket-scorer.svg)](https://greenkeeper.io/)
+# bracket-scorer
 
 Find the score of a tournament bracket.
 
 [![NPM](https://nodei.co/npm/bracket-scorer.png)](https://nodei.co/npm/bracket-scorer/)
-
-[![Build Status](https://travis-ci.org/bracketclub/bracket-scorer.png?branch=master)](https://travis-ci.org/bracketclub/bracket-scorer)
 
 ## What is this?
 
@@ -18,14 +13,14 @@ Find the score of a tournament bracket.
 Make a new `bracket-scorer` object with an options object (the year and sport options are required and passed directly to [`bracket-data`](https://github.com/bracketclub/bracket-data#which-sports-does-it-have)):
 
 ```js
-var BracketScorer = require('bracket-scorer');
+var BracketScorer = require("bracket-scorer")
 var scorer = new BracketScorer({
-   year: '2013',
-   sport: 'ncaam',
-   entry: entryBracket,
-   master: masterBracket
-});
-scorer.score();
+  year: "2013",
+  sport: "ncaam",
+  entry: entryBracket,
+  master: masterBracket,
+})
+scorer.score()
 ```
 
 ### options
@@ -43,27 +38,28 @@ scorer.score();
   - The second param will be passed to `reset` to optionally reset the `entry` or `master` brackets.
 
 Examples:
+
 ```js
 // Equivalent
 s = scorer.score()
-s = scorer.score('rounds')
+s = scorer.score("rounds")
 s = scorer.rounds() // Convenience methods exist for each single scoring method
-console.log(s); // eg [24, 12, 3, 1, 0, 0]
+console.log(s) // eg [24, 12, 3, 1, 0, 0]
 
 // Call multiple methods
 // Return object will have each property
-s = scorer.score(['rounds', 'standard'])
+s = scorer.score(["rounds", "standard"])
 // Equivalent to
 s.rounds = scorer.rounds()
 s.standard = scorer.standard()
 console.log(s.rounds, s.standard) // eg [24, 12, 3, 1, 0, 0], 900
 
 // Change the master bracket before scoring
-s = scorer.score('rounds', {master: newMaster})
+s = scorer.score("rounds", { master: newMaster })
 // Can also be passed as the first param if you want to use the default 'rounds'
-s = scorer.score({master: newMaster})
+s = scorer.score({ master: newMaster })
 // Or just called with the `rounds` covenience method
-s = scorer.rounds({master: newMaster})
+s = scorer.rounds({ master: newMaster })
 
 // Can diff the brackets too
 s = scorer.diff() // or s.scorer('diff')
@@ -87,46 +83,45 @@ Also by default this module adds the following:
 
 ### `scoring`
 
-*Note: usually you wont need to mess with this as a few scoring systems are contained for each sport in the [`bracket-data`](https://github.com/bracketclub/bracket-data#what-data-does-this-module-give-me) module. But if you want to create your own scoring systeam, this is what you need to know.*
+_Note: usually you wont need to mess with this as a few scoring systems are contained for each sport in the [`bracket-data`](https://github.com/bracketclub/bracket-data#what-data-does-this-module-give-me) module. But if you want to create your own scoring systeam, this is what you need to know._
 
 Scoring systems in the `scoring` option can have a few different forms. Any key in `scoring` will be created as a convenience method on the scorer. Here's an example:
 
 ```js
 var scorer = new BracketScorer({
-    year: '2013',
-    sport: 'ncaam',
-    entry: entryBracket,
-    master: masterBracket,
-    scoring: {
-        onePointPerGame: 1
-    }
-});
+  year: "2013",
+  sport: "ncaam",
+  entry: entryBracket,
+  master: masterBracket,
+  scoring: {
+    onePointPerGame: 1,
+  },
+})
 // Will give the entry one point for every correct pick
-scorer.onePointPerGame();
+scorer.onePointPerGame()
 // Or can be called like
-scorer.score('onePointPerGame');
+scorer.score("onePointPerGame")
 ```
 
 If a scoring system is just one number (like the example above), that value will be added to the score for each correct pick. The scoring system can also be an array. If it is an array of numbers and the array length is equal to the number of rounds, each value will be used for the appropriate round. For example:
 
 ```js
 var scorer = new BracketScorer({
-    year: '2013',
-    sport: 'ncaam',
-    entry: entryBracket,
-    master: masterBracket,
-    scoring: {
-        massivelyWeightedChampion: [1, 1, 1, 1, 1, 1000]
-    }
-});
+  year: "2013",
+  sport: "ncaam",
+  entry: entryBracket,
+  master: masterBracket,
+  scoring: {
+    massivelyWeightedChampion: [1, 1, 1, 1, 1, 1000],
+  },
+})
 // Will give the entry one point for every correct pick in the first five rounds
 // And 1000 points if they get the champion correct
-scorer.massivelyWeightedChampion();
+scorer.massivelyWeightedChampion()
 // Or can be called like
-scorer.score('massivelyWeightedChampion');
+scorer.score("massivelyWeightedChampion")
 ```
 
 ## Anything else?
 
 If this is interesting to you, I think you should follow me ([@lukekarrys](https://twitter.com/lukekarrys)) and [@tweetthebracket](https://twitter.com/tweetthebracket) on Twitter. There are also a lot of other bracket related modules on our [GitHub organization page](https://github.com/bracketclub).
-

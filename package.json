@@ -1,0 +1,28 @@
+{
+  "name": "packages",
+  "description": "",
+  "version": "1.0.0",
+  "author": "",
+  "devDependencies": {
+    "eslint": "^7.23.0",
+    "eslint-config-prettier": "^8.1.0",
+    "prettier": "^2.2.1"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "eslint": "eslint .",
+    "prettier": "prettier --write .",
+    "lint": "npm run prettier && npm run eslint",
+    "test": "npm test -ws"
+  },
+  "volta": {
+    "node": "15.12.0",
+    "npm": "7.8.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}

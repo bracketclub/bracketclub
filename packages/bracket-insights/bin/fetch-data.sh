@@ -12,7 +12,7 @@ DATA_DIR=".data"
 mkdir -p $DATA_DIR
 
 for SPORT in "${SPORTS[@]}"; do for YEAR in "${YEARS[@]}"; do
-  if [ -a "node_modules/bracket-data/data/${SPORT}/${YEAR}.json" ]; then
+  if [ -a "../../node_modules/bracket-data/data/${SPORT}/${YEAR}.json" ]; then
     CODE=$(curl --write-out %{http_code} --silent --output /dev/null ${API}${MASTERS}/${SPORT}-${YEAR})
     if [ "$CODE" == "200" ]; then
       curl -s ${API}${MASTERS}/${SPORT}-${YEAR} > ${DATA_DIR}/${MASTERS}-${SPORT}-${YEAR}.json
