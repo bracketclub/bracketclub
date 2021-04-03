@@ -1,0 +1,47 @@
+{
+  "name": "bracket-updater",
+  "description": "Update a tournament bracket after the completion of a game.",
+  "version": "3.4.7",
+  "author": {
+    "name": "Luke Karrys",
+    "email": "luke@lukekarrys.com",
+    "url": "http://lukekarrys.com"
+  },
+  "bugs": {
+    "url": "https://github.com/bracketclub/bracket-updater/issues"
+  },
+  "dependencies": {
+    "bracket-data": "^4.5.35",
+    "bracket-validator": "^3.1.1",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "bracket-generator": "^3.1.1",
+    "git-validate": "^2.2.2",
+    "mocha": "^4.0.0",
+    "standard": "^10.0.2"
+  },
+  "homepage": "https://github.com/bracketclub/bracket-updater",
+  "keywords": [
+    "bracket",
+    "ncaa",
+    "tweetyourbracket",
+    "bracketclub"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "pre-commit": [
+    "lint",
+    "validate",
+    "test"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bracketclub/bracket-updater.git"
+  },
+  "scripts": {
+    "lint": "standard",
+    "test": "mocha -c -u bdd -R spec --timeout 10000 test/*.js",
+    "validate": "npm ls"
+  }
+}

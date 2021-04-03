@@ -1,0 +1,55 @@
+{
+  "name": "bracket-insights",
+  "description": "Write scripts to get insights about bracket entries or masters.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Luke Karrys",
+    "email": "luke@lukekarrys.com",
+    "url": "http://lukekarrys.com"
+  },
+  "bugs": {
+    "url": "https://github.com/bracketclub/bracket-insights/issues"
+  },
+  "dependencies": {
+    "bracket-data": "^4.6.10",
+    "bracket-generator": "^3.1.1",
+    "bracket-possibilities": "^1.4.0",
+    "bracket-scorer": "^3.4.2",
+    "bracket-updater": "^3.4.7",
+    "bracket-validator": "^3.1.1",
+    "lodash": "^4.17.21",
+    "yargs": "^10.0.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.23.0",
+    "eslint-config-prettier": "^8.1.0",
+    "git-validate": "^2.2.2",
+    "prettier": "^2.2.1",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.6.3"
+  },
+  "homepage": "https://github.com/bracketclub/bracket-insights",
+  "keywords": [
+    "bracket",
+    "bracketclub",
+    "ncaa",
+    "tweetyourbracket"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "pre-commit": [
+    "lint",
+    "test"
+  ],
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bracketclub/bracket-insights.git"
+  },
+  "scripts": {
+    "fetch-data": "./bin/fetch-data.sh",
+    "lint": "prettier -l . && eslint .",
+    "start": "node index",
+    "test": "tape test/index.js"
+  }
+}

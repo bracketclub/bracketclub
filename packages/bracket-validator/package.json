@@ -1,0 +1,46 @@
+{
+  "name": "bracket-validator",
+  "description": "Validate a tournament bracket.",
+  "version": "3.1.1",
+  "author": {
+    "name": "Luke Karrys",
+    "email": "luke@lukekarrys.com",
+    "url": "http://lukekarrys.com"
+  },
+  "bugs": {
+    "url": "https://github.com/bracketclub/bracket-validator/issues"
+  },
+  "dependencies": {
+    "bracket-data": "^4.5.35",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "bracket-generator": "^3.1.0",
+    "git-validate": "^2.2.2",
+    "mocha": "^4.0.0",
+    "standard": "^10.0.2"
+  },
+  "homepage": "https://github.com/bracketclub/bracket-validator",
+  "keywords": [
+    "bracket",
+    "ncaa",
+    "tweetyourbracket",
+    "bracketclub"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "pre-commit": [
+    "lint",
+    "validate",
+    "test"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bracketclub/bracket-validator.git"
+  },
+  "scripts": {
+    "lint": "standard",
+    "test": "mocha -c -u bdd -R spec --timeout 10000 test/*.js",
+    "validate": "npm ls"
+  }
+}
