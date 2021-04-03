@@ -115,3 +115,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# Package specific
+packages/bracket-possibilities/lib/
+packages/bracket-insights/.data/
+packages/bracket-data/browser/

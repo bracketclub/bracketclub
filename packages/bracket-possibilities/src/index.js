@@ -58,7 +58,7 @@ export default class Possibilities {
           currentMaster: memo,
           ...nextGame(
             this._validator.validate(memo),
-            ({ prevRound, game, region, roundIndex, gameIndex }) => {
+            ({ prevRound, game, region, gameIndex }) => {
               if (game === null) {
                 return {
                   fromRegion: region.id,

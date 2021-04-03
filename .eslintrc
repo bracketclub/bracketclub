@@ -7,8 +7,17 @@
   "extends": ["eslint:recommended", "prettier"],
   "overrides": [
     {
-      "files": ["bracket-insights/**/*.js"],
+      "files": ["packages/bracket-insights/**/*.js"],
       "env": {
+        "es6": false,
+        "es2020": true
+      }
+    },
+    {
+      "files": ["packages/bracket-possibilities/**/*.js"],
+      "parserOptions": { "sourceType": "module" },
+      "env": {
+        "es6": false,
         "es2020": true
       }
     }

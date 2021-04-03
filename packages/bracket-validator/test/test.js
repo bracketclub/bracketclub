@@ -147,7 +147,7 @@ describe("New validator has correct properties", function () {
     var protoProperties = []
 
     for (var x in validator) {
-      if (validator.hasOwnProperty(x)) {
+      if (Object.prototype.hasOwnProperty.call(validator, x)) {
         hasOwnProperties.push(x)
       } else {
         protoProperties.push(x)
