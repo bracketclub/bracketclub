@@ -1,6 +1,6 @@
 {
-  "name": "@bracketclub/generator",
-  "description": "Generate a tournament bracket.",
+  "name": "@bracketclub/diff",
+  "description": "Find the diff of two tournament brackets.",
   "version": "0.0.0",
   "author": {
     "name": "Luke Karrys",
@@ -11,10 +11,12 @@
     "url": "https://github.com/bracketclub/bracketclub/issues"
   },
   "dependencies": {
-    "lodash": "^4.17.1"
+    "@bracketclub/validator": "*",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "@bracketclub/data": "*",
+    "@bracketclub/generator": "*",
     "tap": "^18.6.1"
   },
   "homepage": "https://github.com/bracketclub/bracketclub",
@@ -32,7 +34,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/bracketclub/bracketclub.git",
-    "directory": "packages/validator"
+    "directory": "packages/diff"
   },
   "scripts": {
     "test": "tap",

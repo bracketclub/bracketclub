@@ -193,4 +193,4 @@ const generateWinner = (matchup, o) => {
   return winner >= 0 && winner < matchup.length ? winner : possible.random
 }
 
-module.exports = generate
+module.exports = { generate }

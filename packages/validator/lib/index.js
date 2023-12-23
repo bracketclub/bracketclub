@@ -446,4 +446,4 @@ const validateFinal = (finalPicks, validatedRounds, bracketData) => {
   return wrapSuccess(validatedRounds)
 }
 
-module.exports = validate
+module.exports = { validate }

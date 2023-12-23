@@ -1,4 +1,4 @@
-const validator = require("@bracketclub/validator")
+const { validate } = require("@bracketclub/validator")
 const _extend = require("lodash/assign")
 const _pick = require("lodash/pick")
 const _find = require("lodash/find")
@@ -87,7 +87,7 @@ const updater = (currentMaster, { winner, loser, fromRegion }, bracketData) => {
       winner,
       loser,
       fromRegion,
-      validated: validator(currentMaster, bracketData),
+      validated: validate(currentMaster, bracketData),
     },
     bracketData
   )
@@ -198,7 +198,7 @@ const next = (currentMaster, random, bd) => {
     random = { order: false, winner: false }
   }
 
-  const validated = validator(currentMaster, bd)
+  const validated = validate(currentMaster, bd)
   if (validated instanceof Error) return validated
 
   const randomOrder =

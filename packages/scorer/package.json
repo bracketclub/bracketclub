@@ -1,6 +1,6 @@
 {
-  "name": "@bracketclub/generator",
-  "description": "Generate a tournament bracket.",
+  "name": "@bracketclub/scorer",
+  "description": "Find the score of a tournament bracket.",
   "version": "0.0.0",
   "author": {
     "name": "Luke Karrys",
@@ -11,7 +11,8 @@
     "url": "https://github.com/bracketclub/bracketclub/issues"
   },
   "dependencies": {
-    "lodash": "^4.17.1"
+    "@bracketclub/diff": "*",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "@bracketclub/data": "*",
