@@ -1,0 +1,31 @@
+{
+  "regions": [
+    {
+      "id": "C",
+      "name": "Central",
+      "fullname": "Central Division"
+    },
+    {
+      "id": "P",
+      "name": "Pacific",
+      "fullname": "Pacific Division"
+    },
+    {
+      "id": "A",
+      "name": "Atlantic",
+      "fullname": "Atlantic Division"
+    },
+    {
+      "id": "M",
+      "name": "Metropolitan",
+      "fullname": "Metropolitan Division"
+    }
+  ],
+  "order": [1, 4, 2, 3],
+  "bestOf": 7,
+  "finalRegion": {
+    "id": "F",
+    "name": "Final",
+    "fullname": "Stanley Cup Final"
+  }
+}

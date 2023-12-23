@@ -1,0 +1,42 @@
+{
+  "name": "@bracketclub/updater",
+  "description": "Update a tournament bracket after the completion of a game.",
+  "version": "0.0.0",
+  "author": {
+    "name": "Luke Karrys",
+    "email": "luke@lukekarrys.com",
+    "url": "http://lukekarrys.com"
+  },
+  "bugs": {
+    "url": "https://github.com/bracketclub/bracketclub/issues"
+  },
+  "dependencies": {
+    "@bracketclub/validator": "*",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "@bracketclub/data": "*",
+    "tap": "^18.6.1"
+  },
+  "homepage": "https://github.com/bracketclub/bracketclub",
+  "keywords": [
+    "bracket",
+    "ncaa",
+    "tweetyourbracket",
+    "bracketclub"
+  ],
+  "license": "MIT",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bracketclub/bracketclub.git",
+    "directory": "packages/updater"
+  },
+  "scripts": {
+    "test": "tap",
+    "snap": "tap"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "@bracketclub/data",
+  "description": "Get some helpful data for a tournament bracket.",
+  "version": "0.0.0",
+  "author": {
+    "name": "Luke Karrys",
+    "email": "luke@lukekarrys.com",
+    "url": "http://lukekarrys.com"
+  },
+  "bugs": {
+    "url": "https://github.com/bracketclub/bracketclub/issues"
+  },
+  "homepage": "https://github.com/bracketclub/bracketclub",
+  "keywords": [
+    "bracket",
+    "bracketclub",
+    "ncaa",
+    "tweetyourbracket"
+  ],
+  "license": "MIT",
+  "exports": {
+    ".": "./lib/index.js",
+    "./*": "./data/*.json",
+    "./package.json": "./package.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bracketclub/bracketclub.git",
+    "directory": "packages/data"
+  },
+  "scripts": {
+    "test": "tap",
+    "snap": "tap"
+  }
+}

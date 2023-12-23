@@ -1,0 +1,31 @@
+{
+  "regions": [
+    {
+      "id": "S",
+      "name": "South",
+      "fullname": "South Region"
+    },
+    {
+      "id": "W",
+      "name": "West",
+      "fullname": "West Region"
+    },
+    {
+      "id": "E",
+      "name": "East",
+      "fullname": "East Region"
+    },
+    {
+      "id": "MW",
+      "name": "Midwest",
+      "fullname": "Midwest Region"
+    }
+  ],
+  "order": [1, 16, 8, 9, 5, 12, 4, 13, 6, 11, 3, 14, 7, 10, 2, 15],
+  "bestOf": 1,
+  "finalRegion": {
+    "id": "FF",
+    "name": "Final Four",
+    "championshipName": "National Championship"
+  }
+}

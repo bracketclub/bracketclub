@@ -1,25 +1,8 @@
 {
   "env": {
-    "es6": true,
+    "es2020": true,
     "browser": true,
     "node": true
   },
-  "extends": ["eslint:recommended", "prettier"],
-  "overrides": [
-    {
-      "files": ["packages/bracket-insights/**/*.js"],
-      "env": {
-        "es6": false,
-        "es2020": true
-      }
-    },
-    {
-      "files": ["packages/bracket-possibilities/**/*.js"],
-      "parserOptions": { "sourceType": "module" },
-      "env": {
-        "es6": false,
-        "es2020": true
-      }
-    }
-  ]
+  "extends": ["eslint:recommended", "prettier"]
 }
