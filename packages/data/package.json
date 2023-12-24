@@ -18,11 +18,9 @@
     "tweetyourbracket"
   ],
   "license": "MIT",
-  "exports": {
-    ".": "./lib/index.js",
-    "./*": "./data/*.json",
-    "./package.json": "./package.json"
-  },
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/bracketclub/bracketclub.git",
@@ -30,6 +28,31 @@
   },
   "scripts": {
     "test": "tap",
-    "snap": "tap"
-  }
+    "snap": "tap",
+    "prepare": "tshy",
+    "pretest": "npm run prepare",
+    "presnap": "npm run prepare"
+  },
+  "tshy": {
+    "exports": {
+      "./package.json": "./package.json",
+      ".": "./src/index.ts"
+    }
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/index.d.ts",
+        "default": "./dist/commonjs/index.js"
+      }
+    }
+  },
+  "main": "./dist/commonjs/index.js",
+  "types": "./dist/commonjs/index.d.ts",
+  "type": "module"
 }

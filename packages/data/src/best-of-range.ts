@@ -1,4 +1,6 @@
-module.exports = (bestOf) => {
+import type { BestOf } from "./index.js"
+
+export default (bestOf: BestOf) => {
   if (Array.isArray(bestOf)) {
     return bestOf.map((_, i) => i + 1)
   }
@@ -7,7 +9,7 @@ module.exports = (bestOf) => {
     return []
   }
 
-  const r = []
+  const r: number[] = []
   for (let min = Math.ceil(bestOf / 2); min <= bestOf; min++) {
     r.push(min)
   }

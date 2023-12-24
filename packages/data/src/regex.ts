@@ -5,7 +5,7 @@ const possiblePickLength = (i, max) => {
   return index + "," + index * max
 }
 
-module.exports = function (
+export default (
   { bestOf },
   {
     REGION_IDS,
@@ -15,7 +15,7 @@ module.exports = function (
     FINAL_ID,
     REGION_COUNT,
   }
-) {
+) => {
   const regionAlphas = REGION_IDS.join("")
   const biggestAlphaLength = longestStr(REGION_IDS)
   const biggestSeedLength = TEAMS_PER_REGION.toString().length
@@ -37,5 +37,6 @@ module.exports = function (
 
   const regionRegEx = `([${regionAlphas}]{1,${biggestAlphaLength}})([\\d${UNPICKED_MATCH}]{${possiblePicksPerRegion}})`
   const finalRegEx = `(${FINAL_ID})([${regionAlphas}${UNPICKED_MATCH}${bestOfRangeStr}]{${possiblePicksForFinal}})`
+
   return new RegExp(new Array(REGION_COUNT + 1).join(regionRegEx) + finalRegEx)
 }
