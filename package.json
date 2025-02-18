@@ -20,6 +20,7 @@
     "test": "npm test -ws"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "!packages/bracket.club"
   ]
 }

@@ -28,10 +28,7 @@
   },
   "scripts": {
     "test": "tap",
-    "snap": "tap",
-    "prepare": "tshy",
-    "pretest": "npm run prepare",
-    "presnap": "npm run prepare"
+    "snap": "tap"
   },
   "tshy": {
     "exports": {
@@ -43,12 +40,7 @@
     "./package.json": "./package.json",
     ".": {
       "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
-      },
-      "require": {
-        "types": "./dist/commonjs/index.d.ts",
-        "default": "./dist/commonjs/index.js"
+        "default": "./src/index.ts"
       }
     }
   },

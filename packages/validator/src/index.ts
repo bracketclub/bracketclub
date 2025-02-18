@@ -1,4 +1,14 @@
 import type { BracketData } from "@bracketclub/data"
+import { formatWithOptions } from "node:util"
+
+const debug = (...args) =>
+  console.log(
+    "debug:validator",
+    formatWithOptions(
+      { colors: true, depth: Infinity, breakLength: 120 },
+      ...args
+    )
+  )
 
 type Picks = {
   picks: string[]
@@ -49,6 +59,7 @@ export const validate = (
   { allowEmpty = true } = {}
 ) => {
   // Test expansion from flat to JSON
+  debug("validate", { flatBracket, bracketData, allowEmpty })
   const expanded = expandFlatBracket(flatBracket, allowEmpty, bracketData)
 
   // Picks to arrays
@@ -60,17 +71,19 @@ export const validate = (
     result[regionId] = validatedPicks
   }
 
+  const id = bracketData.constants.FINAL_ID
+
   // Final region has valid picks
-  result[bracketData.constants.FINAL_ID] = validateFinal(
-    result[bracketData.constants.FINAL_ID],
-    result,
-    bracketData
-  )
+  // result[bracketData.constants.FINAL_ID] = validateFinal(
+  //   result[bracketData.constants.FINAL_ID],
+  //   result,
+  //   bracketData
+  // )
 
   // // Decorate with data
   // result = decorateValidated(result, bracketData)
 
-  // return result
+  return result
 }
 
 const expandFlatBracket = (

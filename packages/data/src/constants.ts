@@ -1,5 +1,5 @@
-import type { BracketInputData } from "./index.js"
-import bestOfRange from "./best-of-range.js"
+import type { BracketInputData } from "./index.ts"
+import bestOfRange from "./best-of-range.ts"
 
 const finalId = "Z"
 const unpickedMatch = "X"

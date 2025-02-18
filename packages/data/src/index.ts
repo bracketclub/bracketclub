@@ -1,6 +1,6 @@
-import constants from "./constants.js"
-import regex from "./regex.js"
-import * as bracketData from "./data.js"
+import constants from "./constants.ts"
+import regex from "./regex.ts"
+import * as bracketData from "./data.ts"
 
 export type BestOf = number | string[]
 
