@@ -1,0 +1,106 @@
+[
+  {
+    "bracket": "C163617P153517A153637M152517FC7M7C7",
+    "id": "851549655158538240",
+    "created": "2017-04-10T21:37:13.000Z",
+    "sport": "nhl",
+    "year": "2017",
+    "user": {
+      "id": "1107677430418800642",
+      "username": "lukekarrys",
+      "name": "Luke",
+      "profile_pic": "http://pbs.twimg.com/profile_images/1333464088240824320/14pkMZ8e_normal.jpg"
+    }
+  },
+  {
+    "bracket": "C152627P143616A143715M153616FC7M7C6",
+    "id": "851998746086850560",
+    "created": "2017-04-12T03:21:45.000Z",
+    "sport": "nhl",
+    "year": "2017",
+    "user": {
+      "id": "115967911",
+      "username": "TigerRensch",
+      "name": "Tiger  Rensch",
+      "profile_pic": "http://pbs.twimg.com/profile_images/927020416807219200/hqtsYAXm_normal.jpg"
+    }
+  },
+  {
+    "bracket": "C153615P162426A153616M462627FC6A5A7",
+    "id": "852277380148207617",
+    "created": "2017-04-12T21:48:56.000Z",
+    "sport": "nhl",
+    "year": "2017",
+    "user": {
+      "id": "1281116485",
+      "username": "Dinahpuglife",
+      "name": "Dinah Walker",
+      "profile_pic": "http://pbs.twimg.com/profile_images/495805740536561665/reIDixvv_normal.jpeg"
+    }
+  },
+  {
+    "bracket": "C142614P453545A142615M162514FC4A4C5",
+    "id": "852182673368002560",
+    "created": "2017-04-12T15:32:36.000Z",
+    "sport": "nhl",
+    "year": "2017",
+    "user": {
+      "id": "3096805520",
+      "username": "rensch_julia",
+      "name": "Julia",
+      "profile_pic": "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png"
+    }
+  },
+  {
+    "bracket": "C142717P173717A173737M172727FP7A7P7",
+    "id": "852158367460196356",
+    "created": "2017-04-12T13:56:01.000Z",
+    "sport": "nhl",
+    "year": "2017",
+    "user": {
+      "id": "472555482",
+      "username": "SampsonJoshua",
+      "name": "Joshua Sampson",
+      "profile_pic": "http://pbs.twimg.com/profile_images/2131687998/RS1_0128_normal.jpg"
+    }
+  },
+  {
+    "bracket": "C462746P163636A153537M162717FC7A7C6",
+    "id": "851950460697280514",
+    "created": "2017-04-12T00:09:52.000Z",
+    "sport": "nhl",
+    "year": "2017",
+    "user": {
+      "id": "515832256",
+      "username": "bracketclub",
+      "name": "Bracket Club",
+      "profile_pic": "http://pbs.twimg.com/profile_images/697484973964529664/KtnxYl7X_normal.png"
+    }
+  },
+  {
+    "bracket": "C162717P152617A173737M162727FC7A7C7",
+    "id": "852215564739260417",
+    "created": "2017-04-12T17:43:18.000Z",
+    "sport": "nhl",
+    "year": "2017",
+    "user": {
+      "id": "841748586282991616",
+      "username": "AustinP36713871",
+      "name": "Austin Peters",
+      "profile_pic": "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png"
+    }
+  },
+  {
+    "bracket": "C173616P162716A163736M152627FC6M6M7",
+    "id": "852275169359839234",
+    "created": "2017-04-12T21:40:09.000Z",
+    "sport": "nhl",
+    "year": "2017",
+    "user": {
+      "id": "852274793462337536",
+      "username": "Seanbusch4",
+      "name": "Sean busch",
+      "profile_pic": "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png"
+    }
+  }
+]

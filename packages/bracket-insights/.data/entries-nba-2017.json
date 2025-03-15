@@ -1,0 +1,41 @@
+[
+  {
+    "bracket": "W15562537153717E17462536473737FW6",
+    "id": "852559984181223424",
+    "created": "2017-04-13T16:31:54.000Z",
+    "sport": "nba",
+    "year": "2017",
+    "user": {
+      "id": "1107677430418800642",
+      "username": "lukekarrys",
+      "name": "Luke",
+      "profile_pic": "http://pbs.twimg.com/profile_images/1333464088240824320/14pkMZ8e_normal.jpg"
+    }
+  },
+  {
+    "bracket": "W15462636153716E16472436172526FW5",
+    "id": "852672633862635520",
+    "created": "2017-04-13T23:59:32.000Z",
+    "sport": "nba",
+    "year": "2017",
+    "user": {
+      "id": "115967911",
+      "username": "TigerRensch",
+      "name": "Tiger  Rensch",
+      "profile_pic": "http://pbs.twimg.com/profile_images/927020416807219200/hqtsYAXm_normal.jpg"
+    }
+  },
+  {
+    "bracket": "W14572536152616E16452735173637FW6",
+    "id": "852569602093531136",
+    "created": "2017-04-13T17:10:07.000Z",
+    "sport": "nba",
+    "year": "2017",
+    "user": {
+      "id": "515832256",
+      "username": "bracketclub",
+      "name": "Bracket Club",
+      "profile_pic": "http://pbs.twimg.com/profile_images/697484973964529664/KtnxYl7X_normal.png"
+    }
+  }
+]

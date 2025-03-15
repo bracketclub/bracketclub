@@ -1,0 +1,93 @@
+[
+  {
+    "bracket": "A18124614721462161H185463721432422RW185463721432121M1954631029432433FFARWRW",
+    "id": "1372623849267757056",
+    "created": "2021-03-18T19:00:02.000Z",
+    "sport": "ncaaw",
+    "year": "2021",
+    "user": {
+      "id": "1107677430418800642",
+      "username": "lukekarrys",
+      "name": "Luke",
+      "profile_pic": "http://pbs.twimg.com/profile_images/1333464088240824320/14pkMZ8e_normal.jpg"
+    }
+  },
+  {
+    "bracket": "A169513614102913142131414H18121361472812621266RW181213111472812112828M18124111471514111541515FFHRWRW",
+    "id": "1371896447897989121",
+    "created": "2021-03-16T18:49:36.000Z",
+    "sport": "ncaaw",
+    "year": "2021",
+    "user": {
+      "id": "1108236747010260992",
+      "username": "bigowentation",
+      "name": "bigowentation",
+      "profile_pic": "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png"
+    }
+  },
+  {
+    "bracket": "A18124637158123712712H1691246141015946109109RW18513614101511314151141M1854113101514111511111FFARWA",
+    "id": "1372600105585364996",
+    "created": "2021-03-18T17:25:41.000Z",
+    "sport": "ncaaw",
+    "year": "2021",
+    "user": {
+      "id": "1372592994310758405",
+      "username": "Zephyr55171741",
+      "name": "Zephyr",
+      "profile_pic": "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png"
+    }
+  },
+  {
+    "bracket": "A195463721467161H185463728432433RW18124614721462121M195463721532133FFAMA",
+    "id": "1372756438624333831",
+    "created": "2021-03-19T03:46:54.000Z",
+    "sport": "ncaaw",
+    "year": "2021",
+    "user": {
+      "id": "18658717",
+      "username": "katefarrar",
+      "name": "Kate Farrar 🏳️‍🌈",
+      "profile_pic": "http://pbs.twimg.com/profile_images/1039372964272066560/8W_HYzi5_normal.jpg"
+    }
+  },
+  {
+    "bracket": "A1854631021462121H185463728532522RW1854631021462121M1954113721432131FFAMA",
+    "id": "1372600114032828416",
+    "created": "2021-03-18T17:25:43.000Z",
+    "sport": "ncaaw",
+    "year": "2021",
+    "user": {
+      "id": "19249356",
+      "username": "JamesMontemagno",
+      "name": "James Montemagno",
+      "profile_pic": "http://pbs.twimg.com/profile_images/1307714520870260739/lhweJTqL_normal.jpg"
+    }
+  },
+  {
+    "bracket": "A185463721462121H185463721432121RW185463721432121M195463721432131FFARWA",
+    "id": "1372588906181365761",
+    "created": "2021-03-18T16:41:11.000Z",
+    "sport": "ncaaw",
+    "year": "2021",
+    "user": {
+      "id": "515832256",
+      "username": "bracketclub",
+      "name": "Bracket Club",
+      "profile_pic": "http://pbs.twimg.com/profile_images/697484973964529664/KtnxYl7X_normal.png"
+    }
+  },
+  {
+    "bracket": "A1685463728462422H195463721462422RW1812131114101511211101101M1695463729437433FFAMM",
+    "id": "1371895017103622144",
+    "created": "2021-03-16T18:43:55.000Z",
+    "sport": "ncaaw",
+    "year": "2021",
+    "user": {
+      "id": "700854527801446400",
+      "username": "ElliestBelliest",
+      "name": "One",
+      "profile_pic": "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png"
+    }
+  }
+]

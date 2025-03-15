@@ -3,7 +3,7 @@ import bestOfRange from "./best-of-range.ts"
 
 const finalId = "Z"
 const possibleRegions = ["A", "B", "C", "D", "E", "F", "G", "H"]
-const unpickedMatch = "X"
+const unpickedMatch = "_"
 
 export default (bracketData: BracketInputData) => {
   const { bestOf, regions, order } = bracketData

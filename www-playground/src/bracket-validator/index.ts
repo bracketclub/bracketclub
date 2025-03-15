@@ -1,15 +1,21 @@
-import type { BracketData } from "@bracketclub/data"
-import assert from "node:assert"
-import { formatWithOptions } from "node:util"
+import type { BracketData } from "../bracket-data/index.ts"
+// import assert from "node:assert"
+const assert = (v: any) => {
+  if (!v) {
+    throw new Error("assertion failed")
+  }
+}
+// import { formatWithOptions } from "node:util"
 
-let debug: ((...args: any[]) => void) | null = (...args: any[]) =>
-  console.log(
-    "debug:validator",
-    formatWithOptions(
-      { colors: true, depth: Infinity, breakLength: 120 },
-      ...args
-    )
-  )
+// let debug: ((...args: any[]) => void) | null = (...args: any[]) =>
+//   console.log(
+//     "debug:validator",
+//     formatWithOptions(
+//       { colors: true, depth: Infinity, breakLength: 120 },
+//       ...args
+//     )
+//   )
+let debug: any = console.log
 if (Math.random() !== 0) {
   debug = null
 }
@@ -22,9 +28,9 @@ type Picks = {
   id: string
 }
 
-type Round = ([Seed, RegionId] | null)[]
+export type Round = ([Seed, RegionId] | null)[]
 
-type Region = {
+export type Region = {
   rounds: Round[]
   id: string
 }
@@ -40,8 +46,6 @@ function makeRange(start: number, stop: number, step: number = 1) {
 const difference = (arr1: any[], arr2: any[]) =>
   arr1.filter((x) => !arr2.includes(x))
 
-const compact = (arr: any[]) => arr.filter(Boolean)
-
 const uniqBy = (arr: any[], fn: (x: any) => {}, set = new Set()) =>
   arr.filter((el) => ((v) => !set.has(v) && set.add(v))(fn(el)))
 
@@ -51,8 +55,6 @@ const subset = (small: any[], big: any[]) => {
   if (small.length === 0) return true
   return small.every((n) => big.includes(n))
 }
-
-const last = (arr: any[]) => arr[arr.length - 1]
 
 class BracketValidationError extends Error {}
 
@@ -114,12 +116,12 @@ export const validate = (
   debug?.({ finalRounds })
   // const final = validateFinal()
 
-  return { regions: regionsResult, final: finalRounds }
+  return { regions: Object.values(regionsResult), final: finalRounds }
 }
 
 const expandFlatBracket = (
   flat: string,
-  allowEmpty: Boolean,
+  allowEmpty: boolean,
   bracketData: BracketData
 ): { [key: string]: string } => {
   if (!allowEmpty && flat.includes(bracketData.constants.UNPICKED_MATCH)) {

@@ -1,0 +1,67 @@
+[
+  {
+    "bracket": "B1854631021432121O19541131021432133L18541131021532122S185463721532131FFBSB",
+    "id": "842385555581149184",
+    "created": "2017-03-16T14:42:21.000Z",
+    "sport": "ncaaw",
+    "year": "2017",
+    "user": {
+      "id": "1107677430418800642",
+      "username": "lukekarrys",
+      "name": "Luke",
+      "profile_pic": "http://pbs.twimg.com/profile_images/1333464088240824320/14pkMZ8e_normal.jpg"
+    }
+  },
+  {
+    "bracket": "B185463721432121O185463721432121L185463721532121S185463721437131FFBLB",
+    "id": "842391357717004290",
+    "created": "2017-03-16T15:05:25.000Z",
+    "sport": "ncaaw",
+    "year": "2017",
+    "user": {
+      "id": "115967911",
+      "username": "TigerRensch",
+      "name": "Tiger  Rensch",
+      "profile_pic": "http://pbs.twimg.com/profile_images/927020416807219200/hqtsYAXm_normal.jpg"
+    }
+  },
+  {
+    "bracket": "B185463721432121O185463721432121L185463721432122S185463721432121FFBLB",
+    "id": "842393059358793729",
+    "created": "2017-03-16T15:12:10.000Z",
+    "sport": "ncaaw",
+    "year": "2017",
+    "user": {
+      "id": "3096805520",
+      "username": "rensch_julia",
+      "name": "Julia",
+      "profile_pic": "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png"
+    }
+  },
+  {
+    "bracket": "B185463721432131O185463721432121L185463721432131S1854113721432121FFBLB",
+    "id": "842387423921233921",
+    "created": "2017-03-16T14:49:47.000Z",
+    "sport": "ncaaw",
+    "year": "2017",
+    "user": {
+      "id": "515832256",
+      "username": "bracketclub",
+      "name": "Bracket Club",
+      "profile_pic": "http://pbs.twimg.com/profile_images/697484973964529664/KtnxYl7X_normal.png"
+    }
+  },
+  {
+    "bracket": "B1812461410214610161O181241137214112424L181213637211262122S1951363721567177FFBSB",
+    "id": "842413960703926272",
+    "created": "2017-03-16T16:35:14.000Z",
+    "sport": "ncaaw",
+    "year": "2017",
+    "user": {
+      "id": "607434676",
+      "username": "BeccaLingley",
+      "name": "Becca Lingley",
+      "profile_pic": "http://pbs.twimg.com/profile_images/588933233594609664/VPMuZ72V_normal.jpg"
+    }
+  }
+]

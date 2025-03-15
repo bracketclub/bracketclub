@@ -1,0 +1,28 @@
+[
+  {
+    "bracket": "L83522131513331R11412162116113FL2",
+    "id": "1012484338103926784",
+    "created": "2018-06-28T23:54:11.000Z",
+    "sport": "wcm",
+    "year": "2018",
+    "user": {
+      "id": "1107677430418800642",
+      "username": "lukekarrys",
+      "name": "Luke",
+      "profile_pic": "http://pbs.twimg.com/profile_images/1333464088240824320/14pkMZ8e_normal.jpg"
+    }
+  },
+  {
+    "bracket": "L8252233251222R12412161136212FL2",
+    "id": "1012498972496125952",
+    "created": "2018-06-29T00:52:21.000Z",
+    "sport": "wcm",
+    "year": "2018",
+    "user": {
+      "id": "1281116485",
+      "username": "Dinahpuglife",
+      "name": "Dinah Walker",
+      "profile_pic": "http://pbs.twimg.com/profile_images/495805740536561665/reIDixvv_normal.jpeg"
+    }
+  }
+]
